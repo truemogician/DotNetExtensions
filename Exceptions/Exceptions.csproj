@@ -1,16 +1,17 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-	<TargetFramework>netstandard2.0</TargetFramework>
-	<RootNamespace>TrueMogician.Exceptions</RootNamespace>
-	<LangVersion>latest</LangVersion>
-	<PackageId>TrueMogician.Exceptions</PackageId>
-	<Authors>true_mogician</Authors>
-	<Description>Some common exceptions additional to System.Exceptions</Description>
-	<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-	<PackageLicenseExpression>MIT</PackageLicenseExpression>
-	<Version>1.1.0</Version>
-	<PackageReleaseNotes>Add more exceptions</PackageReleaseNotes>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>netstandard2.0</TargetFramework>
+		<RootNamespace>TrueMogician.Exceptions</RootNamespace>
+		<LangVersion>latest</LangVersion>
+		<PackageId>TrueMogician.Exceptions</PackageId>
+		<Authors>true_mogician</Authors>
+		<Description>Some common exceptions additional to System.Exceptions</Description>
+		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
+		<Version>1.1.0</Version>
+		<PackageReleaseNotes>Add more exceptions</PackageReleaseNotes>
+		<RepositoryUrl>https://github.com/truemogician/DotNetExtensions</RepositoryUrl>
+	</PropertyGroup>
 
 </Project>
