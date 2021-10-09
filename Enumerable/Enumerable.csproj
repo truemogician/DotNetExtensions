@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+	<TargetFramework>netstandard2.0</TargetFramework>
+	<RootNamespace>TrueMogician.Extensions.Enumerable</RootNamespace>
+	<LangVersion>latest</LangVersion>
+	<PackageId>TrueMogician.Extensions.Enumerable</PackageId>
+	<Authors>true_mogician</Authors>
+	<Description>Some extension methods on IEnumerable&lt;T&gt;</Description>
+	<PackageLicenseExpression>MIT</PackageLicenseExpression>
+	<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="TrueMogician.Exceptions" Version="1.0.0" />
+  </ItemGroup>
+
+</Project>
