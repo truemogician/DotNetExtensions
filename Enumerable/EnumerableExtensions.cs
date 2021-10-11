@@ -98,6 +98,54 @@ namespace TrueMogician.Extensions.Enumerable {
 				}
 			}
 		}
+
+		public static IEnumerable<(T1 First, T2 Second)> IndexJoin<T1, T2>(this IEnumerable<T1> enumerable1, IEnumerable<T2> enumerable2) {
+			using var e1 = enumerable1.GetEnumerator();
+			using var e2 = enumerable2.GetEnumerator();
+			bool finish1 = false, finish2 = false;
+			do {
+				if (!finish1)
+					finish1 = e1.MoveNext();
+				if (!finish2)
+					finish2 = e2.MoveNext();
+				yield return (e1.Current, e2.Current);
+			} while (!finish1 || !finish2);
+		}
+
+		public static IEnumerable<(T1 First, T2 Second, T3 Third)> IndexJoin<T1, T2, T3>(this IEnumerable<T1> enumerable1, IEnumerable<T2> enumerable2, IEnumerable<T3> enumerable3) {
+			using var e1 = enumerable1.GetEnumerator();
+			using var e2 = enumerable2.GetEnumerator();
+			using var e3 = enumerable3.GetEnumerator();
+			bool finish1 = false, finish2 = false, finish3 = false;
+			do {
+				if (!finish1)
+					finish1 = e1.MoveNext();
+				if (!finish2)
+					finish2 = e2.MoveNext();
+				if (!finish3)
+					finish3 = e3.MoveNext();
+				yield return (e1.Current, e2.Current, e3.Current);
+			} while (!finish1 || !finish2 || !finish3);
+		}
+
+		public static IEnumerable<(T1 First, T2 Second, T3 Third, T4 Fourth)> IndexJoin<T1, T2, T3, T4>(this IEnumerable<T1> enumerable1, IEnumerable<T2> enumerable2, IEnumerable<T3> enumerable3, IEnumerable<T4> enumerable4) {
+			using var e1 = enumerable1.GetEnumerator();
+			using var e2 = enumerable2.GetEnumerator();
+			using var e3 = enumerable3.GetEnumerator();
+			using var e4 = enumerable4.GetEnumerator();
+			bool finish1 = false, finish2 = false, finish3 = false, finish4 = false;
+			do {
+				if (!finish1)
+					finish1 = e1.MoveNext();
+				if (!finish2)
+					finish2 = e2.MoveNext();
+				if (!finish3)
+					finish3 = e3.MoveNext();
+				if (!finish4)
+					finish4 = e4.MoveNext();
+				yield return (e1.Current, e2.Current, e3.Current, e4.Current);
+			} while (!finish1 || !finish2 || !finish3 || !finish4);
+		}
 	}
 
 	public class IndexedEnumerable<T> : IEnumerable<(T Value, int Index)> {
