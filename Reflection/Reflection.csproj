@@ -10,11 +10,14 @@
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<PackageId>TrueMogician.Extensions.Reflection</PackageId>
 		<RepositoryUrl>https://github.com/truemogician/DotNetExtensions</RepositoryUrl>
+		<Version>1.0.1</Version>
+		<SignAssembly>true</SignAssembly>
+		<AssemblyOriginatorKeyFile>Reflection.snk</AssemblyOriginatorKeyFile>
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="TrueMogician.Exceptions" Version="1.1.0" />
-		<PackageReference Include="TrueMogician.Extensions.Enumerable" Version="1.0.0" />
+		<PackageReference Include="TrueMogician.Exceptions" Version="1.1.1" />
+		<PackageReference Include="TrueMogician.Extensions.Enumerable" Version="1.0.2" />
 	</ItemGroup>
 
 </Project>

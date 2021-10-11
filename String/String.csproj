@@ -8,12 +8,14 @@
 		<Description>Some useful extension methods to System.String</Description>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-		<Version>1.0.1</Version>
+		<Version>1.0.2</Version>
 		<RepositoryUrl>https://github.com/truemogician/DotNetExtensions</RepositoryUrl>
+		<SignAssembly>true</SignAssembly>
+		<AssemblyOriginatorKeyFile>String.snk</AssemblyOriginatorKeyFile>
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="TrueMogician.Exceptions" Version="1.0.0" />
+		<PackageReference Include="TrueMogician.Exceptions" Version="1.1.1" />
 	</ItemGroup>
 
 </Project>

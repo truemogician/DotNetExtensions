@@ -9,9 +9,11 @@
 		<Description>Some common exceptions additional to System.Exceptions</Description>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
-		<Version>1.1.0</Version>
+		<Version>1.1.1</Version>
 		<PackageReleaseNotes>Add more exceptions</PackageReleaseNotes>
 		<RepositoryUrl>https://github.com/truemogician/DotNetExtensions</RepositoryUrl>
+		<SignAssembly>true</SignAssembly>
+		<AssemblyOriginatorKeyFile>Exceptions.snk</AssemblyOriginatorKeyFile>
 	</PropertyGroup>
 
 </Project>
