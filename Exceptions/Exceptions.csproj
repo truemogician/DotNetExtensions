@@ -7,7 +7,7 @@
 		<PackageId>TrueMogician.Exceptions</PackageId>
 		<Authors>true_mogician</Authors>
 		<Description>Some common exceptions additional to System.Exceptions</Description>
-		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+		<GeneratePackageOnBuild>false</GeneratePackageOnBuild>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<Version>1.1.1</Version>
 		<PackageReleaseNotes>Add more exceptions</PackageReleaseNotes>

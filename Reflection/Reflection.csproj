@@ -4,7 +4,7 @@
 		<TargetFramework>netstandard2.0</TargetFramework>
 		<LangVersion>latest</LangVersion>
 		<RootNamespace>TrueMogician.Extensions.Reflection</RootNamespace>
-		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+		<GeneratePackageOnBuild>false</GeneratePackageOnBuild>
 		<Authors>true_mogician</Authors>
 		<Description>Some useful extension methods that focus on reflection</Description>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>

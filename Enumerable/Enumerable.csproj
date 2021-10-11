@@ -8,7 +8,7 @@
 		<Authors>true_mogician</Authors>
 		<Description>Some extension methods on IEnumerable&lt;T&gt;</Description>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
-		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+		<GeneratePackageOnBuild>false</GeneratePackageOnBuild>
 		<RepositoryUrl>https://github.com/truemogician/DotNetExtensions</RepositoryUrl>
 		<Version>1.0.2</Version>
 		<SignAssembly>true</SignAssembly>
