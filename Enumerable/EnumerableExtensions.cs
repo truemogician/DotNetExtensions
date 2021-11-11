@@ -5,6 +5,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using TrueMogician.Exceptions;
 
+#nullable enable
 namespace TrueMogician.Extensions.Enumerable {
 	public static class EnumerableExtensions {
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -19,17 +20,17 @@ namespace TrueMogician.Extensions.Enumerable {
 		public static IndexedEnumerable<T> ToIndexed<T>(this IEnumerable<T> enumerable) => new(enumerable);
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public static T SameOrDefault<T>(this IEnumerable<T> enumerable) => enumerable.SameOrDefault(x => x);
+		public static T? SameOrDefault<T>(this IEnumerable<T> enumerable) => enumerable.SameOrDefault(x => x);
 
-		public static TResult SameOrDefault<TSource, TResult>(this IEnumerable<TSource> enumerable, Func<TSource, TResult> predicate) {
-			TResult reference = default;
+		public static TResult? SameOrDefault<TSource, TResult>(this IEnumerable<TSource> enumerable, Func<TSource, TResult> predicate) {
+			TResult? reference = default;
 			var first = true;
 			foreach (var item in enumerable)
 				if (first) {
 					reference = predicate(item);
 					first = false;
 				}
-				else if (!predicate(item).Equals(reference))
+				else if (reference?.Equals(item) != true)
 					throw new InvalidOperationException("Values aren't the same");
 			return reference;
 		}
@@ -38,28 +39,27 @@ namespace TrueMogician.Extensions.Enumerable {
 		public static T Same<T>(this IEnumerable<T> enumerable) => enumerable.Same(x => x);
 
 		public static TResult Same<TSource, TResult>(this IEnumerable<TSource> enumerable, Func<TSource, TResult> predicate) {
-			TResult reference = default;
-			var first = true;
-			foreach (var item in enumerable)
-				if (first) {
-					reference = predicate(item);
-					first = false;
-				}
-				else if (!predicate(item).Equals(reference))
+			using var enumerator = enumerable.GetEnumerator();
+			bool success = enumerator.MoveNext();
+			if (!success)
+				throw new InvalidOperationException("Sequence contains no element");
+			var reference = predicate(enumerator.Current);
+			while (enumerator.MoveNext())
+				if (reference?.Equals(predicate(enumerator.Current)) != true)
 					throw new InvalidOperationException("Values aren't the same");
-			return !first ? reference : throw new InvalidOperationException("Sequence contains no element");
+			return reference;
 		}
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public static bool Unique<T>(this IEnumerable<T> enumerable) => enumerable.Unique(null);
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public static bool Unique<T>(this IEnumerable<T> enumerable, IEqualityComparer<T> comparer) => enumerable.Unique(x => x, comparer);
+		public static bool Unique<T>(this IEnumerable<T> enumerable, IEqualityComparer<T>? comparer) => enumerable.Unique(x => x, comparer);
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public static bool Unique<TSource, TResult>(this IEnumerable<TSource> enumerable, Func<TSource, TResult> predicate) => enumerable.Unique(predicate, null);
 
-		public static bool Unique<TSource, TResult>(this IEnumerable<TSource> enumerable, Func<TSource, TResult> predicate, IEqualityComparer<TResult> comparer) {
+		public static bool Unique<TSource, TResult>(this IEnumerable<TSource> enumerable, Func<TSource, TResult> predicate, IEqualityComparer<TResult>? comparer) {
 			var count = 0;
 			var set = comparer is null ? new HashSet<TResult>() : new HashSet<TResult>(comparer);
 			foreach (var item in enumerable) {
@@ -94,7 +94,7 @@ namespace TrueMogician.Extensions.Enumerable {
 					case TResult res:
 						yield return res;
 						break;
-					default: throw new TypeException(result?.GetType(), $"Should be covariant with {typeof(TResult).FullName} or {typeof(IEnumerable<TResult>).FullName}");
+					default: throw new TypeException(result.GetType(), $"Should be covariant with {typeof(TResult).FullName} or {typeof(IEnumerable<TResult>).FullName}");
 				}
 			}
 		}
@@ -102,30 +102,25 @@ namespace TrueMogician.Extensions.Enumerable {
 		public static IEnumerable<(T1 First, T2 Second)> IndexJoin<T1, T2>(this IEnumerable<T1> enumerable1, IEnumerable<T2> enumerable2) {
 			using var e1 = enumerable1.GetEnumerator();
 			using var e2 = enumerable2.GetEnumerator();
-			bool finish1 = false, finish2 = false;
-			do {
-				if (!finish1)
-					finish1 = e1.MoveNext();
-				if (!finish2)
-					finish2 = e2.MoveNext();
+			bool status1 = e1.MoveNext(), status2 = e2.MoveNext();
+			while (status1 || status2) {
 				yield return (e1.Current, e2.Current);
-			} while (!finish1 || !finish2);
+				status1 = e1.MoveNext();
+				status2 = e2.MoveNext();
+			}
 		}
 
 		public static IEnumerable<(T1 First, T2 Second, T3 Third)> IndexJoin<T1, T2, T3>(this IEnumerable<T1> enumerable1, IEnumerable<T2> enumerable2, IEnumerable<T3> enumerable3) {
 			using var e1 = enumerable1.GetEnumerator();
 			using var e2 = enumerable2.GetEnumerator();
 			using var e3 = enumerable3.GetEnumerator();
-			bool finish1 = false, finish2 = false, finish3 = false;
-			do {
-				if (!finish1)
-					finish1 = e1.MoveNext();
-				if (!finish2)
-					finish2 = e2.MoveNext();
-				if (!finish3)
-					finish3 = e3.MoveNext();
+			bool status1 = e1.MoveNext(), status2 = e2.MoveNext(), status3 = e3.MoveNext();
+			while (status1 || status2 || status3) {
+				status1 = e1.MoveNext();
+				status2 = e2.MoveNext();
+				status3 = e3.MoveNext();
 				yield return (e1.Current, e2.Current, e3.Current);
-			} while (!finish1 || !finish2 || !finish3);
+			}
 		}
 
 		public static IEnumerable<(T1 First, T2 Second, T3 Third, T4 Fourth)> IndexJoin<T1, T2, T3, T4>(this IEnumerable<T1> enumerable1, IEnumerable<T2> enumerable2, IEnumerable<T3> enumerable3, IEnumerable<T4> enumerable4) {
@@ -133,19 +128,17 @@ namespace TrueMogician.Extensions.Enumerable {
 			using var e2 = enumerable2.GetEnumerator();
 			using var e3 = enumerable3.GetEnumerator();
 			using var e4 = enumerable4.GetEnumerator();
-			bool finish1 = false, finish2 = false, finish3 = false, finish4 = false;
-			do {
-				if (!finish1)
-					finish1 = e1.MoveNext();
-				if (!finish2)
-					finish2 = e2.MoveNext();
-				if (!finish3)
-					finish3 = e3.MoveNext();
-				if (!finish4)
-					finish4 = e4.MoveNext();
+			bool status1 = e1.MoveNext(), status2 = e2.MoveNext(), status3 = e3.MoveNext(), status4 = e4.MoveNext();
+			while (status1 || status2 || status3 || status4) {
+				status1 = e1.MoveNext();
+				status2 = e2.MoveNext();
+				status3 = e3.MoveNext();
+				status4 = e4.MoveNext();
 				yield return (e1.Current, e2.Current, e3.Current, e4.Current);
-			} while (!finish1 || !finish2 || !finish3 || !finish4);
+			}
 		}
+
+		public static IEnumerable<T> Append<T>(this IEnumerable<T> enumerable, params T[] items) => enumerable.Concat(items);
 	}
 
 	public class IndexedEnumerable<T> : IEnumerable<(T Value, int Index)> {
