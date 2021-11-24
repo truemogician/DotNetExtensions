@@ -20,6 +20,9 @@ namespace TrueMogician.Extensions.Enumerable {
 		public static IndexedEnumerable<T> ToIndexed<T>(this IEnumerable<T> enumerable) => new(enumerable);
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static Dictionary<T, int> ToIndexDictionary<T>(this IEnumerable<T> enumerable) => enumerable.ToIndexed().ToDictionary(x => x.Value, x => x.Index);
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public static T? SameOrDefault<T>(this IEnumerable<T> enumerable) => enumerable.SameOrDefault(x => x);
 
 		public static TResult? SameOrDefault<TSource, TResult>(this IEnumerable<TSource> enumerable, Func<TSource, TResult> predicate) {
