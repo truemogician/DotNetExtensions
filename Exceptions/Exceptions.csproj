@@ -2,6 +2,7 @@
 
 	<PropertyGroup>
 		<TargetFramework>netstandard2.0</TargetFramework>
+		<Nullable>enable</Nullable>
 		<RootNamespace>TrueMogician.Exceptions</RootNamespace>
 		<LangVersion>latest</LangVersion>
 		<PackageId>TrueMogician.Exceptions</PackageId>
@@ -9,7 +10,7 @@
 		<Description>Some common exceptions additional to System.Exceptions</Description>
 		<GeneratePackageOnBuild>false</GeneratePackageOnBuild>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
-		<Version>1.1.1</Version>
+		<Version>1.2.0</Version>
 		<PackageReleaseNotes>Add more exceptions</PackageReleaseNotes>
 		<RepositoryUrl>https://github.com/truemogician/DotNetExtensions</RepositoryUrl>
 		<SignAssembly>true</SignAssembly>
