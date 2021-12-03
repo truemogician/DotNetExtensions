@@ -3,6 +3,7 @@
 	<PropertyGroup>
 		<TargetFramework>netstandard2.0</TargetFramework>
 		<RootNamespace>TrueMogician.Extensions.Enumerable</RootNamespace>
+		<Nullable>enable</Nullable>
 		<LangVersion>latest</LangVersion>
 		<PackageId>TrueMogician.Extensions.Enumerable</PackageId>
 		<Authors>true_mogician</Authors>

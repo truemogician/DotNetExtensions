@@ -5,7 +5,6 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using TrueMogician.Exceptions;
 
-#nullable enable
 namespace TrueMogician.Extensions.Enumerable {
 	public static class EnumerableExtensions {
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
