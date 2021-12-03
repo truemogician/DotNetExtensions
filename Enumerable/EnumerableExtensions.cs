@@ -142,6 +142,17 @@ namespace TrueMogician.Extensions.Enumerable {
 		}
 
 		public static IEnumerable<T> Append<T>(this IEnumerable<T> enumerable, params T[] items) => enumerable.Concat(items);
+
+		public static (IList<T> TrueList, IList<T> FalseList) Split<T>(this IEnumerable<T> enumerable, Func<T, bool> predicate) {
+			var trueList = new List<T>();
+			var falseList = new List<T>();
+			foreach (var item in enumerable)
+				if (predicate(item))
+					trueList.Add(item);
+				else
+					falseList.Add(item);
+			return (trueList, falseList);
+		}
 	}
 
 	public class IndexedEnumerable<T> : IEnumerable<(T Value, int Index)> {
