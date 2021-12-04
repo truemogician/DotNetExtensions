@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>netstandard2.0</TargetFramework>
+		<RootNamespace>System.Diagnostics.CodeAnalysis</RootNamespace>
+		<PackageId>TrueMogician.Diagnostics.CodeAnalysis.NullableAttributes</PackageId>
+		<Authors>Gérald Barré, true_mogician</Authors>
+		<Description>Definations of nullable attributes for .Net Standard 2.0+, providing null-state static analysis.
+The sources are copied from https://www.meziantou.net/how-to-use-nullable-reference-types-in-dotnet-standard-2-0-and-dotnet-.htm</Description>
+		<Product>Diagnostics.CodeAnalysis.NullableAttributs</Product>
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
+		<RepositoryUrl>https://github.com/truemogician/DotNetExtensions</RepositoryUrl>
+		<Version>1.0.0</Version>
+		<SignAssembly>true</SignAssembly>
+		<AssemblyOriginatorKeyFile>Diagnostics.CodeAnalysis.NullableAttributes.snk</AssemblyOriginatorKeyFile>
+		<AssemblyName>Diagnostics.CodeAnalysis.NullableAttributs</AssemblyName>
+	</PropertyGroup>
+
+</Project>
