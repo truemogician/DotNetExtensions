@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using TrueMogician.Exceptions;
+using TrueMogician.Extensions.Enumerable;
 
-namespace TrueMogician.Extensions.Enumerable {
+namespace TrueMogician.Extensions.Collections {
 	public class ValueReadOnlyDictionary<TKey, TValue, TReadOnlyValue> : IReadOnlyDictionary<TKey, TReadOnlyValue> where TValue : TReadOnlyValue {
 		private readonly IDictionary<TKey, TValue> _dictionary;
 
