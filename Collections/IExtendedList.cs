@@ -55,6 +55,11 @@ namespace TrueMogician.Extensions.Collections {
 
 		public void Reverse(int index, int count);
 
+		/// <summary>
+		///     Swap the item at <paramref name="index1" /> with the item at <paramref name="index2" />
+		/// </summary>
+		public void Swap(int index1, int index2);
+
 		#if NETSTANDARD2_1_OR_GREATER || NET5_0_OR_GREATER
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public void AddRange(params T[] items) => AddRange((IEnumerable<T>)items);

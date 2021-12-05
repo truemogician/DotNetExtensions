@@ -285,6 +285,27 @@ namespace TrueMogician.Extensions.Collections {
 				OnListChanged(new ControllableListReorderedEventArgs<T>(_list.GetRange(index, count), index));
 		}
 
+		public void Swap(int index1, int index2) {
+			ThrowHelper.WhenNegativeOrGreaterEqual(index1, nameof(index1), _list.Count);
+			ThrowHelper.WhenNegativeOrGreaterEqual(index2, nameof(index2), _list.Count);
+			if (!ChangingEventEnabled && !ChangedEventEnabled) {
+				var tmp = _list[index1];
+				_list[index1] = _list[index2];
+				_list[index2] = tmp;
+			}
+			else {
+				int index = Math.Min(index1, index2);
+				var slice = _list.GetRange(index, Math.Max(index1, index2));
+				if (ChangingEventEnabled && !OnListChanging(new ControllableListReorderingEventArgs<T>(slice, index)))
+					return;
+				var tmp = _list[index1];
+				_list[index1] = _list[index2];
+				_list[index2] = tmp;
+				if (ChangedEventEnabled)
+					OnListChanged(new ControllableListReorderedEventArgs<T>(slice, index));
+			}
+		}
+
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 		#endregion
