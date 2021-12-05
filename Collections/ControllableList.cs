@@ -74,6 +74,12 @@ namespace TrueMogician.Extensions.Collections {
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public void CopyTo(T[] array, int arrayIndex) => _list.CopyTo(array, arrayIndex);
 
+		/// <returns>
+		///     <see langword="true" /> if <paramref name="item" /> was successfully removed from the
+		///     <see cref="ControllableList{T}" />; otherwise, <see langword="false" />. This method also
+		///     returns <see langword="false" /> if the operation is canceled or <paramref name="item" /> is not found in the
+		///     original <see cref="ControllableList{T}" />.
+		/// </returns>
 		public bool Remove(T item) {
 			int index = _list.IndexOf(item);
 			if (index == -1 || ChangingEventEnabled && !OnListChanging(new ControllableListRemovingEventArgs<T>(item, index)))
@@ -169,9 +175,67 @@ namespace TrueMogician.Extensions.Collections {
 		#endregion
 
 		#region Methods
+		#region Mapped Methods
+		/// <inheritdoc cref="List{T}.IndexOf(T, int)" />
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public int IndexOf(T item, int index) => _list.IndexOf(item, index);
+
+		/// <inheritdoc cref="List{T}.IndexOf(T, int, int)" />
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public int IndexOf(T item, int index, int count) => _list.IndexOf(item, index, count);
+
+		/// <inheritdoc cref="List{T}.LastIndexOf(T)" />
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public int LastIndexOf(T item) => _list.LastIndexOf(item);
+
+		/// <inheritdoc cref="List{T}.LastIndexOf(T, int)" />
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public int LastIndexOf(T item, int index) => _list.LastIndexOf(item, index);
+
+		/// <inheritdoc cref="List{T}.LastIndexOf(T, int, int)" />
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public int LastIndexOf(T item, int index, int count) => _list.LastIndexOf(item, index, count);
+
+		/// <inheritdoc cref="List{T}.Find(Predicate{T})" />
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public T Find(Predicate<T> match) => _list.Find(match);
+
+		/// <inheritdoc cref="List{T}.FindLast(Predicate{T})" />
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public T FindLast(Predicate<T> match) => _list.FindLast(match);
+
+		/// <inheritdoc cref="List{T}.FindAll(Predicate{T})" />
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public List<T> FindAll(Predicate<T> match) => _list.FindAll(match);
+
+		/// <inheritdoc cref="List{T}.FindIndex(Predicate{T})" />
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public int FindIndex(Predicate<T> match) => _list.FindIndex(match);
+
+		/// <inheritdoc cref="List{T}.FindIndex(int, Predicate{T})" />
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public int FindIndex(int index, Predicate<T> match) => _list.FindIndex(index, match);
+
+		/// <inheritdoc cref="List{T}.FindIndex(int,int,Predicate{T})" />
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public int FindIndex(int index, int count, Predicate<T> match) => _list.FindIndex(index, count, match);
+
+		/// <inheritdoc cref="List{T}.FindLastIndex(Predicate{T})" />
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public int FindLastIndex(Predicate<T> match) => _list.FindLastIndex(match);
+
+		/// <inheritdoc cref="List{T}.FindLastIndex(int, Predicate{T})" />
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public int FindLastIndex(int index, Predicate<T> match) => _list.FindLastIndex(index, match);
+
+		/// <inheritdoc cref="List{T}.FindLastIndex(int,int,Predicate{T})" />
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public int FindLastIndex(int index, int count, Predicate<T> match) => _list.FindLastIndex(index, count, match);
+
 		/// <inheritdoc cref="List{T}.GetRange(int,int)" />
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public List<T> GetRange(int index, int count) => _list.GetRange(index, count);
+		#endregion
 
 		/// <summary>
 		///     Set a slice of the source <see cref="ControllableList{T}" /> to <paramref name="values" />. The number of elements
