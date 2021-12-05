@@ -11,7 +11,7 @@ namespace TrueMogician.Extensions.Collections.Tree {
 	public abstract class SimpleTreeNode<T> : IEnumerable<T> where T : SimpleTreeNode<T> {
 		private T? _parent;
 
-		private readonly ControllableList<T> _children = new() {ChangingEventEnabled = false};
+		private readonly ControllableList<T> _children = new();
 
 		private bool _updateParentOnChildrenChange = true;
 
@@ -19,19 +19,28 @@ namespace TrueMogician.Extensions.Collections.Tree {
 
 		protected SimpleTreeNode(T? parent) {
 			Parent = parent;
+			_children.ListChanging += (_, baseArgs) => {
+				switch (baseArgs) {
+					case ControllableListAddingEventArgs<T> addingArgs when ReferenceEquals(addingArgs.Value._parent, this):
+					case ControllableListReplacingEventArgs<T> replacingArgs when ReferenceEquals(replacingArgs.NewValue._parent, this):
+					case ControllableListReplacingRangeEventArgs<T> replacingRangeArgs when replacingRangeArgs.NewValues.Any(n => ReferenceEquals(n, this)):
+						baseArgs.Cancel = true;
+						break;
+					case ControllableListAddingRangeEventArgs<T> args:
+						var list = args.Values.Where(node => !ReferenceEquals(node._parent, this)).ToList();
+						if (list.Count != args.Count) {
+							args.Cancel = true;
+							_children.InsertRange(args.Index, list);
+						}
+						break;
+				}
+			};
 			_children.ListChanged += (_, baseArgs) => {
 				if (!_updateParentOnChildrenChange)
 					return;
 				switch (baseArgs) {
 					case ControllableListAddedEventArgs<T> args:
-						// Remove duplicate child
-						if (ReferenceEquals(args.Value._parent, this)) {
-							_children.ChangedEventEnabled = false;
-							_children.RemoveAt(args.Index);
-							_children.ChangedEventEnabled = true;
-						}
-						else
-							args.Value.SetParent(This);
+						args.Value.SetParent(This);
 						break;
 					case ControllableListRemovedEventArgs<T> args:
 						args.Value.SetParent(null);
@@ -43,13 +52,8 @@ namespace TrueMogician.Extensions.Collections.Tree {
 						}
 						break;
 					case ControllableListRangeAddedEventArgs<T> args:
-						_children.ChangedEventEnabled = false;
-						for (var i = 0; i < args.Count; ++i)
-							if (ReferenceEquals(args.Values[i]._parent, this))
-								_children.RemoveAt(args.StartIndex + i);
-							else
-								args.Values[i].SetParent(This);
-						_children.ChangedEventEnabled = true;
+						foreach (var node in args.Values)
+							node.SetParent(This);
 						break;
 					case ControllableListRangeRemovedEventArgs<T> args:
 						foreach (var value in args.Values)
@@ -66,7 +70,7 @@ namespace TrueMogician.Extensions.Collections.Tree {
 			};
 		}
 
-		public event ValueChangedEventHandler<T> ParentChanged = delegate { };
+		public event ValueChangedEventHandler<T?> ParentChanged = delegate { };
 
 		public event ControllableListChangedEventHandler ChildrenChanged {
 			add => _children.ListChanged += value;
@@ -90,9 +94,9 @@ namespace TrueMogician.Extensions.Collections.Tree {
 				if (Equals(_parent, value))
 					return;
 				if (_parent is not null) {
-					_updateParentOnChildrenChange = false;
+					_parent._updateParentOnChildrenChange = false;
 					_parent._children.Remove(This);
-					_updateParentOnChildrenChange = true;
+					_parent._updateParentOnChildrenChange = true;
 				}
 				if (value is not null) {
 					value._updateParentOnChildrenChange = false;
@@ -106,6 +110,10 @@ namespace TrueMogician.Extensions.Collections.Tree {
 		/// <summary>
 		///     Child nodes collection. Note that when the collection is modified, the <see cref="Parent" /> of the added or
 		///     removed nodes will be automatically synchronized.<br />
+		///     Caution: DO NOT use indexers to reorder. To maintain the synchronization with <see cref="Parent" />, all operations
+		///     that attempt to add or replace with nodes that already exist in <see cref="Children" /> will be blocked.<br />
+		///     If reordering is really needed, use use <see cref="IExtendedList{T}.Swap" />,
+		///     <see cref="IExtendedList{T}.Reverse()" /> or <see cref="IExtendedList{T}.Sort()" /> instead.
 		/// </summary>
 		public IExtendedList<T> Children => _children;
 
@@ -117,7 +125,7 @@ namespace TrueMogician.Extensions.Collections.Tree {
 			get {
 				var root = This;
 				while (!root.IsRoot)
-					root = Root.Parent!;
+					root = root.Parent!;
 				return root;
 			}
 		}
@@ -181,7 +189,7 @@ namespace TrueMogician.Extensions.Collections.Tree {
 		private void SetParent(T? value) {
 			var old = _parent;
 			_parent = value;
-			ParentChanged(this, new ValueChangedEventArgs<T>(old, value));
+			ParentChanged(this, new ValueChangedEventArgs<T?>(old, value));
 		}
 	}
 
