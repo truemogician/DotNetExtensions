@@ -9,7 +9,7 @@ namespace TrueMogician.Extensions.Collections {
 	/// <summary>
 	///     A list of strongly typed object with changed and cancelable changing events
 	/// </summary>
-	public class ControllableList<T> : IList<T> {
+	public class ControllableList<T> : IExtendedList<T> {
 		#region Fields
 		private readonly List<T> _list;
 		#endregion
@@ -141,7 +141,7 @@ namespace TrueMogician.Extensions.Collections {
 			}
 		}
 
-		public List<T> this[Range range] {
+		public IList<T> this[Range range] {
 			get {
 				int start = range.Start is var l && l.IsFromEnd ? _list.Count - l.Value : l.Value;
 				int end = range.End is var r && r.IsFromEnd ? _list.Count - r.Value : r.Value;
@@ -234,42 +234,47 @@ namespace TrueMogician.Extensions.Collections {
 
 		/// <inheritdoc cref="List{T}.GetRange(int,int)" />
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public List<T> GetRange(int index, int count) => _list.GetRange(index, count);
+		public IList<T> GetRange(int index, int count) => _list.GetRange(index, count);
 		#endregion
 
 		/// <summary>
 		///     Set a slice of the source <see cref="ControllableList{T}" /> to <paramref name="values" />. The number of elements
 		///     in the slice doesn't have to be equal to that of <paramref name="values" />.
 		/// </summary>
-		public void SetRange(int index, int count, IReadOnlyList<T> values) {
-			if (values.Count == 0)
+		public void SetRange(int index, int count, IEnumerable<T> values) {
+			var arr = values.AsArray();
+			if (count == 0) {
+				InsertRange(index, arr);
+				return;
+			}
+			if (arr.Length == 0) {
 				RemoveRange(index, count);
-			if (count == 0)
-				InsertRange(index, values);
+				return;
+			}
 			ThrowHelper.WhenNegativeOrGreater(index, nameof(index), _list.Count);
 			ThrowHelper.WhenNegativeOrGreater(count, nameof(count), _list.Count - index, "");
-			int replaceCount = Math.Min(count, values.Count);
+			int replaceCount = Math.Min(count, arr.Length);
 			if (replaceCount == 1)
-				this[index] = values[0];
+				this[index] = arr[0];
 			else {
 				if (!ChangingEventEnabled && !ChangedEventEnabled)
 					for (var i = 0; i < replaceCount; ++i)
-						_list[index + i] = values[i];
+						_list[index + i] = arr[i];
 				else {
 					var old = _list.GetRange(index, count);
-					var @new = replaceCount == values.Count ? values : values.Take(replaceCount).ToArray();
+					var @new = replaceCount == arr.Length ? arr : arr.Take(replaceCount).ToArray();
 					if (ChangingEventEnabled && !OnListChanging(new ControllableListReplacingRangeEventArgs<T>(old, @new, index)))
 						return;
 					for (var i = 0; i < replaceCount; ++i)
-						_list[index + i] = values[i];
+						_list[index + i] = arr[i];
 					if (ChangedEventEnabled)
 						OnListChanged(new ControllableListRangeReplacedEventArgs<T>(old, @new, index));
 				}
 			}
 			if (count > replaceCount)
 				RemoveRange(index + replaceCount, count - replaceCount);
-			else if (values.Count > replaceCount)
-				InsertRange(index + replaceCount, values.Skip(replaceCount));
+			else if (arr.Length > replaceCount)
+				InsertRange(index + replaceCount, arr.Skip(replaceCount));
 		}
 
 		public void AddRange(params T[] items) {
