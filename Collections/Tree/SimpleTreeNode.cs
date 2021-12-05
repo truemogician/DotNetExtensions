@@ -200,13 +200,11 @@ namespace TrueMogician.Extensions.Collections.Tree {
 	///     Basic tree node class with node value. If inheritance required, use <see cref="SimpleTreeNode{T}" /> instead.
 	/// </summary>
 	public sealed class ValuedSimpleTreeNode<T> : SimpleTreeNode<ValuedSimpleTreeNode<T>> {
-		public ValuedSimpleTreeNode() { }
+		public ValuedSimpleTreeNode(T value) : this(value, null) { }
 
-		public ValuedSimpleTreeNode(ValuedSimpleTreeNode<T>? parent) : base(parent) { }
+		public ValuedSimpleTreeNode(T value, ValuedSimpleTreeNode<T>? parent) : base(parent) => Value = value;
 
-		public ValuedSimpleTreeNode(T? value, ValuedSimpleTreeNode<T>? parent = null) : base(parent) => Value = value;
-
-		public T? Value { get; set; }
+		public T Value { get; set; }
 	}
 
 	public enum TraversalOrder : byte {

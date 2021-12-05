@@ -136,12 +136,10 @@ namespace TrueMogician.Extensions.Collections.Tree {
 	///     instead.
 	/// </summary>
 	public sealed class ValuedTreeNode<T> : TreeNode<ValuedTreeNode<T>> {
-		public ValuedTreeNode() { }
+		public ValuedTreeNode(T value) : this(value, null) { }
 
-		public ValuedTreeNode(ValuedTreeNode<T>? parent) : base(parent) { }
+		public ValuedTreeNode(T value, ValuedTreeNode<T>? parent) : base(parent) => Value = value;
 
-		public ValuedTreeNode(T? value, ValuedTreeNode<T>? parent = null) : base(parent) => Value = value;
-
-		public T? Value { get; set; }
+		public T Value { get; set; }
 	}
 }
