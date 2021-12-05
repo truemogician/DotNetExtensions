@@ -472,18 +472,11 @@ namespace TrueMogician.Extensions.Collections {
 	}
 
 	public abstract class ControllableListRangeChangedEventArgs<T> : ControllableListChangedEventArgs {
-		protected ControllableListRangeChangedEventArgs(IReadOnlyList<T> values, int index) {
-			Values = values;
-			StartIndex = index;
-		}
+		protected ControllableListRangeChangedEventArgs(IReadOnlyList<T> values) => Values = values;
 
 		public IReadOnlyList<T> Values { get; }
 
 		public int Count => Values.Count;
-
-		public int StartIndex { get; }
-
-		public int EndIndex => StartIndex + Values.Count;
 	}
 
 	public class ControllableListAddedEventArgs<T> : ControllableListAddedRemovedEventArgs<T> {
@@ -493,9 +486,11 @@ namespace TrueMogician.Extensions.Collections {
 	}
 
 	public class ControllableListRangeAddedEventArgs<T> : ControllableListRangeChangedEventArgs<T> {
-		public ControllableListRangeAddedEventArgs(IReadOnlyList<T> values, int index) : base(values, index) { }
+		public ControllableListRangeAddedEventArgs(IReadOnlyList<T> values, int index) : base(values) => Index = index;
 
 		public override ControllableListChangeAction Action => ControllableListChangeAction.AddRange;
+
+		public int Index { get; }
 	}
 
 	public class ControllableListRemovedEventArgs<T> : ControllableListAddedRemovedEventArgs<T> {
@@ -505,9 +500,13 @@ namespace TrueMogician.Extensions.Collections {
 	}
 
 	public class ControllableListRangeRemovedEventArgs<T> : ControllableListRangeChangedEventArgs<T> {
-		public ControllableListRangeRemovedEventArgs(IReadOnlyList<T> values, int index) : base(values, index) { }
+		public ControllableListRangeRemovedEventArgs(IReadOnlyList<T> values, int index) : base(values) => StartIndex = index;
 
 		public override ControllableListChangeAction Action => ControllableListChangeAction.RemoveRange;
+
+		public int StartIndex { get; }
+
+		public int EndIndex => StartIndex + Count;
 	}
 
 	public class ControllableListReplacedEventArgs<T> : ControllableListChangedEventArgs {
@@ -551,7 +550,11 @@ namespace TrueMogician.Extensions.Collections {
 	public class ControllableListReorderedEventArgs<T> : ControllableListRangeChangedEventArgs<T> {
 		public override ControllableListChangeAction Action => ControllableListChangeAction.Reorder;
 
-		public ControllableListReorderedEventArgs(IReadOnlyList<T> values, int index) : base(values, index) { }
+		public ControllableListReorderedEventArgs(IReadOnlyList<T> values, int index) : base(values) => StartIndex = index;
+
+		public int StartIndex { get; }
+
+		public int EndIndex => StartIndex + Count;
 	}
 	#endregion
 
@@ -574,18 +577,11 @@ namespace TrueMogician.Extensions.Collections {
 	}
 
 	public abstract class ControllableListChangingRangeEventArgs<T> : ControllableListChangingEventArgs {
-		protected ControllableListChangingRangeEventArgs(IReadOnlyList<T> values, int index) {
-			Values = values;
-			StartIndex = index;
-		}
+		protected ControllableListChangingRangeEventArgs(IReadOnlyList<T> values) => Values = values;
 
 		public IReadOnlyList<T> Values { get; }
 
 		public int Count => Values.Count;
-
-		public int StartIndex { get; }
-
-		public int EndIndex => StartIndex + Values.Count;
 	}
 
 	public class ControllableListAddingEventArgs<T> : ControllableListAddingRemovingEventArgs<T> {
@@ -595,9 +591,11 @@ namespace TrueMogician.Extensions.Collections {
 	}
 
 	public class ControllableListAddingRangeEventArgs<T> : ControllableListChangingRangeEventArgs<T> {
-		public ControllableListAddingRangeEventArgs(IReadOnlyList<T> values, int index) : base(values, index) { }
+		public ControllableListAddingRangeEventArgs(IReadOnlyList<T> values, int index) : base(values) => Index = index;
 
 		public override ControllableListChangeAction Action => ControllableListChangeAction.AddRange;
+
+		public int Index { get; }
 	}
 
 	public class ControllableListRemovingEventArgs<T> : ControllableListAddingRemovingEventArgs<T> {
@@ -607,9 +605,13 @@ namespace TrueMogician.Extensions.Collections {
 	}
 
 	public class ControllableListRemovingRangeEventArgs<T> : ControllableListChangingRangeEventArgs<T> {
-		public ControllableListRemovingRangeEventArgs(IReadOnlyList<T> values, int index) : base(values, index) { }
+		public ControllableListRemovingRangeEventArgs(IReadOnlyList<T> values, int index) : base(values) => StartIndex = index;
 
 		public override ControllableListChangeAction Action => ControllableListChangeAction.RemoveRange;
+
+		public int StartIndex { get; }
+
+		public int EndIndex => StartIndex + Count;
 	}
 
 	public class ControllableListReplacingEventArgs<T> : ControllableListChangingEventArgs {
@@ -651,9 +653,13 @@ namespace TrueMogician.Extensions.Collections {
 	}
 
 	public class ControllableListReorderingEventArgs<T> : ControllableListChangingRangeEventArgs<T> {
+		public ControllableListReorderingEventArgs(IReadOnlyList<T> values, int index) : base(values) => StartIndex = index;
+
 		public override ControllableListChangeAction Action => ControllableListChangeAction.Reorder;
 
-		public ControllableListReorderingEventArgs(IReadOnlyList<T> values, int index) : base(values, index) { }
+		public int StartIndex { get; }
+
+		public int EndIndex => StartIndex + Count;
 	}
 	#endregion
 
