@@ -355,6 +355,36 @@ namespace TrueMogician.Extensions.Collections {
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public void Reverse() => Reverse(0, _list.Count);
 
+		/// <inheritdoc cref="List{T}.Sort(int, int, IComparer{T})" />
+		public void Sort(int index, int count, IComparer<T> comparer) {
+			ThrowHelper.WhenNegativeOrGreater(index, nameof(index), _list.Count);
+			ThrowHelper.WhenNegativeOrGreater(count, nameof(count), _list.Count - index, "");
+			if (ChangingEventEnabled && !OnListChanging(new ControllableListReorderingEventArgs<T>(_list.GetRange(index, count), index)))
+				return;
+			_list.Sort(index, count, comparer);
+			if (ChangedEventEnabled)
+				OnListChanged(new ControllableListReorderedEventArgs<T>(_list.GetRange(index, count), index));
+		}
+
+		/// <inheritdoc cref="List{T}.Sort(IComparer{T})" />
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public void Sort(IComparer<T> comparer) => Sort(0, _list.Count, comparer);
+
+		/// <inheritdoc cref="List{T}.Sort()" />
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public void Sort() => Sort(0, _list.Count, Comparer<T>.Default);
+
+		/// <inheritdoc cref="List{T}.Sort(int, int, IComparer{T})" />
+		/// <param name="comparison">
+		///     <inheritdoc cref="List{T}.Sort(Comparison{T})" />
+		/// </param>
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public void Sort(int index, int count, Comparison<T> comparison) => Sort(index, count, Comparer<T>.Create(comparison));
+
+		/// <inheritdoc cref="List{T}.Sort(Comparison{T})" />
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public void Sort(Comparison<T> comparison) => Sort(0, _list.Count, Comparer<T>.Create(comparison));
+
 		/// <returns>True to proceed, false to cancel the operation</returns>
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		protected bool OnListChanging(ControllableListChangingEventArgs args) {
