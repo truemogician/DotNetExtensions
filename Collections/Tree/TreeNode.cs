@@ -140,7 +140,7 @@ namespace TrueMogician.Extensions.Collections.Tree {
 
 		public ValuedTreeNode(ValuedTreeNode<T>? parent) : base(parent) { }
 
-		public ValuedTreeNode(T? value, ValuedTreeNode<T>? parent) : base(parent) => Value = value;
+		public ValuedTreeNode(T? value, ValuedTreeNode<T>? parent = null) : base(parent) => Value = value;
 
 		public T? Value { get; set; }
 	}
