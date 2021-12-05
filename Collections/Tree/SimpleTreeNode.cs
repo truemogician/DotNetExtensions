@@ -108,7 +108,7 @@ namespace TrueMogician.Extensions.Collections.Tree {
 		///     Child nodes collection. Note that when the collection is modified, the <see cref="Parent" /> of the added or
 		///     removed nodes will be automatically synchronized.<br />
 		/// </summary>
-		public IList<T> Children => _children;
+		public IExtendedList<T> Children => _children;
 
 		public bool IsLeaf => _children.Count == 0;
 
