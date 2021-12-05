@@ -47,14 +47,6 @@ namespace TrueMogician.Extensions.Collections {
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public IEnumerator<T> GetEnumerator() => _list.GetEnumerator();
 
-		public void Add(T item) {
-			if (ChangingEventEnabled && !OnListChanging(new ControllableListAddingEventArgs<T>(item, _list.Count)))
-				return;
-			_list.Add(item);
-			if (ChangedEventEnabled)
-				OnListChanged(new ControllableListAddedEventArgs<T>(item, _list.Count - 1));
-		}
-
 		public void Clear() {
 			if (!ChangingEventEnabled && !ChangedEventEnabled)
 				_list.Clear();
@@ -74,6 +66,66 @@ namespace TrueMogician.Extensions.Collections {
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public void CopyTo(T[] array, int arrayIndex) => _list.CopyTo(array, arrayIndex);
 
+		public void Add(T item) {
+			if (ChangingEventEnabled && !OnListChanging(new ControllableListAddingEventArgs<T>(item, _list.Count)))
+				return;
+			_list.Add(item);
+			if (ChangedEventEnabled)
+				OnListChanged(new ControllableListAddedEventArgs<T>(item, _list.Count - 1));
+		}
+
+		public void AddRange(params T[] items) {
+			switch (items.Length) {
+				case 0: return;
+				case 1:
+					Add(items[0]);
+					break;
+				default: {
+					if (ChangingEventEnabled && !OnListChanging(new ControllableListAddingRangeEventArgs<T>(items, _list.Count)))
+						return;
+					_list.AddRange(items);
+					if (ChangedEventEnabled)
+						OnListChanged(new ControllableListRangeAddedEventArgs<T>(items, _list.Count - items.Length));
+					break;
+				}
+			}
+		}
+
+		/// <inheritdoc cref="List{T}.AddRange(IEnumerable{T})" />
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public void AddRange(IEnumerable<T> items) => AddRange(items.AsArray());
+
+		public void Insert(int index, T item) {
+			ThrowHelper.WhenNegativeOrGreaterEqual(index, nameof(index), _list.Count);
+			if (ChangingEventEnabled && !OnListChanging(new ControllableListAddingEventArgs<T>(item, index)))
+				return;
+			_list.Insert(index, item);
+			if (ChangedEventEnabled)
+				OnListChanged(new ControllableListAddedEventArgs<T>(item, index));
+		}
+
+		public void InsertRange(int index, params T[] items) {
+			ThrowHelper.WhenNegativeOrGreaterEqual(index, nameof(index), _list.Count);
+			switch (items.Length) {
+				case 0: return;
+				case 1:
+					Insert(index, items[0]);
+					break;
+				default: {
+					if (ChangingEventEnabled && !OnListChanging(new ControllableListAddingRangeEventArgs<T>(items, index)))
+						return;
+					_list.InsertRange(index, items);
+					if (ChangedEventEnabled)
+						OnListChanged(new ControllableListRangeAddedEventArgs<T>(items, index));
+					break;
+				}
+			}
+		}
+
+		/// <inheritdoc cref="List{T}.InsertRange(int, IEnumerable{T})" />
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public void InsertRange(int index, IEnumerable<T> items) => InsertRange(index, items.AsArray());
+
 		/// <returns>
 		///     <see langword="true" /> if <paramref name="item" /> was successfully removed from the
 		///     <see cref="ControllableList{T}" />; otherwise, <see langword="false" />. This method also
@@ -90,18 +142,6 @@ namespace TrueMogician.Extensions.Collections {
 			return true;
 		}
 
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public int IndexOf(T item) => _list.IndexOf(item);
-
-		public void Insert(int index, T item) {
-			ThrowHelper.WhenNegativeOrGreaterEqual(index, nameof(index), _list.Count);
-			if (ChangingEventEnabled && !OnListChanging(new ControllableListAddingEventArgs<T>(item, index)))
-				return;
-			_list.Insert(index, item);
-			if (ChangedEventEnabled)
-				OnListChanged(new ControllableListAddedEventArgs<T>(item, index));
-		}
-
 		public void RemoveAt(int index) {
 			ThrowHelper.WhenNegativeOrGreaterEqual(index, nameof(index), _list.Count);
 			var item = _list[index];
@@ -110,6 +150,139 @@ namespace TrueMogician.Extensions.Collections {
 			_list.RemoveAt(index);
 			if (ChangedEventEnabled)
 				OnListChanged(new ControllableListRemovedEventArgs<T>(item, index));
+		}
+
+		/// <inheritdoc cref="List{T}.RemoveRange(int,int)" />
+		public void RemoveRange(int index, int count) {
+			ThrowHelper.WhenNegativeOrGreater(index, nameof(index), _list.Count);
+			ThrowHelper.WhenNegativeOrGreater(count, nameof(count), _list.Count - index, "");
+			switch (count) {
+				case 0: return;
+				case 1:
+					RemoveAt(index);
+					break;
+				default: {
+					if (!ChangingEventEnabled && !ChangedEventEnabled)
+						_list.RemoveRange(index, count);
+					else {
+						var slice = _list.GetRange(index, count);
+						if (ChangingEventEnabled && !OnListChanging(new ControllableListRemovingRangeEventArgs<T>(slice, index)))
+							return;
+						_list.RemoveRange(index, count);
+						if (ChangedEventEnabled)
+							OnListChanged(new ControllableListRangeRemovedEventArgs<T>(slice, index));
+					}
+					break;
+				}
+			}
+		}
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public int IndexOf(T item) => _list.IndexOf(item);
+
+		/// <inheritdoc cref="List{T}.IndexOf(T, int)" />
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public int IndexOf(T item, int index) => _list.IndexOf(item, index);
+
+		/// <inheritdoc cref="List{T}.IndexOf(T, int, int)" />
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public int IndexOf(T item, int index, int count) => _list.IndexOf(item, index, count);
+
+		/// <inheritdoc cref="List{T}.LastIndexOf(T)" />
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public int LastIndexOf(T item) => _list.LastIndexOf(item);
+
+		/// <inheritdoc cref="List{T}.LastIndexOf(T, int)" />
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public int LastIndexOf(T item, int index) => _list.LastIndexOf(item, index);
+
+		/// <inheritdoc cref="List{T}.LastIndexOf(T, int, int)" />
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public int LastIndexOf(T item, int index, int count) => _list.LastIndexOf(item, index, count);
+
+		/// <inheritdoc cref="List{T}.Find(Predicate{T})" />
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public T? Find(Predicate<T> match) => _list.Find(match);
+
+		/// <inheritdoc cref="List{T}.FindLast(Predicate{T})" />
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public T? FindLast(Predicate<T> match) => _list.FindLast(match);
+
+		/// <inheritdoc cref="List{T}.FindAll(Predicate{T})" />
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public List<T> FindAll(Predicate<T> match) => _list.FindAll(match);
+
+		/// <inheritdoc cref="List{T}.FindIndex(Predicate{T})" />
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public int FindIndex(Predicate<T> match) => _list.FindIndex(match);
+
+		/// <inheritdoc cref="List{T}.FindIndex(int, Predicate{T})" />
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public int FindIndex(int index, Predicate<T> match) => _list.FindIndex(index, match);
+
+		/// <inheritdoc cref="List{T}.FindIndex(int,int,Predicate{T})" />
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public int FindIndex(int index, int count, Predicate<T> match) => _list.FindIndex(index, count, match);
+
+		/// <inheritdoc cref="List{T}.FindLastIndex(Predicate{T})" />
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public int FindLastIndex(Predicate<T> match) => _list.FindLastIndex(match);
+
+		/// <inheritdoc cref="List{T}.FindLastIndex(int, Predicate{T})" />
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public int FindLastIndex(int index, Predicate<T> match) => _list.FindLastIndex(index, match);
+
+		/// <inheritdoc cref="List{T}.FindLastIndex(int,int,Predicate{T})" />
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public int FindLastIndex(int index, int count, Predicate<T> match) => _list.FindLastIndex(index, count, match);
+
+		/// <inheritdoc cref="List{T}.GetRange(int,int)" />
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public IList<T> GetRange(int index, int count) => _list.GetRange(index, count);
+
+		/// <inheritdoc cref="List{T}.Sort()" />
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public void Sort() => Sort(0, _list.Count, Comparer<T>.Default);
+
+		/// <inheritdoc cref="List{T}.Sort(Comparison{T})" />
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public void Sort(Comparison<T> comparison) => Sort(0, _list.Count, Comparer<T>.Create(comparison));
+
+		/// <inheritdoc cref="List{T}.Sort(IComparer{T})" />
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public void Sort(IComparer<T> comparer) => Sort(0, _list.Count, comparer);
+
+		/// <inheritdoc cref="List{T}.Sort(int, int, IComparer{T})" />
+		/// <param name="comparison">
+		///     <inheritdoc cref="List{T}.Sort(Comparison{T})" />
+		/// </param>
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public void Sort(int index, int count, Comparison<T> comparison) => Sort(index, count, Comparer<T>.Create(comparison));
+
+		/// <inheritdoc cref="List{T}.Sort(int, int, IComparer{T})" />
+		public void Sort(int index, int count, IComparer<T> comparer) {
+			ThrowHelper.WhenNegativeOrGreater(index, nameof(index), _list.Count);
+			ThrowHelper.WhenNegativeOrGreater(count, nameof(count), _list.Count - index, "");
+			if (ChangingEventEnabled && !OnListChanging(new ControllableListReorderingEventArgs<T>(_list.GetRange(index, count), index)))
+				return;
+			_list.Sort(index, count, comparer);
+			if (ChangedEventEnabled)
+				OnListChanged(new ControllableListReorderedEventArgs<T>(_list.GetRange(index, count), index));
+		}
+
+		/// <inheritdoc cref="List{T}.Reverse()" />
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public void Reverse() => Reverse(0, _list.Count);
+
+		/// <inheritdoc cref="List{T}.Reverse(int,int)" />
+		public void Reverse(int index, int count) {
+			ThrowHelper.WhenNegativeOrGreater(index, nameof(index), _list.Count);
+			ThrowHelper.WhenNegativeOrGreater(count, nameof(count), _list.Count - index, "");
+			if (count < 2 || ChangingEventEnabled && !OnListChanging(new ControllableListReorderingEventArgs<T>(_list.GetRange(index, count), index)))
+				return;
+			_list.Reverse(index, count);
+			if (ChangedEventEnabled)
+				OnListChanged(new ControllableListReorderedEventArgs<T>(_list.GetRange(index, count), index));
 		}
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -175,68 +348,6 @@ namespace TrueMogician.Extensions.Collections {
 		#endregion
 
 		#region Methods
-		#region Mapped Methods
-		/// <inheritdoc cref="List{T}.IndexOf(T, int)" />
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public int IndexOf(T item, int index) => _list.IndexOf(item, index);
-
-		/// <inheritdoc cref="List{T}.IndexOf(T, int, int)" />
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public int IndexOf(T item, int index, int count) => _list.IndexOf(item, index, count);
-
-		/// <inheritdoc cref="List{T}.LastIndexOf(T)" />
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public int LastIndexOf(T item) => _list.LastIndexOf(item);
-
-		/// <inheritdoc cref="List{T}.LastIndexOf(T, int)" />
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public int LastIndexOf(T item, int index) => _list.LastIndexOf(item, index);
-
-		/// <inheritdoc cref="List{T}.LastIndexOf(T, int, int)" />
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public int LastIndexOf(T item, int index, int count) => _list.LastIndexOf(item, index, count);
-
-		/// <inheritdoc cref="List{T}.Find(Predicate{T})" />
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public T? Find(Predicate<T> match) => _list.Find(match);
-
-		/// <inheritdoc cref="List{T}.FindLast(Predicate{T})" />
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public T? FindLast(Predicate<T> match) => _list.FindLast(match);
-
-		/// <inheritdoc cref="List{T}.FindAll(Predicate{T})" />
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public List<T> FindAll(Predicate<T> match) => _list.FindAll(match);
-
-		/// <inheritdoc cref="List{T}.FindIndex(Predicate{T})" />
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public int FindIndex(Predicate<T> match) => _list.FindIndex(match);
-
-		/// <inheritdoc cref="List{T}.FindIndex(int, Predicate{T})" />
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public int FindIndex(int index, Predicate<T> match) => _list.FindIndex(index, match);
-
-		/// <inheritdoc cref="List{T}.FindIndex(int,int,Predicate{T})" />
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public int FindIndex(int index, int count, Predicate<T> match) => _list.FindIndex(index, count, match);
-
-		/// <inheritdoc cref="List{T}.FindLastIndex(Predicate{T})" />
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public int FindLastIndex(Predicate<T> match) => _list.FindLastIndex(match);
-
-		/// <inheritdoc cref="List{T}.FindLastIndex(int, Predicate{T})" />
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public int FindLastIndex(int index, Predicate<T> match) => _list.FindLastIndex(index, match);
-
-		/// <inheritdoc cref="List{T}.FindLastIndex(int,int,Predicate{T})" />
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public int FindLastIndex(int index, int count, Predicate<T> match) => _list.FindLastIndex(index, count, match);
-
-		/// <inheritdoc cref="List{T}.GetRange(int,int)" />
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public IList<T> GetRange(int index, int count) => _list.GetRange(index, count);
-		#endregion
-
 		/// <summary>
 		///     Set a slice of the source <see cref="ControllableList{T}" /> to <paramref name="values" />. The number of elements
 		///     in the slice doesn't have to be equal to that of <paramref name="values" />.
@@ -276,119 +387,6 @@ namespace TrueMogician.Extensions.Collections {
 			else if (arr.Length > replaceCount)
 				InsertRange(index + replaceCount, arr.Skip(replaceCount));
 		}
-
-		public void AddRange(params T[] items) {
-			switch (items.Length) {
-				case 0: return;
-				case 1:
-					Add(items[0]);
-					break;
-				default: {
-					if (ChangingEventEnabled && !OnListChanging(new ControllableListAddingRangeEventArgs<T>(items, _list.Count)))
-						return;
-					_list.AddRange(items);
-					if (ChangedEventEnabled)
-						OnListChanged(new ControllableListRangeAddedEventArgs<T>(items, _list.Count - items.Length));
-					break;
-				}
-			}
-		}
-
-		/// <inheritdoc cref="List{T}.AddRange(IEnumerable{T})" />
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public void AddRange(IEnumerable<T> items) => AddRange(items.AsArray());
-
-		public void InsertRange(int index, params T[] items) {
-			ThrowHelper.WhenNegativeOrGreaterEqual(index, nameof(index), _list.Count);
-			switch (items.Length) {
-				case 0: return;
-				case 1:
-					Insert(index, items[0]);
-					break;
-				default: {
-					if (ChangingEventEnabled && !OnListChanging(new ControllableListAddingRangeEventArgs<T>(items, index)))
-						return;
-					_list.InsertRange(index, items);
-					if (ChangedEventEnabled)
-						OnListChanged(new ControllableListRangeAddedEventArgs<T>(items, index));
-					break;
-				}
-			}
-		}
-
-		/// <inheritdoc cref="List{T}.InsertRange(int, IEnumerable{T})" />
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public void InsertRange(int index, IEnumerable<T> items) => InsertRange(index, items.AsArray());
-
-		/// <inheritdoc cref="List{T}.RemoveRange(int,int)" />
-		public void RemoveRange(int index, int count) {
-			ThrowHelper.WhenNegativeOrGreater(index, nameof(index), _list.Count);
-			ThrowHelper.WhenNegativeOrGreater(count, nameof(count), _list.Count - index, "");
-			switch (count) {
-				case 0: return;
-				case 1:
-					RemoveAt(index);
-					break;
-				default: {
-					if (!ChangingEventEnabled && !ChangedEventEnabled)
-						_list.RemoveRange(index, count);
-					else {
-						var slice = _list.GetRange(index, count);
-						if (ChangingEventEnabled && !OnListChanging(new ControllableListRemovingRangeEventArgs<T>(slice, index)))
-							return;
-						_list.RemoveRange(index, count);
-						if (ChangedEventEnabled)
-							OnListChanged(new ControllableListRangeRemovedEventArgs<T>(slice, index));
-					}
-					break;
-				}
-			}
-		}
-
-		/// <inheritdoc cref="List{T}.Reverse(int,int)" />
-		public void Reverse(int index, int count) {
-			ThrowHelper.WhenNegativeOrGreater(index, nameof(index), _list.Count);
-			ThrowHelper.WhenNegativeOrGreater(count, nameof(count), _list.Count - index, "");
-			if (count < 2 || ChangingEventEnabled && !OnListChanging(new ControllableListReorderingEventArgs<T>(_list.GetRange(index, count), index)))
-				return;
-			_list.Reverse(index, count);
-			if (ChangedEventEnabled)
-				OnListChanged(new ControllableListReorderedEventArgs<T>(_list.GetRange(index, count), index));
-		}
-
-		/// <inheritdoc cref="List{T}.Reverse()" />
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public void Reverse() => Reverse(0, _list.Count);
-
-		/// <inheritdoc cref="List{T}.Sort(int, int, IComparer{T})" />
-		public void Sort(int index, int count, IComparer<T> comparer) {
-			ThrowHelper.WhenNegativeOrGreater(index, nameof(index), _list.Count);
-			ThrowHelper.WhenNegativeOrGreater(count, nameof(count), _list.Count - index, "");
-			if (ChangingEventEnabled && !OnListChanging(new ControllableListReorderingEventArgs<T>(_list.GetRange(index, count), index)))
-				return;
-			_list.Sort(index, count, comparer);
-			if (ChangedEventEnabled)
-				OnListChanged(new ControllableListReorderedEventArgs<T>(_list.GetRange(index, count), index));
-		}
-
-		/// <inheritdoc cref="List{T}.Sort(IComparer{T})" />
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public void Sort(IComparer<T> comparer) => Sort(0, _list.Count, comparer);
-
-		/// <inheritdoc cref="List{T}.Sort()" />
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public void Sort() => Sort(0, _list.Count, Comparer<T>.Default);
-
-		/// <inheritdoc cref="List{T}.Sort(int, int, IComparer{T})" />
-		/// <param name="comparison">
-		///     <inheritdoc cref="List{T}.Sort(Comparison{T})" />
-		/// </param>
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public void Sort(int index, int count, Comparison<T> comparison) => Sort(index, count, Comparer<T>.Create(comparison));
-
-		/// <inheritdoc cref="List{T}.Sort(Comparison{T})" />
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public void Sort(Comparison<T> comparison) => Sort(0, _list.Count, Comparer<T>.Create(comparison));
 
 		/// <returns>True to proceed, false to cancel the operation</returns>
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]

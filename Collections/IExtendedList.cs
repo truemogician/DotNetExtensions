@@ -8,12 +8,16 @@ namespace TrueMogician.Extensions.Collections {
 	public interface IExtendedList<T> : IList<T> {
 		#if NETSTANDARD2_1_OR_GREATER || NET5_0_OR_GREATER
 		public T this[Index index] {
-			get => index.IsFromEnd ? ((IList<T>)this)[Count - index.Value] : ((IList<T>)this)[index.Value];
+			get {
+				IList<T> iList = this;
+				return index.IsFromEnd ? iList[Count - index.Value] : iList[index.Value];
+			}
 			set {
+				IList<T> iList = this;
 				if (index.IsFromEnd)
-					((IList<T>)this)[Count - index.Value] = value;
+					iList[Count - index.Value] = value;
 				else
-					((IList<T>)this)[index.Value] = value;
+					iList[index.Value] = value;
 			}
 		}
 
