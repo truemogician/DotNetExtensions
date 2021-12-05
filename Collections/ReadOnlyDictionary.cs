@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using TrueMogician.Exceptions;
 using TrueMogician.Extensions.Enumerable;
@@ -26,7 +27,13 @@ namespace TrueMogician.Extensions.Collections {
 		public bool ContainsKey(TKey key) => _dictionary.ContainsKey(key);
 
 		/// <inheritdoc />
-		public bool TryGetValue(TKey key, out TReadOnlyValue value) {
+		public bool TryGetValue(
+			TKey key,
+			#if NET5_0_OR_GREATER
+			[MaybeNullWhen(false)]
+			#endif
+			out TReadOnlyValue value
+		) {
 			bool result = _dictionary.TryGetValue(key, out var v);
 			value = v;
 			return result;
@@ -71,7 +78,14 @@ namespace TrueMogician.Extensions.Collections {
 		///     <inheritdoc cref="ContainsKey" />
 		/// </param>
 		/// <inheritdoc />
-		public bool TryGetValue(TReadOnlyKey key, out TValue value) => key is TKey realKey ? _dictionary.TryGetValue(realKey, out value) : throw new InvariantTypeException(typeof(TKey), key?.GetType());
+		public bool TryGetValue(
+			TReadOnlyKey key,
+			#if NET5_0_OR_GREATER
+			[MaybeNullWhen(false)]
+			#endif
+			out TValue value
+		)
+			=> key is TKey realKey ? _dictionary.TryGetValue(realKey, out value) : throw new InvariantTypeException(typeof(TKey), key?.GetType());
 
 		/// <param name="key">
 		///     <inheritdoc cref="ContainsKey" />
@@ -113,7 +127,13 @@ namespace TrueMogician.Extensions.Collections {
 		///     <inheritdoc cref="ContainsKey" />
 		/// </param>
 		/// <inheritdoc />
-		public bool TryGetValue(TReadOnlyKey key, out TReadOnlyValue value) {
+		public bool TryGetValue(
+			TReadOnlyKey key,
+			#if NET5_0_OR_GREATER
+			[MaybeNullWhen(false)]
+			#endif
+			out TReadOnlyValue value
+		) {
 			if (key is not TKey realKey)
 				throw new InvariantTypeException(typeof(TKey), key?.GetType());
 			bool result = _dictionary.TryGetValue(realKey, out var v);

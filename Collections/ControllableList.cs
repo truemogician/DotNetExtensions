@@ -130,7 +130,7 @@ namespace TrueMogician.Extensions.Collections {
 		#endregion
 
 		#region Indexers
-		#if NETSTANDARD2_1
+		#if NETSTANDARD2_1_OR_GREATER || NET5_0_OR_GREATER
 		public T this[Index index] {
 			get => index.IsFromEnd ? this[Count - index.Value] : this[index.Value];
 			set {
@@ -198,11 +198,11 @@ namespace TrueMogician.Extensions.Collections {
 
 		/// <inheritdoc cref="List{T}.Find(Predicate{T})" />
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public T Find(Predicate<T> match) => _list.Find(match);
+		public T? Find(Predicate<T> match) => _list.Find(match);
 
 		/// <inheritdoc cref="List{T}.FindLast(Predicate{T})" />
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public T FindLast(Predicate<T> match) => _list.FindLast(match);
+		public T? FindLast(Predicate<T> match) => _list.FindLast(match);
 
 		/// <inheritdoc cref="List{T}.FindAll(Predicate{T})" />
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]

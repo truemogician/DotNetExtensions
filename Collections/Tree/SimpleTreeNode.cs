@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using TrueMogician.Extensions.Enumerable;
 using TrueMogician.Extensions.Events;
@@ -112,7 +111,6 @@ namespace TrueMogician.Extensions.Collections.Tree {
 
 		public bool IsLeaf => _children.Count == 0;
 
-		[MemberNotNullWhen(false, nameof(Parent))]
 		public bool IsRoot => Parent is null;
 
 		public T Root {

@@ -1,13 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-
-#if NETSTANDARD2_1_OR_GREATER
+#if NETSTANDARD2_1_OR_GREATER || NET5_0_OR_GREATER
 using System.Runtime.CompilerServices;
 #endif
 
 namespace TrueMogician.Extensions.Collections {
 	public interface IExtendedList<T> : IList<T> {
-		#if NETSTANDARD2_1_OR_GREATER
+		#if NETSTANDARD2_1_OR_GREATER || NET5_0_OR_GREATER
 		public T this[Index index] {
 			get => index.IsFromEnd ? ((IList<T>)this)[Count - index.Value] : ((IList<T>)this)[index.Value];
 			set {
@@ -38,9 +37,9 @@ namespace TrueMogician.Extensions.Collections {
 
 		public int LastIndexOf(T item, int index, int count);
 
-		public T Find(Predicate<T> match);
+		public T? Find(Predicate<T> match);
 
-		public T FindLast(Predicate<T> match);
+		public T? FindLast(Predicate<T> match);
 
 		public List<T> FindAll(Predicate<T> match);
 
@@ -52,7 +51,7 @@ namespace TrueMogician.Extensions.Collections {
 
 		public void Reverse(int index, int count);
 
-		#if NETSTANDARD2_1_OR_GREATER
+		#if NETSTANDARD2_1_OR_GREATER || NET5_0_OR_GREATER
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public void AddRange(params T[] items) => AddRange((IEnumerable<T>)items);
 
