@@ -8,7 +8,7 @@ namespace TrueMogician.Extensions.Collections.Tree {
 	///     <inheritdoc />
 	/// </typeparam>
 	public abstract class StatisticalTreeNode<T> : TreeNode<T> where T : StatisticalTreeNode<T> {
-		private int _height;
+		private int _height = 1;
 
 		private int _size = 1;
 
@@ -22,7 +22,7 @@ namespace TrueMogician.Extensions.Collections.Tree {
 		}
 
 		/// <summary>
-		///     Zero-based height of this node as a tree
+		///     Height of this node as a tree. The height of a standalone node is 1.
 		/// </summary>
 		public int Height {
 			get {
@@ -32,7 +32,7 @@ namespace TrueMogician.Extensions.Collections.Tree {
 		}
 
 		/// <summary>
-		///     Size of this node as a tree
+		///     Size of this node as a tree. The size of a standalone node is 1.
 		/// </summary>
 		public int Size {
 			get {
@@ -42,7 +42,7 @@ namespace TrueMogician.Extensions.Collections.Tree {
 		}
 
 		/// <summary>
-		///     Zero-based depth of this node
+		///     Depth of this node. The depth of a standalone node is 0.
 		/// </summary>
 		public int Depth {
 			get {
@@ -52,13 +52,13 @@ namespace TrueMogician.Extensions.Collections.Tree {
 		}
 
 		private bool HeightSizeUpToDate {
-			get => _height >= 0;
+			get => _height > 0;
 			set {
-				if (_height < 0 || value)
+				if (_height <= 0 || value)
 					return;
 				if (!IsRoot)
 					Parent!.HeightSizeUpToDate = false;
-				_height = -1;
+				_height = 0;
 			}
 		}
 
@@ -98,7 +98,7 @@ namespace TrueMogician.Extensions.Collections.Tree {
 		private void UpdateHeightSize() {
 			if (HeightSizeUpToDate)
 				return;
-			var height = 0;
+			var height = 1;
 			var size = 1;
 			foreach (var child in Children) {
 				child.UpdateHeightSize();
