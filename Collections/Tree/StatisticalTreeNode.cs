@@ -7,7 +7,7 @@ namespace TrueMogician.Extensions.Collections.Tree {
 	/// <typeparam name="T">
 	///     <inheritdoc />
 	/// </typeparam>
-	public abstract class TreeNode<T> : SimpleTreeNode<T> where T : TreeNode<T> {
+	public abstract class StatisticalTreeNode<T> : TreeNode<T> where T : StatisticalTreeNode<T> {
 		private int _height;
 
 		private int _size = 1;
@@ -18,9 +18,9 @@ namespace TrueMogician.Extensions.Collections.Tree {
 
 		private bool _depthUpToDate = true;
 
-		protected TreeNode() { }
+		protected StatisticalTreeNode() { }
 
-		protected TreeNode(T? parent) : base(parent) { }
+		protected StatisticalTreeNode(T? parent) : base(parent) { }
 
 		/// <summary>
 		///     Height of the subtree whose root is this node
@@ -123,22 +123,24 @@ namespace TrueMogician.Extensions.Collections.Tree {
 	}
 
 	/// <summary>
-	///     Tree node class with statistics properties. If inheritance required, use <see cref="TreeNode{T}" /> instead.
+	///     Tree node class with statistics properties. If inheritance required, use <see cref="StatisticalTreeNode{T}" />
+	///     instead.
 	/// </summary>
-	public sealed class TreeNode : TreeNode<TreeNode> {
-		public TreeNode() { }
+	public sealed class StatisticalTreeNode : StatisticalTreeNode<StatisticalTreeNode> {
+		public StatisticalTreeNode() { }
 
-		public TreeNode(TreeNode? parent) : base(parent) { }
+		public StatisticalTreeNode(StatisticalTreeNode? parent) : base(parent) { }
 	}
 
 	/// <summary>
-	///     Tree node class with node value and statistics properties. If inheritance required, use <see cref="TreeNode{T}" />
+	///     Tree node class with node value and statistics properties. If inheritance required, use
+	///     <see cref="StatisticalTreeNode{T}" />
 	///     instead.
 	/// </summary>
-	public sealed class ValuedTreeNode<T> : TreeNode<ValuedTreeNode<T>> {
-		public ValuedTreeNode(T value) : this(value, null) { }
+	public sealed class ValuedStatisticalTreeNode<T> : StatisticalTreeNode<ValuedStatisticalTreeNode<T>> {
+		public ValuedStatisticalTreeNode(T value) : this(value, null) { }
 
-		public ValuedTreeNode(T value, ValuedTreeNode<T>? parent) : base(parent) => Value = value;
+		public ValuedStatisticalTreeNode(T value, ValuedStatisticalTreeNode<T>? parent) : base(parent) => Value = value;
 
 		public T Value { get; set; }
 	}

@@ -8,22 +8,20 @@ using TrueMogician.Extensions.Events;
 namespace TrueMogician.Extensions.Collections.Tree {
 	/// <summary>Basic tree node base class that provides only the basic structure and functionality of a tree</summary>
 	/// <typeparam name="T">Type of the derived class</typeparam>
-	public abstract class SimpleTreeNode<T> : IEnumerable<T> where T : SimpleTreeNode<T> {
+	public abstract class SynchronousTreeNode<T> : IEnumerable<T> where T : SynchronousTreeNode<T> {
 		private T? _parent;
 
 		private readonly ControllableList<T> _children = new();
 
 		private bool _updateParentOnChildrenChange = true;
 
-		protected SimpleTreeNode() : this(null) { }
+		protected SynchronousTreeNode() : this(null) { }
 
-		protected SimpleTreeNode(T? parent) {
+		protected SynchronousTreeNode(T? parent) {
 			Parent = parent;
 			_children.ListChanging += (_, baseArgs) => {
 				switch (baseArgs) {
 					case ControllableListAddingEventArgs<T> addingArgs when ReferenceEquals(addingArgs.Value._parent, this):
-					case ControllableListReplacingEventArgs<T> replacingArgs when ReferenceEquals(replacingArgs.NewValue._parent, this):
-					case ControllableListReplacingRangeEventArgs<T> replacingRangeArgs when replacingRangeArgs.NewValues.Any(n => ReferenceEquals(n, this)):
 						baseArgs.Cancel = true;
 						break;
 					case ControllableListAddingRangeEventArgs<T> args:
@@ -33,6 +31,8 @@ namespace TrueMogician.Extensions.Collections.Tree {
 							_children.InsertRange(args.Index, list);
 						}
 						break;
+					case ControllableListReplacingEventArgs<T> replacingArgs when ReferenceEquals(replacingArgs.NewValue._parent, this):                     throw new InvalidOperationException($"The replacing node {replacingArgs.NewValue} already presents in Children");
+					case ControllableListReplacingRangeEventArgs<T> replacingRangeArgs when replacingRangeArgs.NewValues.Any(n => ReferenceEquals(n, this)): throw new InvalidOperationException("Some nodes in the replacing range already present in Children");
 				}
 			};
 			_children.ListChanged += (_, baseArgs) => {
@@ -110,8 +110,9 @@ namespace TrueMogician.Extensions.Collections.Tree {
 		/// <summary>
 		///     Child nodes collection. Note that when the collection is modified, the <see cref="Parent" /> of the added or
 		///     removed nodes will be automatically synchronized.<br />
-		///     Caution: DO NOT use indexers to reorder. To maintain the synchronization with <see cref="Parent" />, all operations
-		///     that attempt to add or replace with nodes that already exist in <see cref="Children" /> will be blocked.<br />
+		///     Caution: DO NOT use indexers to reorder, which may break the synchronization with <see cref="Parent" />, thus all
+		///     operations that attempt to add or replace with nodes that already exist in <see cref="Children" /> will result in
+		///     <see cref="InvalidOperationException" />.<br />
 		///     If reordering is really needed, use use <see cref="IExtendedList{T}.Swap" />,
 		///     <see cref="IExtendedList{T}.Reverse()" /> or <see cref="IExtendedList{T}.Sort()" /> instead.
 		/// </summary>
@@ -194,21 +195,21 @@ namespace TrueMogician.Extensions.Collections.Tree {
 	}
 
 	/// <summary>
-	///     Basic tree node class. If inheritance required, use <see cref="SimpleTreeNode{T}" /> instead.
+	///     Basic tree node class. If inheritance required, use <see cref="SynchronousTreeNode{T}" /> instead.
 	/// </summary>
-	public sealed class SimpleTreeNode : SimpleTreeNode<SimpleTreeNode> {
-		public SimpleTreeNode() { }
+	public sealed class SynchronousTreeNode : SynchronousTreeNode<SynchronousTreeNode> {
+		public SynchronousTreeNode() { }
 
-		public SimpleTreeNode(SimpleTreeNode? parent) : base(parent) { }
+		public SynchronousTreeNode(SynchronousTreeNode? parent) : base(parent) { }
 	}
 
 	/// <summary>
-	///     Basic tree node class with node value. If inheritance required, use <see cref="SimpleTreeNode{T}" /> instead.
+	///     Basic tree node class with node value. If inheritance required, use <see cref="SynchronousTreeNode{T}" /> instead.
 	/// </summary>
-	public sealed class ValuedSimpleTreeNode<T> : SimpleTreeNode<ValuedSimpleTreeNode<T>> {
-		public ValuedSimpleTreeNode(T value) : this(value, null) { }
+	public sealed class ValuedSynchronousTreeNode<T> : SynchronousTreeNode<ValuedSynchronousTreeNode<T>> {
+		public ValuedSynchronousTreeNode(T value) : this(value, null) { }
 
-		public ValuedSimpleTreeNode(T value, ValuedSimpleTreeNode<T>? parent) : base(parent) => Value = value;
+		public ValuedSynchronousTreeNode(T value, ValuedSynchronousTreeNode<T>? parent) : base(parent) => Value = value;
 
 		public T Value { get; set; }
 	}
@@ -223,3 +224,5 @@ namespace TrueMogician.Extensions.Collections.Tree {
 		BreadthFirst
 	}
 }
+
+
