@@ -14,36 +14,35 @@ namespace TrueMogician.Extensions.Collections.Tree {
 
 		private int _depth;
 
-		private bool _heightUpToDate = true;
+		protected StatisticalTreeNode() : this(null) { }
 
-		private bool _depthUpToDate = true;
-
-		protected StatisticalTreeNode() { }
-
-		protected StatisticalTreeNode(T? parent) : base(parent) { }
+		protected StatisticalTreeNode(T? parent) : base(parent) {
+			ParentChanged += (_, _) => DepthUpToDate = false;
+			ChildrenChanged += (_, _) => HeightSizeUpToDate = false;
+		}
 
 		/// <summary>
-		///     Height of the subtree whose root is this node
+		///     Zero-based height of this node as a tree
 		/// </summary>
 		public int Height {
 			get {
-				UpdateHeightAndSize();
+				UpdateHeightSize();
 				return _height;
 			}
 		}
 
 		/// <summary>
-		///     Size of the subtree whose root is this node
+		///     Size of this node as a tree
 		/// </summary>
 		public int Size {
 			get {
-				UpdateHeightAndSize();
+				UpdateHeightSize();
 				return _size;
 			}
 		}
 
 		/// <summary>
-		///     Depth of the subtree whose root is this node
+		///     Zero-based depth of this node
 		/// </summary>
 		public int Depth {
 			get {
@@ -52,22 +51,25 @@ namespace TrueMogician.Extensions.Collections.Tree {
 			}
 		}
 
-		private bool HeightUpToDate {
-			get => _heightUpToDate;
+		private bool HeightSizeUpToDate {
+			get => _height >= 0;
 			set {
-				if (_heightUpToDate && !value && !IsRoot)
-					Parent!.HeightUpToDate = value;
-				_heightUpToDate = value;
+				if (_height < 0 || value)
+					return;
+				if (!IsRoot)
+					Parent!.HeightSizeUpToDate = false;
+				_height = -1;
 			}
 		}
 
 		private bool DepthUpToDate {
-			get => _depthUpToDate;
+			get => _depth >= 0;
 			set {
-				if (_depthUpToDate && !value)
-					foreach (var child in Children)
-						child.DepthUpToDate = value;
-				_depthUpToDate = value;
+				if (_depth < 0 || value)
+					return;
+				foreach (var child in Children)
+					child.DepthUpToDate = false;
+				_depth = -1;
 			}
 		}
 
@@ -93,17 +95,18 @@ namespace TrueMogician.Extensions.Collections.Tree {
 		/// <summary>
 		///     Update height and size if out of date. Called in the getters of <see cref="Height" /> and <see cref="Size" />.
 		/// </summary>
-		private void UpdateHeightAndSize() {
-			if (HeightUpToDate)
+		private void UpdateHeightSize() {
+			if (HeightSizeUpToDate)
 				return;
-			_height = 0;
-			_size = 1;
+			var height = 0;
+			var size = 1;
 			foreach (var child in Children) {
-				child.UpdateHeightAndSize();
-				_size += child._size;
-				_height = Math.Max(_height, child._height + 1);
+				child.UpdateHeightSize();
+				height = Math.Max(height, child._height + 1);
+				size += child._size;
 			}
-			HeightUpToDate = true;
+			_height = height;
+			_size = size;
 		}
 
 		/// <summary>
@@ -112,13 +115,7 @@ namespace TrueMogician.Extensions.Collections.Tree {
 		private void UpdateDepth() {
 			if (DepthUpToDate)
 				return;
-			if (IsRoot) {
-				_depth = 0;
-				return;
-			}
-			Parent!.UpdateDepth();
-			_depth = Parent.Depth + 1;
-			DepthUpToDate = true;
+			_depth = IsRoot ? 0 : Parent!.Depth + 1;
 		}
 	}
 
