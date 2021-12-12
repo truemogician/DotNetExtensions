@@ -118,10 +118,10 @@ namespace TrueMogician.Extensions.Enumerable {
 			using var e3 = enumerable3.GetEnumerator();
 			bool status1 = e1.MoveNext(), status2 = e2.MoveNext(), status3 = e3.MoveNext();
 			while (status1 || status2 || status3) {
+				yield return (e1.Current, e2.Current, e3.Current);
 				status1 = e1.MoveNext();
 				status2 = e2.MoveNext();
 				status3 = e3.MoveNext();
-				yield return (e1.Current, e2.Current, e3.Current);
 			}
 		}
 
@@ -132,11 +132,11 @@ namespace TrueMogician.Extensions.Enumerable {
 			using var e4 = enumerable4.GetEnumerator();
 			bool status1 = e1.MoveNext(), status2 = e2.MoveNext(), status3 = e3.MoveNext(), status4 = e4.MoveNext();
 			while (status1 || status2 || status3 || status4) {
+				yield return (e1.Current, e2.Current, e3.Current, e4.Current);
 				status1 = e1.MoveNext();
 				status2 = e2.MoveNext();
 				status3 = e3.MoveNext();
 				status4 = e4.MoveNext();
-				yield return (e1.Current, e2.Current, e3.Current, e4.Current);
 			}
 		}
 
