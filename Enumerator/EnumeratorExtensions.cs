@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Enumerator {
+namespace TrueMogician.Extensions.Enumerator {
 	public static class EnumeratorExtensions {
 		/// <summary>
 		///     Return <paramref name="enumerator" />'s current value and move next.

@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 
-namespace Enumerator {
+namespace TrueMogician.Extensions.Enumerator {
 	/// <summary>
 	///     Default implementation of <see cref="IExtendedEnumerator{T}" />
 	/// </summary>
