@@ -12,6 +12,7 @@ namespace TrueMogician.Extensions.Collections.Tree {
 	/// </summary>
 	/// <typeparam name="T">Type of the derived class</typeparam>
 	public abstract class SimpleTreeNode<T> : IEnumerable<T> where T : SimpleTreeNode<T> {
+		// ReSharper disable once InconsistentNaming
 		protected internal readonly IList<T> _children;
 
 		private T? _parent;
@@ -67,9 +68,27 @@ namespace TrueMogician.Extensions.Collections.Tree {
 			}
 		}
 
+		public IEnumerable<T> Descendents => Children.SelectMany(n => n);
+
 		public IEnumerable<T> Leaves => this.Where(n => n.IsLeaf);
 
 		protected T This => (T)this;
+
+		public static void Unlink(T node) {
+			var parent = node._parent;
+			if (parent is null)
+				foreach (var child in node._children)
+					child.SetParent(null);
+			else {
+				int index = parent._children.IndexOf(node);
+				node.SetParent(null);
+				parent._children.RemoveAt(index);
+				foreach (var child in node._children) {
+					child.SetParent(parent);
+					parent._children.Insert(index++, child);
+				}
+			}
+		}
 
 		/// <param name="order">
 		///     Traversal order, possible values are <see cref="TraversalOrder.PreOrder" />,

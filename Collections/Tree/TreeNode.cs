@@ -36,6 +36,7 @@ namespace TrueMogician.Extensions.Collections.Tree {
 					return;
 				switch (baseArgs) {
 					case ControllableListAddedEventArgs<T> args:
+						args.Value.Parent?.Children.Remove(args.Value);
 						args.Value.SetParent(This);
 						break;
 					case ControllableListRemovedEventArgs<T> args:
@@ -44,12 +45,15 @@ namespace TrueMogician.Extensions.Collections.Tree {
 					case ControllableListReplacedEventArgs<T> args:
 						if (!ReferenceEquals(args.OldValue, args.NewValue)) {
 							args.OldValue.SetParent(null);
+							args.NewValue.Parent?.Children.Remove(args.NewValue);
 							args.NewValue.SetParent(This);
 						}
 						break;
 					case ControllableListRangeAddedEventArgs<T> args:
-						foreach (var node in args.Values)
+						foreach (var node in args.Values) {
+							node.Parent?.Children.Remove(node);
 							node.SetParent(This);
+						}
 						break;
 					case ControllableListRangeRemovedEventArgs<T> args:
 						foreach (var value in args.Values)
@@ -59,6 +63,7 @@ namespace TrueMogician.Extensions.Collections.Tree {
 						foreach (var (old, @new) in args.OldValues.IndexJoin(args.NewValues))
 							if (!ReferenceEquals(old, @new)) {
 								old.SetParent(null);
+								@new.Parent?.Children.Remove(@new);
 								@new.SetParent(This);
 							}
 						break;
@@ -104,6 +109,18 @@ namespace TrueMogician.Extensions.Collections.Tree {
 		///     <see cref="IExtendedList{T}.Reverse()" /> or <see cref="IExtendedList{T}.Sort()" /> instead.
 		/// </summary>
 		public new IExtendedList<T> Children => PrivateChildren;
+
+		public new static void Unlink(T node) {
+			var parent = node.Parent;
+			if (parent is null)
+				foreach (var child in node.Children)
+					child.Parent = null;
+			else {
+				int index = parent.Children.IndexOf(node);
+				node.Parent = null;
+				parent.Children.InsertRange(index, node.Children);
+			}
+		}
 
 		private ControllableList<T> PrivateChildren => (ControllableList<T>)_children;
 	}
