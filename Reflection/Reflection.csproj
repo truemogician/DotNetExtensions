@@ -2,6 +2,7 @@
 
 	<PropertyGroup>
 		<TargetFramework>netstandard2.0</TargetFramework>
+		<Nullable>enable</Nullable>
 		<LangVersion>latest</LangVersion>
 		<RootNamespace>TrueMogician.Extensions.Reflection</RootNamespace>
 		<GeneratePackageOnBuild>false</GeneratePackageOnBuild>

@@ -8,16 +8,24 @@ using TrueMogician.Extensions.Enumerable;
 
 namespace TrueMogician.Extensions.Reflection {
 	public static class ReflectionExtensions {
-		#nullable enable
+		/// <summary>
+		///     Get the field or property value of <paramref name="obj" />
+		/// </summary>
+		/// <param name="info"><see cref="FieldInfo" /> or <see cref="PropertyInfo" /></param>
+		/// <exception cref="MemberTypeException" />
 		public static object? GetValue(this MemberInfo info, object obj)
 			=> info switch {
 				FieldInfo field       => field.GetValue(obj),
 				PropertyInfo property => property.GetValue(obj),
 				_                     => throw new MemberTypeException(info, MemberTypes.Property | MemberTypes.Field)
 			};
-		#nullable disable
 
-		public static void SetValue(this MemberInfo info, object obj, object value) {
+		/// <summary>
+		///     Set the field or property value of <paramref name="obj" />
+		/// </summary>
+		/// <param name="info"><see cref="FieldInfo" /> or <see cref="PropertyInfo" /></param>
+		/// <exception cref="MemberTypeException" />
+		public static void SetValue(this MemberInfo info, object obj, object? value) {
 			switch (info) {
 				case FieldInfo field:
 					field.SetValue(obj, value);
@@ -29,7 +37,14 @@ namespace TrueMogician.Extensions.Reflection {
 			}
 		}
 
-		public static void SetValueWithConversion(this MemberInfo member, object obj, object value) {
+		/// <summary>
+		///     Set the field or property value of <paramref name="obj" /> to <paramref name="value" /> if
+		///     <paramref name="value" /> can be converted to <paramref name="member" />'s value type(requiring both type
+		///     implementing <see cref="IConvertible" />).
+		/// </summary>
+		/// <param name="member"><see cref="FieldInfo" /> or <see cref="PropertyInfo" /></param>
+		/// <exception cref="InterfaceNotImplementedException" />
+		public static void SetValueWithConversion(this MemberInfo member, object obj, object? value) {
 			var type = member.GetValueType();
 			if (type.IsInstanceOfType(value) || value is null)
 				member.SetValue(obj, value);
@@ -39,39 +54,51 @@ namespace TrueMogician.Extensions.Reflection {
 				throw new InterfaceNotImplementedException(typeof(IConvertible));
 		}
 
+		/// <summary>
+		///     Get the type of the value <paramref name="info" /> contains
+		/// </summary>
 		public static Type GetValueType(this MemberInfo info)
 			=> info switch {
 				FieldInfo field             => field.FieldType,
 				PropertyInfo property       => property.PropertyType,
 				MethodInfo method           => method.ReturnType,
-				ConstructorInfo constructor => constructor.DeclaringType,
+				ConstructorInfo constructor => constructor.DeclaringType!,
 				EventInfo @event            => @event.EventHandlerType,
-				_                           => info.ReflectedType
+				_                           => info.ReflectedType!
 			};
 
 		/// <summary>
+		///     Get the type of <paramref name="type" />'s items
 		/// </summary>
-		/// <param name="type"></param>
-		/// <param name="genericTypeDefinition">
-		///     The generic interface <paramref name="type" /> is required to implement. Default is
-		///     <see cref="IEnumerable{T}" />
+		/// <param name="collectionType">
+		///     The generic interface that <paramref name="type" /> implements.
+		///     Should have 1 generic argument which indicates the item type. Default is <see cref="IEnumerable{T}" />
 		/// </param>
-		/// <returns></returns>
-		public static Type GetItemType(this Type type, Type genericTypeDefinition = null) {
-			genericTypeDefinition ??= typeof(IEnumerable<>);
-			if (!genericTypeDefinition.IsGenericTypeDefinition)
-				throw new TypeException(genericTypeDefinition, "Required to be a generic type definition");
-			if (!type.Implements(genericTypeDefinition))
-				return null;
-			return type.HasElementType ? type.GetElementType() : type.GetGenericInterfaceArguments(genericTypeDefinition).Single();
+		/// <exception cref="TypeException" />
+		/// <exception cref="InvariantTypeException" />
+		public static Type GetItemType(this Type type, Type? collectionType = null) {
+			collectionType ??= typeof(IEnumerable<>);
+			if (!collectionType.IsGenericTypeDefinition)
+				throw new TypeException(collectionType, "Required to be a generic type definition");
+			if (!type.Implements(collectionType))
+				throw new InvariantTypeException(collectionType, type);
+			return type.HasElementType ? type.GetElementType()! : type.GetGenericInterfaceArguments(collectionType)!.Single();
 		}
 
+		/// <summary>
+		///     Determines whether <paramref name="type" /> implements interface <paramref name="interfaceType" />
+		/// </summary>
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public static bool Implements(this Type type, Type interfaceType)
 			=> (interfaceType.IsGenericTypeDefinition
 				? type.GetGenericInterface(interfaceType)
 				: type.GetInterface(interfaceType.Name)) is not null;
 
+		/// <summary>
+		///     Get <paramref name="type" />'s interfaces that match generic type definition
+		///     <paramref name="genericTypeDefinition" />
+		/// </summary>
+		/// <exception cref="TypeException" />
 		public static Type[] GetGenericInterfaces(this Type type, Type genericTypeDefinition) {
 			if (!genericTypeDefinition.IsGenericTypeDefinition)
 				throw new TypeException(genericTypeDefinition, "Required to be a generic type definition");
@@ -80,23 +107,39 @@ namespace TrueMogician.Extensions.Reflection {
 				.ToArray();
 		}
 
+		/// <summary>
+		///     Get the only interface that <paramref name="type" /> implements and matches generic type definition
+		///     <paramref name="genericTypeDefinition" />
+		/// </summary>
+		/// <returns><see langword="null" /> if no such interface found, otherwise the interface</returns>
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public static Type GetGenericInterface(this Type type, Type genericTypeDefinition) => type.GetGenericInterfaces(genericTypeDefinition).SingleOrDefault();
+		public static Type? GetGenericInterface(this Type type, Type genericTypeDefinition) => type.GetGenericInterfaces(genericTypeDefinition).SingleOrDefault();
 
+		/// <summary>
+		///     Get the generic interface arguments of <paramref name="genericTypeDefinition" /> which <paramref name="type" />
+		///     implements
+		/// </summary>
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public static Type[] GetGenericInterfaceArguments(this Type type, Type genericTypeDefinition) => type.GetGenericInterface(genericTypeDefinition)?.GetGenericArguments();
+		public static Type[]? GetGenericInterfaceArguments(this Type type, Type genericTypeDefinition) => type.GetGenericInterface(genericTypeDefinition)?.GetGenericArguments();
 
+		/// <summary>
+		///     Get <paramref name="type" />'s base type or interfaces which match generic type definition
+		///     <paramref name="genericTypeDefinition" />
+		/// </summary>
+		/// <exception cref="TypeException" />
 		public static Type[] GetGenericTypes(this Type type, Type genericTypeDefinition) {
 			if (!genericTypeDefinition.IsGenericTypeDefinition)
 				throw new TypeException(genericTypeDefinition, "Required to be a generic type definition");
 			if (genericTypeDefinition.IsInterface)
 				return type.GetGenericInterfaces(genericTypeDefinition);
 			do {
-				var cur = type?.IsGenericType == true ? type.GetGenericTypeDefinition() : type;
+				var cur = type.IsGenericType ? type.GetGenericTypeDefinition() : type;
 				if (genericTypeDefinition == cur)
-					return new[] {type};
-				type = type?.BaseType;
-			} while (type != null && type != typeof(object));
+					return new[] { type };
+				if (type.BaseType is null)
+					break;
+				type = type.BaseType;
+			} while (type != typeof(object));
 			return Array.Empty<Type>();
 		}
 
