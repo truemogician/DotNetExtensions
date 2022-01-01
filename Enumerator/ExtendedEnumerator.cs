@@ -2,6 +2,10 @@
 using System.Collections.Generic;
 
 namespace Enumerator {
+	/// <summary>
+	///     Default implementation of <see cref="IExtendedEnumerator{T}" />
+	/// </summary>
+	/// <typeparam name="T"></typeparam>
 	public class ExtendedEnumerator<T> : IExtendedEnumerator<T> {
 		private readonly IEnumerator<T> _enumerator;
 
@@ -36,9 +40,21 @@ namespace Enumerator {
 		public bool Success { get; private set; } = false;
 	}
 
+	/// <summary>
+	///     An extended enumerator interface inheriting from <see cref="IEnumerator{T}" /> with additional information about
+	///     the current state.
+	/// </summary>
 	public interface IExtendedEnumerator<out T> : IEnumerator<T> {
+		/// <summary>
+		///     Index of <see cref="IEnumerator{T}.Current" /> in the enumerator. Initially <c>-1</c>.
+		/// </summary>
 		int Index { get; }
 
+		#pragma warning disable CS1574// XML comment has cref attribute that could not be resolved
+		/// <summary>
+		///     Result of the last call of <see cref="IEnumerator{T}.MoveNext" />, initially <see langword="false" />.
+		/// </summary>
+		#pragma warning restore CS1574
 		bool Success { get; }
 	}
 }
