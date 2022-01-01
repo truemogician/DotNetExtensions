@@ -15,11 +15,20 @@
 		<Version>0.2.0</Version>
 		<SignAssembly>true</SignAssembly>
 		<AssemblyOriginatorKeyFile>Collections.snk</AssemblyOriginatorKeyFile>
+		<GenerateDocumentationFile>true</GenerateDocumentationFile>
 	</PropertyGroup>
 
 	<ItemGroup>
 		<PackageReference Include="TrueMogician.Extensions.Enumerable" Version="1.4.0" />
 		<PackageReference Include="TrueMogician.Extensions.Events" Version="1.0.0" />
 	</ItemGroup>
+
+	<PropertyGroup>
+		<DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
+	</PropertyGroup>
+
+	<PropertyGroup>
+		<NoWarn>1701;1702;1591;1573</NoWarn>
+	</PropertyGroup>
 
 </Project>

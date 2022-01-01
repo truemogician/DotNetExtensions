@@ -12,10 +12,19 @@
 		<RepositoryUrl>https://github.com/truemogician/DotNetExtensions</RepositoryUrl>
 		<SignAssembly>true</SignAssembly>
 		<AssemblyOriginatorKeyFile>String.snk</AssemblyOriginatorKeyFile>
+		<GenerateDocumentationFile>true</GenerateDocumentationFile>
 	</PropertyGroup>
 
 	<ItemGroup>
 		<PackageReference Include="TrueMogician.Exceptions" Version="1.1.1" />
 	</ItemGroup>
+
+	<PropertyGroup>
+		<DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
+	</PropertyGroup>
+
+	<PropertyGroup>
+		<NoWarn>1701;1702;1591;1573</NoWarn>
+	</PropertyGroup>
 
 </Project>

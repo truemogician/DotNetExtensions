@@ -2,10 +2,9 @@
 
 	<PropertyGroup>
 		<TargetFramework>netstandard2.0</TargetFramework>
+		<RootNamespace>TrueMogician.Extensions.Enumerator</RootNamespace>
 		<Nullable>enable</Nullable>
 		<LangVersion>latest</LangVersion>
-		<SignAssembly>true</SignAssembly>
-		<AssemblyOriginatorKeyFile>Enumerator.snk</AssemblyOriginatorKeyFile>
 		<PackageId>TrueMogician.Extensions.Enumerator</PackageId>
 		<Authors>true_mogician</Authors>
 		<Product>TrueMogician.Enumerator</Product>
@@ -13,7 +12,17 @@
 		<Description>Some extension methods for IEnumerator&lt;T&gt; and some extended enumerator classes</Description>
 		<RepositoryUrl>https://github.com/truemogician/DotNetExtensions</RepositoryUrl>
 		<Version>1.0.0</Version>
-		<RootNamespace>TrueMogician.Extensions.Enumerator</RootNamespace>
+		<SignAssembly>true</SignAssembly>
+		<AssemblyOriginatorKeyFile>Enumerator.snk</AssemblyOriginatorKeyFile>
+		<GenerateDocumentationFile>true</GenerateDocumentationFile>
+	</PropertyGroup>
+
+	<PropertyGroup>
+		<DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
+	</PropertyGroup>
+
+	<PropertyGroup>
+		<NoWarn>1701;1702;1591;1573</NoWarn>
 	</PropertyGroup>
 
 </Project>
