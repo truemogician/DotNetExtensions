@@ -17,7 +17,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Events", "Events\Events.csp
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Diagnostics.CodeAnalysis.NullableAttributes", "Diagnostics.CodeAnalysis.NullableAttributes\Diagnostics.CodeAnalysis.NullableAttributes.csproj", "{8670CA71-CC18-42BA-B3E0-317DA864E404}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Collections.Test", "Collections.Test\Collections.Test.csproj", "{1917D0B9-4F42-4E9E-B372-140CE02A4300}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Collections.Test", "Collections.Test\Collections.Test.csproj", "{1917D0B9-4F42-4E9E-B372-140CE02A4300}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Enumerator", "Enumerator\Enumerator.csproj", "{397F6994-3376-4474-BF22-BF8977DA447A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -57,6 +59,10 @@ Global
 		{1917D0B9-4F42-4E9E-B372-140CE02A4300}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1917D0B9-4F42-4E9E-B372-140CE02A4300}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1917D0B9-4F42-4E9E-B372-140CE02A4300}.Release|Any CPU.Build.0 = Release|Any CPU
+		{397F6994-3376-4474-BF22-BF8977DA447A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{397F6994-3376-4474-BF22-BF8977DA447A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{397F6994-3376-4474-BF22-BF8977DA447A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{397F6994-3376-4474-BF22-BF8977DA447A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
