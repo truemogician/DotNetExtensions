@@ -8,7 +8,7 @@
 		<Description>Some useful extension methods to System.String</Description>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<GeneratePackageOnBuild>false</GeneratePackageOnBuild>
-		<Version>1.0.2</Version>
+		<Version>1.0.3</Version>
 		<RepositoryUrl>https://github.com/truemogician/DotNetExtensions</RepositoryUrl>
 		<SignAssembly>true</SignAssembly>
 		<AssemblyOriginatorKeyFile>String.snk</AssemblyOriginatorKeyFile>
