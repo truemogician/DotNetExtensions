@@ -22,7 +22,8 @@ else {
 			$project = New-Object xml;
 			$project.PreserveWhitespace = $true;
 			$project.Load($projectFile);
-			$curVersion = $project.Project.PropertyGroup.Version;
+			$versionNode = $project.SelectSingleNode("/Project/PropertyGroup/Version");
+			$curVersion = [string]$versionNode.InnerText;
 			$components = [int[]]($curVersion.Split('.'));
 			switch ($args[1]) {
 				'major' {
@@ -37,7 +38,7 @@ else {
 					++$components[2];
 				}
 			}
-			$project.Project.PropertyGroup.Version = $components -join '.';
+			$versionNode.InnerText = $components -join '.';
 			$project.Save($projectFile);
 		}
 		Invoke-Expression "dotnet pack $($args[0]) -c Release";

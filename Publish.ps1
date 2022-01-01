@@ -4,7 +4,7 @@ function Publish-Package([string] $project, [string] $version) {
 	}
 	$csprojPath = Get-ChildItem "$project/*.csproj" -File -Name;
 	$structure = [xml](Get-Content "$project/$csprojPath");
-	$packageId = $structure.Project.PropertyGroup.PackageId;
+	$packageId = $structure.SelectSingleNode("/Project/PropertyGroup/PackageId").InnerText;
 	Set-Location "$project/bin/Release";
 	if (!$version) {
 		$pkgs = [string[]](Get-ChildItem "$packageId.*.nupkg" -File -Name);
