@@ -68,7 +68,7 @@ namespace TrueMogician.Extensions.Collections {
 
 		/// <param name="key">
 		///     The key to locate in the <see cref="KeyReadOnlyDictionary{TKey,TValue,TReadOnlyKey}" />. Note that
-		///     though the type is <see cref="TReadOnlyKey" />, it has to be <see cref="TKey" />, or an
+		///     though the type is <typeparamref name="TReadOnlyKey" />, it has to be <typeparamref name="TKey" />, or an
 		///     <see cref="InvariantTypeException" /> will be thrown
 		/// </param>
 		/// <inheritdoc />

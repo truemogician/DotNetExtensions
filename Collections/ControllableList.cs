@@ -421,9 +421,9 @@ namespace TrueMogician.Extensions.Collections {
 		#endregion
 
 		private static class ThrowHelper {
-			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			/// <param name="min">Minimum value(inclusive)</param>
 			/// <param name="max">Maximum value(exclusive)</param>
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			private static void WhenNotIn(int value, string name, int min, int max, string? message = null) {
 				if (value < min || value >= max) {
 					message ??= $"Parameter {name} must be greater than or equal to {min} and less than {max}";
