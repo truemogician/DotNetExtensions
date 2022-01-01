@@ -24,7 +24,7 @@ namespace TrueMogician.Extensions.Collections.Tree {
 			_parent = parent;
 		}
 
-		protected internal SimpleTreeNode(IList<T> children, T? parent) : this(parent) => _children = children;
+		protected internal SimpleTreeNode(IList<T> children, T? parent = null) : this(parent) => _children = children;
 
 		public event ValueChangedEventHandler<T?> ParentChanged = delegate { };
 

@@ -14,7 +14,7 @@ namespace TrueMogician.Extensions.Collections.Tree {
 
 		protected TreeNode() : this(null) { }
 
-		protected TreeNode(T? parent) : base(new ControllableList<T>(), parent) {
+		protected TreeNode(T? parent) : base(new ControllableList<T>()) {
 			PrivateChildren.ListChanging += (_, baseArgs) => {
 				switch (baseArgs) {
 					case ControllableListAddingEventArgs<T> addingArgs when ReferenceEquals(addingArgs.Value.Parent, this):
@@ -69,6 +69,7 @@ namespace TrueMogician.Extensions.Collections.Tree {
 						break;
 				}
 			};
+			Parent = parent;
 		}
 
 		public event ControllableListChangedEventHandler ChildrenChanged {
