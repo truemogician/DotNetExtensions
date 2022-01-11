@@ -96,7 +96,7 @@ namespace TrueMogician.Extensions.Collections {
 		public void AddRange(IEnumerable<T> items) => AddRange(items.AsArray());
 
 		public void Insert(int index, T item) {
-			ThrowHelper.WhenNegativeOrGreaterEqual(index, nameof(index), _list.Count);
+			ThrowHelper.WhenNegativeOrGreater(index, nameof(index), _list.Count);
 			if (ChangingEventEnabled && !OnListChanging(new ControllableListAddingEventArgs<T>(item, index)))
 				return;
 			_list.Insert(index, item);
@@ -105,7 +105,7 @@ namespace TrueMogician.Extensions.Collections {
 		}
 
 		public void InsertRange(int index, params T[] items) {
-			ThrowHelper.WhenNegativeOrGreaterEqual(index, nameof(index), _list.Count);
+			ThrowHelper.WhenNegativeOrGreater(index, nameof(index), _list.Count);
 			switch (items.Length) {
 				case 0: return;
 				case 1:
@@ -432,7 +432,7 @@ namespace TrueMogician.Extensions.Collections {
 			}
 
 			[MethodImpl(MethodImplOptions.AggressiveInlining)]
-			public static void WhenNegativeOrGreater(int value, string name, int max, string? message = null) => WhenNotIn(value, name, 0, max - 1, message ?? $"Parameter {name} must be positive and no greater than {max}");
+			public static void WhenNegativeOrGreater(int value, string name, int max, string? message = null) => WhenNotIn(value, name, 0, max + 1, message ?? $"Parameter {name} must be positive and no greater than {max}");
 
 			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			public static void WhenNegativeOrGreaterEqual(int value, string name, int max, string? message = null) => WhenNotIn(value, name, 0, max, message ?? $"Parameter {name} must be positive and less than {max}");
