@@ -172,6 +172,15 @@ namespace TrueMogician.Extensions.Enumerable {
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public static int LastIndexOf<T>(this IEnumerable<T> enumerable, Func<T, bool> predicate) => enumerable.Reverse().IndexOf(predicate);
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static void CopyTo<T>(this IEnumerable<T> enumerable, T[] array) => CopyTo(enumerable, array, 0);
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static void CopyTo<T>(this IEnumerable<T> enumerable, T[] array, int arrayIndex) {
+			foreach (var item in enumerable)
+				array[arrayIndex++] = item;
+		}
 	}
 
 	public class IndexedEnumerable<T> : IEnumerable<(T Value, int Index)> {
