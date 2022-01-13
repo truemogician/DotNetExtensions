@@ -140,6 +140,7 @@ namespace TrueMogician.Extensions.Enumerable {
 			}
 		}
 
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public static IEnumerable<T> Append<T>(this IEnumerable<T> enumerable, params T[] items) => enumerable.Concat(items);
 
 		public static (IList<T> TrueList, IList<T> FalseList) Split<T>(this IEnumerable<T> enumerable, Func<T, bool> predicate) {
@@ -152,6 +153,25 @@ namespace TrueMogician.Extensions.Enumerable {
 					falseList.Add(item);
 			return (trueList, falseList);
 		}
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static int IndexOf<T>(this IEnumerable<T> enumerable, T item) => IndexOf(enumerable, v => item?.Equals(v) == true);
+
+		public static int IndexOf<T>(this IEnumerable<T> enumerable, Func<T, bool> predicate) {
+			int index = -1;
+			foreach (var item in enumerable) {
+				++index;
+				if (predicate(item))
+					return index;
+			}
+			return -1;
+		}
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static int LastIndexOf<T>(this IEnumerable<T> enumerable, T item) => LastIndexOf(enumerable, v => item?.Equals(v) == true);
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static int LastIndexOf<T>(this IEnumerable<T> enumerable, Func<T, bool> predicate) => enumerable.Reverse().IndexOf(predicate);
 	}
 
 	public class IndexedEnumerable<T> : IEnumerable<(T Value, int Index)> {
