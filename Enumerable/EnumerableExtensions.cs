@@ -19,6 +19,13 @@ namespace TrueMogician.Extensions.Enumerable {
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public static T[] AsArray<T>(this IEnumerable<T> source) => source is T[] array ? array : source.ToArray();
 
+		/// <summary>
+		///     Returns the <paramref name="source" /> itself if it's already <see cref="IList{T}" />,
+		///     else creates an <see cref="T:T[]" />.
+		/// </summary>
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static IList<T> AsIList<T>(this IEnumerable<T> source) => source is IList<T> list ? list : source.ToArray();
+
 		[Obsolete("This extension method does the same job as Enumerable.Cast<T>, use this instead")]
 		public static IEnumerable<T> AsType<T>(this IEnumerable source) => from object item in source select item is T result ? result : throw new InvalidCastException();
 
