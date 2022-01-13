@@ -13,6 +13,7 @@ namespace TrueMogician.Extensions.Enumerable {
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public static T[] AsArray<T>(this IEnumerable<T> enumerable) => enumerable is T[] array ? array : enumerable.ToArray();
 
+		[Obsolete("This extension method does the same job as Enumerable.Cast<T>, use this instead")]
 		public static IEnumerable<T> AsType<T>(this IEnumerable enumerable) => from object item in enumerable select item is T result ? result : throw new InvalidCastException();
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
