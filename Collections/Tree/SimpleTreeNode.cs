@@ -70,10 +70,14 @@ namespace TrueMogician.Extensions.Collections.Tree {
 
 		public IEnumerable<T> Descendents => Children.SelectMany(n => n);
 
-		public IEnumerable<T> Leaves => this.Where(n => n.IsLeaf);
+		public IEnumerable<T> Leaves => Children.Where(n => n.IsLeaf);
 
 		protected T This => (T)this;
 
+		/// <summary>
+		///     Unlink <paramref name="node" /> from the tree holding it.
+		/// </summary>
+		/// <param name="node">The node to unlink</param>
 		public static void Unlink(T node) {
 			var parent = node._parent;
 			if (parent is null)
@@ -90,13 +94,14 @@ namespace TrueMogician.Extensions.Collections.Tree {
 			}
 		}
 
+		/// <summary>Travel through the tree.</summary>
 		/// <param name="order">
 		///     Traversal order, possible values are <see cref="TraversalOrder.PreOrder" />,
 		///     <see cref="TraversalOrder.PostOrder" /> and <see cref="TraversalOrder.BreadthFirst" />.
 		///     <see cref="TraversalOrder.InOrder" /> is not supported because this tree
 		///     node isn't binary-guaranteed.
 		/// </param>
-		public IEnumerator<T> GetEnumerator(TraversalOrder order) {
+		public IEnumerable<T> Travel(TraversalOrder order = TraversalOrder.PreOrder) {
 			switch (order) {
 				case TraversalOrder.InOrder: throw new ArgumentOutOfRangeException(nameof(order), "Non-binary tree cannot be traversed in InOrder");
 				case TraversalOrder.BreadthFirst: {
@@ -122,6 +127,11 @@ namespace TrueMogician.Extensions.Collections.Tree {
 				}
 			}
 		}
+
+		/// <param name="order">
+		///     <inheritdoc cref="Travel" />
+		/// </param>
+		public IEnumerator<T> GetEnumerator(TraversalOrder order) => Travel(order).GetEnumerator();
 
 		/// <summary>
 		///     Check whether this node is the child of <paramref name="node" />
