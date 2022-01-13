@@ -12,14 +12,14 @@
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<GeneratePackageOnBuild>false</GeneratePackageOnBuild>
 		<RepositoryUrl>https://github.com/truemogician/DotNetExtensions</RepositoryUrl>
-		<Version>0.3.4</Version>
+		<Version>0.4.0</Version>
 		<SignAssembly>true</SignAssembly>
 		<AssemblyOriginatorKeyFile>Collections.snk</AssemblyOriginatorKeyFile>
 		<GenerateDocumentationFile>true</GenerateDocumentationFile>
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="TrueMogician.Extensions.Enumerable" Version="1.4.0" />
+		<PackageReference Include="TrueMogician.Extensions.Enumerable" Version="1.6.0" />
 		<PackageReference Include="TrueMogician.Extensions.Events" Version="1.0.0" />
 	</ItemGroup>
 
