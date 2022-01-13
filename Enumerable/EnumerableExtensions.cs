@@ -8,27 +8,27 @@ using TrueMogician.Exceptions;
 namespace TrueMogician.Extensions.Enumerable {
 	public static class EnumerableExtensions {
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public static List<T> AsList<T>(this IEnumerable<T> enumerable) => enumerable is List<T> list ? list : enumerable.ToList();
+		public static List<T> AsList<T>(this IEnumerable<T> source) => source is List<T> list ? list : source.ToList();
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public static T[] AsArray<T>(this IEnumerable<T> enumerable) => enumerable is T[] array ? array : enumerable.ToArray();
+		public static T[] AsArray<T>(this IEnumerable<T> source) => source is T[] array ? array : source.ToArray();
 
 		[Obsolete("This extension method does the same job as Enumerable.Cast<T>, use this instead")]
-		public static IEnumerable<T> AsType<T>(this IEnumerable enumerable) => from object item in enumerable select item is T result ? result : throw new InvalidCastException();
+		public static IEnumerable<T> AsType<T>(this IEnumerable source) => from object item in source select item is T result ? result : throw new InvalidCastException();
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public static IndexedEnumerable<T> ToIndexed<T>(this IEnumerable<T> enumerable) => new(enumerable);
+		public static IndexedEnumerable<T> ToIndexed<T>(this IEnumerable<T> source) => new(source);
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public static Dictionary<T, int> ToIndexDictionary<T>(this IEnumerable<T> enumerable) => enumerable.ToIndexed().ToDictionary(x => x.Value, x => x.Index);
+		public static Dictionary<T, int> ToIndexDictionary<T>(this IEnumerable<T> source) => source.ToIndexed().ToDictionary(x => x.Value, x => x.Index);
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public static T? SameOrDefault<T>(this IEnumerable<T> enumerable) => enumerable.SameOrDefault(x => x);
+		public static T? SameOrDefault<T>(this IEnumerable<T> source) => source.SameOrDefault(x => x);
 
-		public static TResult? SameOrDefault<TSource, TResult>(this IEnumerable<TSource> enumerable, Func<TSource, TResult> predicate) {
+		public static TResult? SameOrDefault<TSource, TResult>(this IEnumerable<TSource> source, Func<TSource, TResult> predicate) {
 			TResult? reference = default;
 			var first = true;
-			foreach (var item in enumerable)
+			foreach (var item in source)
 				if (first) {
 					reference = predicate(item);
 					first = false;
@@ -39,10 +39,10 @@ namespace TrueMogician.Extensions.Enumerable {
 		}
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public static T Same<T>(this IEnumerable<T> enumerable) => enumerable.Same(x => x);
+		public static T Same<T>(this IEnumerable<T> source) => source.Same(x => x);
 
-		public static TResult Same<TSource, TResult>(this IEnumerable<TSource> enumerable, Func<TSource, TResult> predicate) {
-			using var enumerator = enumerable.GetEnumerator();
+		public static TResult Same<TSource, TResult>(this IEnumerable<TSource> source, Func<TSource, TResult> predicate) {
+			using var enumerator = source.GetEnumerator();
 			bool success = enumerator.MoveNext();
 			if (!success)
 				throw new InvalidOperationException("Sequence contains no element");
@@ -54,18 +54,18 @@ namespace TrueMogician.Extensions.Enumerable {
 		}
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public static bool Unique<T>(this IEnumerable<T> enumerable) => enumerable.Unique(null);
+		public static bool Unique<T>(this IEnumerable<T> source) => source.Unique(null);
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public static bool Unique<T>(this IEnumerable<T> enumerable, IEqualityComparer<T>? comparer) => enumerable.Unique(x => x, comparer);
+		public static bool Unique<T>(this IEnumerable<T> source, IEqualityComparer<T>? comparer) => source.Unique(x => x, comparer);
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public static bool Unique<TSource, TResult>(this IEnumerable<TSource> enumerable, Func<TSource, TResult> predicate) => enumerable.Unique(predicate, null);
+		public static bool Unique<TSource, TResult>(this IEnumerable<TSource> source, Func<TSource, TResult> predicate) => source.Unique(predicate, null);
 
-		public static bool Unique<TSource, TResult>(this IEnumerable<TSource> enumerable, Func<TSource, TResult> predicate, IEqualityComparer<TResult>? comparer) {
+		public static bool Unique<TSource, TResult>(this IEnumerable<TSource> source, Func<TSource, TResult> predicate, IEqualityComparer<TResult>? comparer) {
 			var count = 0;
 			var set = comparer is null ? new HashSet<TResult>() : new HashSet<TResult>(comparer);
-			foreach (var item in enumerable) {
+			foreach (var item in source) {
 				++count;
 				set.Add(predicate(item));
 			}
@@ -73,19 +73,19 @@ namespace TrueMogician.Extensions.Enumerable {
 		}
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public static void Each<T>(this IEnumerable<T> enumerable, Action<T> action) {
-			foreach (var item in enumerable)
+		public static void Each<T>(this IEnumerable<T> source, Action<T> action) {
+			foreach (var item in source)
 				action(item);
 		}
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public static void Each<T>(this IEnumerable<T> enumerable, Action<T, int> action) {
-			foreach ((var item, int index) in enumerable.ToIndexed())
+		public static void Each<T>(this IEnumerable<T> source, Action<T, int> action) {
+			foreach ((var item, int index) in source.ToIndexed())
 				action(item, index);
 		}
 
-		public static IEnumerable<TResult> SelectSingleOrMany<TSource, TResult>(this IEnumerable<TSource> enumerable, Func<TSource, object> selector) {
-			foreach (var item in enumerable) {
+		public static IEnumerable<TResult> SelectSingleOrMany<TSource, TResult>(this IEnumerable<TSource> source, Func<TSource, object> selector) {
+			foreach (var item in source) {
 				object result = selector(item);
 				switch (result) {
 					case null: continue;
@@ -102,9 +102,9 @@ namespace TrueMogician.Extensions.Enumerable {
 			}
 		}
 
-		public static IEnumerable<(T1 First, T2 Second)> IndexJoin<T1, T2>(this IEnumerable<T1> enumerable1, IEnumerable<T2> enumerable2) {
-			using var e1 = enumerable1.GetEnumerator();
-			using var e2 = enumerable2.GetEnumerator();
+		public static IEnumerable<(T1 First, T2 Second)> IndexJoin<T1, T2>(this IEnumerable<T1> source1, IEnumerable<T2> source2) {
+			using var e1 = source1.GetEnumerator();
+			using var e2 = source2.GetEnumerator();
 			bool status1 = e1.MoveNext(), status2 = e2.MoveNext();
 			while (status1 || status2) {
 				yield return (e1.Current, e2.Current);
@@ -113,10 +113,10 @@ namespace TrueMogician.Extensions.Enumerable {
 			}
 		}
 
-		public static IEnumerable<(T1 First, T2 Second, T3 Third)> IndexJoin<T1, T2, T3>(this IEnumerable<T1> enumerable1, IEnumerable<T2> enumerable2, IEnumerable<T3> enumerable3) {
-			using var e1 = enumerable1.GetEnumerator();
-			using var e2 = enumerable2.GetEnumerator();
-			using var e3 = enumerable3.GetEnumerator();
+		public static IEnumerable<(T1 First, T2 Second, T3 Third)> IndexJoin<T1, T2, T3>(this IEnumerable<T1> source1, IEnumerable<T2> source2, IEnumerable<T3> source3) {
+			using var e1 = source1.GetEnumerator();
+			using var e2 = source2.GetEnumerator();
+			using var e3 = source3.GetEnumerator();
 			bool status1 = e1.MoveNext(), status2 = e2.MoveNext(), status3 = e3.MoveNext();
 			while (status1 || status2 || status3) {
 				yield return (e1.Current, e2.Current, e3.Current);
@@ -126,11 +126,11 @@ namespace TrueMogician.Extensions.Enumerable {
 			}
 		}
 
-		public static IEnumerable<(T1 First, T2 Second, T3 Third, T4 Fourth)> IndexJoin<T1, T2, T3, T4>(this IEnumerable<T1> enumerable1, IEnumerable<T2> enumerable2, IEnumerable<T3> enumerable3, IEnumerable<T4> enumerable4) {
-			using var e1 = enumerable1.GetEnumerator();
-			using var e2 = enumerable2.GetEnumerator();
-			using var e3 = enumerable3.GetEnumerator();
-			using var e4 = enumerable4.GetEnumerator();
+		public static IEnumerable<(T1 First, T2 Second, T3 Third, T4 Fourth)> IndexJoin<T1, T2, T3, T4>(this IEnumerable<T1> source1, IEnumerable<T2> source2, IEnumerable<T3> source3, IEnumerable<T4> source4) {
+			using var e1 = source1.GetEnumerator();
+			using var e2 = source2.GetEnumerator();
+			using var e3 = source3.GetEnumerator();
+			using var e4 = source4.GetEnumerator();
 			bool status1 = e1.MoveNext(), status2 = e2.MoveNext(), status3 = e3.MoveNext(), status4 = e4.MoveNext();
 			while (status1 || status2 || status3 || status4) {
 				yield return (e1.Current, e2.Current, e3.Current, e4.Current);
@@ -142,12 +142,12 @@ namespace TrueMogician.Extensions.Enumerable {
 		}
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public static IEnumerable<T> Append<T>(this IEnumerable<T> enumerable, params T[] items) => enumerable.Concat(items);
+		public static IEnumerable<T> Append<T>(this IEnumerable<T> source, params T[] items) => source.Concat(items);
 
-		public static (IList<T> TrueList, IList<T> FalseList) Split<T>(this IEnumerable<T> enumerable, Func<T, bool> predicate) {
+		public static (IList<T> TrueList, IList<T> FalseList) Split<T>(this IEnumerable<T> source, Func<T, bool> predicate) {
 			var trueList = new List<T>();
 			var falseList = new List<T>();
-			foreach (var item in enumerable)
+			foreach (var item in source)
 				if (predicate(item))
 					trueList.Add(item);
 				else
@@ -156,11 +156,11 @@ namespace TrueMogician.Extensions.Enumerable {
 		}
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public static int IndexOf<T>(this IEnumerable<T> enumerable, T item) => IndexOf(enumerable, v => item?.Equals(v) == true);
+		public static int IndexOf<T>(this IEnumerable<T> source, T item) => IndexOf(source, v => item?.Equals(v) == true);
 
-		public static int IndexOf<T>(this IEnumerable<T> enumerable, Func<T, bool> predicate) {
+		public static int IndexOf<T>(this IEnumerable<T> source, Func<T, bool> predicate) {
 			int index = -1;
-			foreach (var item in enumerable) {
+			foreach (var item in source) {
 				++index;
 				if (predicate(item))
 					return index;
@@ -169,23 +169,23 @@ namespace TrueMogician.Extensions.Enumerable {
 		}
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public static int LastIndexOf<T>(this IEnumerable<T> enumerable, T item) => LastIndexOf(enumerable, v => item?.Equals(v) == true);
+		public static int LastIndexOf<T>(this IEnumerable<T> source, T item) => LastIndexOf(source, v => item?.Equals(v) == true);
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public static int LastIndexOf<T>(this IEnumerable<T> enumerable, Func<T, bool> predicate) => enumerable.Reverse().IndexOf(predicate);
+		public static int LastIndexOf<T>(this IEnumerable<T> source, Func<T, bool> predicate) => source.Reverse().IndexOf(predicate);
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public static void CopyTo<T>(this IEnumerable<T> enumerable, T[] array) => CopyTo(enumerable, array, 0);
+		public static void CopyTo<T>(this IEnumerable<T> source, T[] array) => CopyTo(source, array, 0);
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public static void CopyTo<T>(this IEnumerable<T> enumerable, T[] array, int arrayIndex) {
-			foreach (var item in enumerable)
+		public static void CopyTo<T>(this IEnumerable<T> source, T[] array, int arrayIndex) {
+			foreach (var item in source)
 				array[arrayIndex++] = item;
 		}
 	}
 
 	public class IndexedEnumerable<T> : IEnumerable<(T Value, int Index)> {
-		public IndexedEnumerable(IEnumerable<T> enumerable) => Enumerable = enumerable;
+		public IndexedEnumerable(IEnumerable<T> source) => Enumerable = source;
 
 		protected IEnumerable<T> Enumerable { get; }
 
