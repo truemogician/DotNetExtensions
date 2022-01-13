@@ -46,7 +46,7 @@ namespace TrueMogician.Extensions.Collections {
 		public IEnumerable<TKey> Keys => _dictionary.Keys;
 
 		/// <inheritdoc />
-		public IEnumerable<TReadOnlyValue> Values => _dictionary.Values.AsType<TReadOnlyValue>();
+		public IEnumerable<TReadOnlyValue> Values => _dictionary.Values.Cast<TReadOnlyValue>();
 	}
 
 	public class KeyReadOnlyDictionary<TKey, TValue, TReadOnlyKey> : IReadOnlyDictionary<TReadOnlyKey, TValue> where TKey : TReadOnlyKey {
@@ -94,7 +94,7 @@ namespace TrueMogician.Extensions.Collections {
 		public TValue this[TReadOnlyKey key] => key is TKey realKey ? _dictionary[realKey] : throw new InvariantTypeException(typeof(TKey), key?.GetType());
 
 		/// <inheritdoc />
-		public IEnumerable<TReadOnlyKey> Keys => _dictionary.Keys.AsType<TReadOnlyKey>();
+		public IEnumerable<TReadOnlyKey> Keys => _dictionary.Keys.Cast<TReadOnlyKey>();
 
 		/// <inheritdoc />
 		public IEnumerable<TValue> Values => _dictionary.Values;
@@ -148,10 +148,10 @@ namespace TrueMogician.Extensions.Collections {
 		public TReadOnlyValue this[TReadOnlyKey key] => key is TKey realKey ? _dictionary[realKey] : throw new InvariantTypeException(typeof(TKey), key?.GetType());
 
 		/// <inheritdoc />
-		public IEnumerable<TReadOnlyKey> Keys => _dictionary.Keys.AsType<TReadOnlyKey>();
+		public IEnumerable<TReadOnlyKey> Keys => _dictionary.Keys.Cast<TReadOnlyKey>();
 
 		/// <inheritdoc />
-		public IEnumerable<TReadOnlyValue> Values => _dictionary.Values.AsType<TReadOnlyValue>();
+		public IEnumerable<TReadOnlyValue> Values => _dictionary.Values.Cast<TReadOnlyValue>();
 	}
 
 	public static class DictionaryExtensions {
