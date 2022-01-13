@@ -19,7 +19,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Diagnostics.CodeAnalysis.Nu
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Collections.Test", "Collections.Test\Collections.Test.csproj", "{1917D0B9-4F42-4E9E-B372-140CE02A4300}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Enumerator", "Enumerator\Enumerator.csproj", "{397F6994-3376-4474-BF22-BF8977DA447A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Enumerator", "Enumerator\Enumerator.csproj", "{397F6994-3376-4474-BF22-BF8977DA447A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "List", "List\List.csproj", "{63744FD5-D75D-4E37-A102-DDADA0A8318B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -63,6 +65,10 @@ Global
 		{397F6994-3376-4474-BF22-BF8977DA447A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{397F6994-3376-4474-BF22-BF8977DA447A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{397F6994-3376-4474-BF22-BF8977DA447A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{63744FD5-D75D-4E37-A102-DDADA0A8318B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{63744FD5-D75D-4E37-A102-DDADA0A8318B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{63744FD5-D75D-4E37-A102-DDADA0A8318B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{63744FD5-D75D-4E37-A102-DDADA0A8318B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
