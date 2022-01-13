@@ -7,18 +7,31 @@ using TrueMogician.Exceptions;
 
 namespace TrueMogician.Extensions.Enumerable {
 	public static class EnumerableExtensions {
+		/// <summary>
+		///     Returns the <paramref name="source" /> itself if it's already <see cref="List{T}" />, else creates one.
+		/// </summary>
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public static List<T> AsList<T>(this IEnumerable<T> source) => source is List<T> list ? list : source.ToList();
 
+		/// <summary>
+		///     Returns the <paramref name="source" /> itself if it's already <see cref="T:T[]" />, else creates one.
+		/// </summary>
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public static T[] AsArray<T>(this IEnumerable<T> source) => source is T[] array ? array : source.ToArray();
 
 		[Obsolete("This extension method does the same job as Enumerable.Cast<T>, use this instead")]
 		public static IEnumerable<T> AsType<T>(this IEnumerable source) => from object item in source select item is T result ? result : throw new InvalidCastException();
 
+		/// <summary>
+		///     Creates an <see cref="IndexedEnumerable{T}" /> from <paramref name="source" />
+		/// </summary>
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public static IndexedEnumerable<T> ToIndexed<T>(this IEnumerable<T> source) => new(source);
 
+		/// <summary>
+		///     Create a <see cref="Dictionary{TKey,TValue}" /> that uses <paramref name="source" />'s items as key
+		///     and their indices as value.
+		/// </summary>
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public static Dictionary<T, int> ToIndexDictionary<T>(this IEnumerable<T> source) => source.ToIndexed().ToDictionary(x => x.Value, x => x.Index);
 
@@ -141,10 +154,24 @@ namespace TrueMogician.Extensions.Enumerable {
 			}
 		}
 
+		/// <summary>
+		///     Append several <paramref name="items" /> to <paramref name="source" />
+		/// </summary>
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public static IEnumerable<T> Append<T>(this IEnumerable<T> source, params T[] items) => source.Concat(items);
 
-		public static (IList<T> TrueList, IList<T> FalseList) Split<T>(this IEnumerable<T> source, Func<T, bool> predicate) {
+		/// <summary>
+		///     Split <paramref name="source" /> into 2 parts according to
+		///     the result of <paramref name="predicate" /> on each item.
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <param name="source"></param>
+		/// <param name="predicate"></param>
+		/// <returns>
+		///     A tuple consists of 2 <see cref="List{T}" />, the first contains the items who returns <see langword="true" />
+		///     on <paramref name="predicate" />, the second contains the <see langword="false" /> ones.
+		/// </returns>
+		public static (List<T> TrueList, List<T> FalseList) Split<T>(this IEnumerable<T> source, Func<T, bool> predicate) {
 			var trueList = new List<T>();
 			var falseList = new List<T>();
 			foreach (var item in source)
@@ -155,6 +182,7 @@ namespace TrueMogician.Extensions.Enumerable {
 			return (trueList, falseList);
 		}
 
+		/// <inheritdoc cref="List{T}.IndexOf(T)" />
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public static int IndexOf<T>(this IEnumerable<T> source, T item) => IndexOf(source, v => item?.Equals(v) == true);
 
@@ -168,15 +196,18 @@ namespace TrueMogician.Extensions.Enumerable {
 			return -1;
 		}
 
+		/// <inheritdoc cref="List{T}.LastIndexOf(T)" />
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public static int LastIndexOf<T>(this IEnumerable<T> source, T item) => LastIndexOf(source, v => item?.Equals(v) == true);
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public static int LastIndexOf<T>(this IEnumerable<T> source, Func<T, bool> predicate) => source.Reverse().IndexOf(predicate);
 
+		/// <inheritdoc cref="List{T}.CopyTo(T[])" />
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public static void CopyTo<T>(this IEnumerable<T> source, T[] array) => CopyTo(source, array, 0);
 
+		/// <inheritdoc cref="List{T}.CopyTo(T[], int)" />
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public static void CopyTo<T>(this IEnumerable<T> source, T[] array, int arrayIndex) {
 			foreach (var item in source)
@@ -184,6 +215,9 @@ namespace TrueMogician.Extensions.Enumerable {
 		}
 	}
 
+	/// <summary>
+	///     An enumerable class that yields index along with value.
+	/// </summary>
 	public class IndexedEnumerable<T> : IEnumerable<(T Value, int Index)> {
 		public IndexedEnumerable(IEnumerable<T> source) => Enumerable = source;
 
