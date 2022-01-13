@@ -5,8 +5,8 @@ using System.Runtime.CompilerServices;
 #endif
 
 namespace TrueMogician.Extensions.Collections {
-	public interface IExtendedList<T> : IList<T> {
-		#if NETSTANDARD2_1_OR_GREATER || NET5_0_OR_GREATER
+	public interface IExtendedList<T> : IList<T>, IReadOnlyList<T> {
+#if NETSTANDARD2_1_OR_GREATER || NET5_0_OR_GREATER
 		public T this[Index index] {
 			get {
 				IList<T> iList = this;
@@ -28,7 +28,23 @@ namespace TrueMogician.Extensions.Collections {
 				return GetRange(start, end - start);
 			}
 		}
-		#endif
+
+		T IList<T>.this[int index] {
+			get => this[index];
+			set => this[index] = value;
+		}
+
+		T IReadOnlyList<T>.this[int index] => this[index];
+
+		int ICollection<T>.Count => Count;
+
+		int IReadOnlyCollection<T>.Count => Count;
+#endif
+
+		public new int Count { get; }
+
+		public new T this[int index] { get; set; }
+
 		public IList<T> GetRange(int index, int count);
 
 		public void AddRange(IEnumerable<T> items);
@@ -60,7 +76,7 @@ namespace TrueMogician.Extensions.Collections {
 		/// </summary>
 		public void Swap(int index1, int index2);
 
-		#if NETSTANDARD2_1_OR_GREATER || NET5_0_OR_GREATER
+#if NETSTANDARD2_1_OR_GREATER || NET5_0_OR_GREATER
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public void AddRange(params T[] items) => AddRange((IEnumerable<T>)items);
 
@@ -108,9 +124,9 @@ namespace TrueMogician.Extensions.Collections {
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public void Reverse() => Reverse(0, Count);
-		#endif
+#endif
 
-		#if NETSTANDARD2_0
+#if NETSTANDARD2_0
 		public void AddRange(params T[] items);
 
 		public void InsertRange(int index, params T[] items);
@@ -138,6 +154,6 @@ namespace TrueMogician.Extensions.Collections {
 		public void Sort(Comparison<T> comparison);
 
 		public void Reverse();
-		#endif
+#endif
 	}
 }
