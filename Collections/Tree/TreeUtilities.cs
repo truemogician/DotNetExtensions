@@ -15,7 +15,7 @@ namespace TrueMogician.Extensions.Collections.Tree {
 			return new Forest<TTreeNode>(treeNodes.Where(t => t.Parent is null).Select(t => new Tree<TTreeNode>(t)));
 		}
 
-		public static Forest<ValuedTreeNode<T>> BuildForest<T>(IEnumerable<T> source, Func<T, T?> parentSelector) {
+		public static Forest<ValuedTreeNode<T>> BuildForest<T>(IEnumerable<T> source, Func<T, T?> parentSelector) where T : notnull {
 			var treeNodes = source.Select(v => new ValuedTreeNode<T>(v)).ToArray();
 			var dictionary = treeNodes.ToDictionary(t => t.Value);
 			foreach (var node in treeNodes) {
@@ -26,7 +26,7 @@ namespace TrueMogician.Extensions.Collections.Tree {
 			return new Forest<ValuedTreeNode<T>>(treeNodes.Where(t => t.Parent is null).Select(t => new Tree<ValuedTreeNode<T>>(t)));
 		}
 
-		public static Forest<ValuedTreeNode<TValue>> BuildForestByKey<TValue, TKey>(IEnumerable<TValue> source, Func<TValue, TKey> keySelector, Func<TValue, TKey?> parentKeySelector) {
+		public static Forest<ValuedTreeNode<TValue>> BuildForestByKey<TValue, TKey>(IEnumerable<TValue> source, Func<TValue, TKey> keySelector, Func<TValue, TKey?> parentKeySelector) where TKey : notnull where TValue : notnull {
 			var src = source.ToArray();
 			var dictionary = src.ToDictionary(keySelector);
 			return BuildForest(src, v => parentKeySelector(v) is var k && k is null ? default : dictionary[k]);
