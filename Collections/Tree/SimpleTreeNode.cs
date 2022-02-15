@@ -11,7 +11,7 @@ namespace TrueMogician.Extensions.Collections.Tree {
 	///     For automatic synchronization, refer to <see cref="TreeNode{T}" />
 	/// </summary>
 	/// <typeparam name="T">Type of the derived class</typeparam>
-	public abstract class SimpleTreeNode<T> : IEnumerable<T> where T : SimpleTreeNode<T> {
+	public abstract class SimpleTreeNode<T> : ITree<T>, IEnumerable<T> where T : SimpleTreeNode<T> {
 		// ReSharper disable once InconsistentNaming
 		protected internal readonly IList<T> _children;
 

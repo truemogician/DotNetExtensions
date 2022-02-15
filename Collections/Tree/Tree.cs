@@ -1,7 +1,7 @@
 ﻿using System;
 
 namespace TrueMogician.Extensions.Collections.Tree {
-	public class Tree<T> {
+	public class Tree<T> where T : ITree<T> {
 		public Tree(T root) => Root = root;
 
 		public T Root { get; }
