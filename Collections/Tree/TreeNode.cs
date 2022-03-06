@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using TrueMogician.Extensions.Collections.Tree.Exceptions;
 using TrueMogician.Extensions.Enumerable;
 
 namespace TrueMogician.Extensions.Collections.Tree {
@@ -86,6 +87,8 @@ namespace TrueMogician.Extensions.Collections.Tree {
 			set {
 				if (Equals(base.Parent, value))
 					return;
+				if (Equals(value, this))
+					throw new SelfLoopException();
 				if (base.Parent is not null) {
 					base.Parent._updateParentOnChildrenChange = false;
 					base.Parent._children.Remove(This);

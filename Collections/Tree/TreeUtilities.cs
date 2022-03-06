@@ -21,7 +21,7 @@ namespace TrueMogician.Extensions.Collections.Tree {
 			foreach (var node in treeNodes) {
 				var parentValue = parentSelector(node.Value);
 				if (parentValue is not null)
-					node.Parent = dictionary[node.Value];
+					node.Parent = dictionary[parentValue];
 			}
 			return new Forest<ValuedTreeNode<T>>(treeNodes.Where(t => t.Parent is null).Select(t => new Tree<ValuedTreeNode<T>>(t)));
 		}
