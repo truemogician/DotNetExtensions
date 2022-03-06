@@ -12,14 +12,12 @@ namespace Collections.Test {
 		public void AddTest() {
 			var items = new[] {0, 1, 2, 3, 4};
 			ChangingHandler changingHandler = (_, baseArgs) => {
-				if (baseArgs is ControllableListAddingEventArgs<int> args)
-					if (args.Value == 2)
-						args.Cancel = true;
+				if (baseArgs is ControllableListAddingEventArgs<int> { Value: 2 } args)
+					args.Cancel = true;
 			};
 			ChangedHandler changedHandler = (_, baseArgs) => {
-				if (baseArgs is ControllableListAddedEventArgs<int> args)
-					if (args.Value == 2)
-						Assert.Fail();
+				if (baseArgs is ControllableListAddedEventArgs<int> { Value: 2 })
+					Assert.Fail();
 			};
 			List.ListChanging += changingHandler;
 			List.ListChanged += changedHandler;
@@ -37,9 +35,8 @@ namespace Collections.Test {
 				}
 			};
 			changedHandler = (_, baseArgs) => {
-				if (baseArgs is ControllableListRangeAddedEventArgs<int> args)
-					if (args.Count > 3)
-						Assert.Fail();
+				if (baseArgs is ControllableListRangeAddedEventArgs<int> { Count: > 3 })
+					Assert.Fail();
 			};
 			List.ListChanging += changingHandler;
 			List.ListChanged += changedHandler;
