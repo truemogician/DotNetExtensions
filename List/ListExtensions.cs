@@ -76,5 +76,32 @@ namespace TrueMogician.Extensions.List {
 				throw new ArgumentOutOfRangeException(nameof(count));
 			return list.Skip(index).Take(count).ToList();
 		}
+
+		public static IList<T> Sort<T>(this IList<T> list) => Sort(list, Comparer<T>.Default);
+
+		/// <summary>
+		///     Sorts the elements in the entire <see cref="IList{T}" /> using the specific <paramref name="comparer" />
+		/// </summary>
+		/// <param name="list"></param>
+		/// <param name="comparer"></param>
+		/// <returns>
+		///     The sorted <paramref name="list" />
+		/// </returns>
+		public static IList<T> Sort<T>(this IList<T> list, IComparer<T> comparer) {
+			switch (list) {
+				case T[] array:
+					Array.Sort(array, comparer);
+					break;
+				case List<T> lst:
+					lst.Sort(comparer);
+					break;
+				default:
+					var ordered = list.OrderBy(e => e, comparer).ToArray();
+					for (var i = 0; i < list.Count; ++i)
+						list[i] = ordered[i];
+					break;
+			}
+			return list;
+		}
 	}
 }

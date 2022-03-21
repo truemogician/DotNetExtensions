@@ -10,7 +10,7 @@
 		<Description>Some extension methods for IList&lt;T&gt; and IReadOnlyList&lt;T&gt;</Description>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<RepositoryUrl>https://github.com/truemogician/DotNetExtensions</RepositoryUrl>
-		<Version>1.0.0</Version>
+		<Version>1.1.0</Version>
 		<SignAssembly>true</SignAssembly>
 		<AssemblyOriginatorKeyFile>List.snk</AssemblyOriginatorKeyFile>
 		<GenerateDocumentationFile>true</GenerateDocumentationFile>
