@@ -103,5 +103,34 @@ namespace TrueMogician.Extensions.List {
 			}
 			return list;
 		}
+
+		/// <inheritdoc cref="List{T}.BinarySearch(T, IComparer{T})" />
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static int BinarySearch<T>(this IList<T> list, T item, IComparer<T> comparer) =>
+			BinarySearch(list, item, comparer.Compare);
+
+		/// <inheritdoc cref="List{T}.BinarySearch(T)" />
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static int BinarySearch<T>(this IList<T> list, T item) =>
+			item is IComparable<T>
+				? BinarySearch(list, item, (a, b) => (a as IComparable<T>)!.CompareTo(b))
+				: BinarySearch(list, item, Comparer<T>.Default);
+
+		private static int BinarySearch<T>(this IList<T> list, T item, Func<T, T, int> comparer) {
+			int left = 0, right = list.Count - 1;
+			while (left <= right) {
+				int mid = (left + right) >> 1;
+				switch (comparer(item, list[mid])) {
+					case 0: return mid;
+					case < 0:
+						right = mid - 1;
+						break;
+					case > 0:
+						left = mid + 1;
+						break;
+				}
+			}
+			return ~left;
+		}
 	}
 }
