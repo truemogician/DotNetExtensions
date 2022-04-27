@@ -1,0 +1,28 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>netstandard2.0</TargetFramework>
+		<RootNamespace>TrueMogician.Extensions.Array</RootNamespace>
+		<Nullable>enable</Nullable>
+		<LangVersion>latest</LangVersion>
+		<PackageId>TrueMogician.Extensions.Array</PackageId>
+		<Authors>true_mogician</Authors>
+		<Product>TrueMogician.Array</Product>
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
+		<Description>Some extension methods for Array</Description>
+		<RepositoryUrl>https://github.com/truemogician/DotNetExtensions</RepositoryUrl>
+		<Version>1.0.0</Version>
+		<SignAssembly>true</SignAssembly>
+		<AssemblyOriginatorKeyFile>Array.snk</AssemblyOriginatorKeyFile>
+		<GenerateDocumentationFile>true</GenerateDocumentationFile>
+	</PropertyGroup>
+
+	<PropertyGroup>
+		<DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
+	</PropertyGroup>
+
+	<PropertyGroup>
+		<NoWarn>1701;1702;1591;1573</NoWarn>
+	</PropertyGroup>
+
+</Project>
