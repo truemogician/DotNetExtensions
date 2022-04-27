@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
 		<TargetFramework>netstandard2.0</TargetFramework>
@@ -11,7 +11,7 @@
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<Description>Some extension methods for IEnumerator&lt;T&gt; and some extended enumerator classes</Description>
 		<RepositoryUrl>https://github.com/truemogician/DotNetExtensions</RepositoryUrl>
-		<Version>1.0.0</Version>
+		<Version>1.1.0</Version>
 		<SignAssembly>true</SignAssembly>
 		<AssemblyOriginatorKeyFile>Enumerator.snk</AssemblyOriginatorKeyFile>
 		<GenerateDocumentationFile>true</GenerateDocumentationFile>

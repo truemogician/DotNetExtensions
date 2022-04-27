@@ -13,11 +13,43 @@ namespace TrueMogician.Extensions.Enumerator {
 		}
 
 		/// <summary>
+		///     Get <paramref name="count" /> items and move next
+		/// </summary>
+		/// <param name="count">Number of items to get</param>
+		/// <exception cref="ArgumentOutOfRangeException"></exception>
+		public static T[] GetAndMove<T>(this IEnumerator<T> enumerator, int count) {
+			if (count < 0)
+				throw new ArgumentOutOfRangeException(nameof(count));
+			var result = new T[count];
+			for (var i = 0; i < count; ++i) {
+				result[i] = enumerator.Current;
+				enumerator.MoveNext();
+			}
+			return result;
+		}
+
+		/// <summary>
 		///     Move next and return <paramref name="enumerator" />'s current value.
 		/// </summary>
 		public static T MoveNextAndGet<T>(this IEnumerator<T> enumerator) {
 			enumerator.MoveNext();
 			return enumerator.Current;
+		}
+
+		/// <summary>
+		///     Move next and get <paramref name="count" /> items
+		/// </summary>
+		/// <param name="count">Number of items to get</param>
+		/// <exception cref="ArgumentOutOfRangeException"></exception>
+		public static T[] MoveAndGet<T>(this IEnumerator<T> enumerator, int count) {
+			if (count < 0)
+				throw new ArgumentOutOfRangeException(nameof(count));
+			var result = new T[count];
+			for (var i = 0; i < count; ++i) {
+				enumerator.MoveNext();
+				result[i] = enumerator.Current;
+			}
+			return result;
 		}
 
 		/// <summary>
