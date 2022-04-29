@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
 		<TargetFrameworks>net5.0-windows;net462</TargetFrameworks>
@@ -12,7 +12,7 @@
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<Description>Some extension classes and methods for WPF</Description>
 		<RepositoryUrl>https://github.com/truemogician/DotNetExtensions</RepositoryUrl>
-		<Version>1.0.0</Version>
+		<Version>1.1.0</Version>
 		<SignAssembly>true</SignAssembly>
 		<AssemblyOriginatorKeyFile>WPF.snk</AssemblyOriginatorKeyFile>
 		<GenerateDocumentationFile>true</GenerateDocumentationFile>
