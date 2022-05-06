@@ -36,22 +36,66 @@ namespace TrueMogician.Extensions.Enumerable {
 		public static IndexedEnumerable<T> ToIndexed<T>(this IEnumerable<T> source) => new(source);
 
 		/// <summary>
-		///     Create a <see cref="Dictionary{TKey,TValue}" /> that uses <paramref name="source" />'s items as key
+		///     Creates a <see cref="Dictionary{TKey,TValue}" /> that uses <paramref name="source" />'s items as key
 		///     and their indices as value.
 		/// </summary>
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public static Dictionary<T, int> ToIndexDictionary<T>(this IEnumerable<T> source) => source.ToIndexed().ToDictionary(x => x.Value, x => x.Index);
 
+		/// <summary>
+		///     Checks whether all elements from <see cref="IEnumerable{T}" /> are equal, and returns the first element if true, or
+		///     <see langword="default" /> if <see cref="IEnumerable{T}" /> is empty; otherwise, throws an
+		///     <see cref="InvalidOperationException" />
+		/// </summary>
+		/// <returns>
+		///     The first element if all elements are equal, or <see langword="default" /> if <see cref="IEnumerable{T}" /> is
+		///     empty
+		/// </returns>
+		/// <exception cref="InvalidOperationException" />
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public static T? SameOrDefault<T>(this IEnumerable<T> source) => source.SameOrDefault(x => x);
 
+		/// <summary>
+		///     Checks whether all elements from <see cref="IEnumerable{T}" /> are equal
+		///     by <paramref name="comparer" />, and returns the first element if true, or <see langword="default" /> if
+		///     <see cref="IEnumerable{T}" /> is empty; otherwise, throws an
+		///     <see cref="InvalidOperationException" />
+		/// </summary>
+		/// <returns>
+		///     The first element if all elements are equal by <paramref name="comparer" />, or
+		///     <see langword="default" /> if <see cref="IEnumerable{T}" /> is empty
+		/// </returns>
+		/// <exception cref="InvalidOperationException" />
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public static T? SameOrDefault<T>(this IEnumerable<T> source, IEqualityComparer<T> comparer) => source.SameOrDefault(x => x, comparer);
 
+		/// <summary>
+		///     Checks whether all values projected from <see cref="IEnumerable{T}" /> by <paramref name="predicate" /> are equal,
+		///     and returns the first value if true, or <see langword="default" /> if
+		///     <see cref="IEnumerable{T}" /> is empty; otherwise, throws an <see cref="InvalidOperationException" />
+		/// </summary>
+		/// <param name="predicate">A transform function to apply to each element.</param>
+		/// <returns>
+		///     Projected value of the first element if all values are equal, or
+		///     <see langword="default" /> if <see cref="IEnumerable{T}" /> is empty
+		/// </returns>
+		/// <exception cref="InvalidOperationException" />
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public static TResult? SameOrDefault<TSource, TResult>(this IEnumerable<TSource> source, Func<TSource, TResult> predicate) =>
 			SameOrDefault(source, predicate, (a, b) => a?.Equals(b) == true);
 
+		/// <summary>
+		///     Checks whether all values projected from <see cref="IEnumerable{T}" /> by <paramref name="predicate" /> are equal
+		///     by <paramref name="comparer" />, and returns the first value if true, or <see langword="default" /> if
+		///     <see cref="IEnumerable{T}" /> is empty; otherwise, throws an
+		///     <see cref="InvalidOperationException" />
+		/// </summary>
+		/// <param name="predicate">A transform function to apply to each element.</param>
+		/// <returns>
+		///     Projected value of the first element if all values are equal by <paramref name="comparer" />, or
+		///     <see langword="default" /> if <see cref="IEnumerable{T}" /> is empty
+		/// </returns>
+		/// <exception cref="InvalidOperationException" />
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public static TResult? SameOrDefault<TSource, TResult>(this IEnumerable<TSource> source, Func<TSource, TResult> predicate, IEqualityComparer<TResult> comparer) =>
 			SameOrDefault(source, predicate, comparer.Equals);
@@ -69,16 +113,45 @@ namespace TrueMogician.Extensions.Enumerable {
 			return reference;
 		}
 
+		/// <summary>
+		///     Checks whether all elements from <see cref="IEnumerable{T}" /> are equal, and returns the first element if true;
+		///     otherwise, throws an <see cref="InvalidOperationException" />
+		/// </summary>
+		/// <returns>The first element if all elements are equal</returns>
+		/// <exception cref="InvalidOperationException" />
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public static T Same<T>(this IEnumerable<T> source) => source.Same(x => x);
 
+		/// <summary>
+		///     Checks whether all elements from <see cref="IEnumerable{T}" /> are equal
+		///     by <paramref name="comparer" />, and returns the first element if true; otherwise, throws an
+		///     <see cref="InvalidOperationException" />
+		/// </summary>
+		/// <returns>The first element if all elements are equal by <paramref name="comparer" /></returns>
+		/// <exception cref="InvalidOperationException" />
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public static T Same<T>(this IEnumerable<T> source, IEqualityComparer<T> comparer) => source.Same(x => x, comparer);
 
+		/// <summary>
+		///     Checks whether all values projected from <see cref="IEnumerable{T}" /> by <paramref name="predicate" /> are equal,
+		///     and returns the first value if true; otherwise, throws an
+		///     <see cref="InvalidOperationException" />
+		/// </summary>
+		/// <param name="predicate">A transform function to apply to each element.</param>
+		/// <returns>Projected value of the first element if all values are equal</returns>
+		/// <exception cref="InvalidOperationException" />
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public static TResult Same<TSource, TResult>(this IEnumerable<TSource> source, Func<TSource, TResult> predicate) =>
 			Same(source, predicate, (a, b) => a?.Equals(b) == true);
 
+		/// <summary>
+		///     Checks whether all values projected from <see cref="IEnumerable{T}" /> by <paramref name="predicate" /> are equal
+		///     by <paramref name="comparer" />, and returns the first value if true; otherwise, throws an
+		///     <see cref="InvalidOperationException" />
+		/// </summary>
+		/// <param name="predicate">A transform function to apply to each element.</param>
+		/// <returns>Projected value of the first element if all values are equal by <paramref name="comparer" /></returns>
+		/// <exception cref="InvalidOperationException" />
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public static TResult Same<TSource, TResult>(this IEnumerable<TSource> source, Func<TSource, TResult> predicate, IEqualityComparer<TResult> comparer) =>
 			Same(source, predicate, comparer.Equals);
@@ -95,15 +168,29 @@ namespace TrueMogician.Extensions.Enumerable {
 			return reference;
 		}
 
+		/// <summary>
+		///     Checks whether <paramref name="source" /> holds distinct values
+		/// </summary>
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public static bool Unique<T>(this IEnumerable<T> source) => source.Unique(null);
 
+		/// <summary>
+		///     Checks whether <paramref name="source" /> holds distinct values, by <see cref="IEqualityComparer{T}" />
+		///     <paramref name="comparer" />
+		/// </summary>
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public static bool Unique<T>(this IEnumerable<T> source, IEqualityComparer<T>? comparer) => source.Unique(x => x, comparer);
 
+		/// <summary>
+		///     Checks whether <paramref name="source" /> holds distinct values produced by <paramref name="predicate" />
+		/// </summary>
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public static bool Unique<TSource, TResult>(this IEnumerable<TSource> source, Func<TSource, TResult> predicate) => source.Unique(predicate, null);
 
+		/// <summary>
+		///     Checks whether <paramref name="source" /> holds distinct values produced by <paramref name="predicate" />, by
+		///     <see cref="IEqualityComparer{T}" /> <paramref name="comparer" />
+		/// </summary>
 		public static bool Unique<TSource, TResult>(this IEnumerable<TSource> source, Func<TSource, TResult> predicate, IEqualityComparer<TResult>? comparer) {
 			var count = 0;
 			var set = comparer is null ? new HashSet<TResult>() : new HashSet<TResult>(comparer);
@@ -114,6 +201,13 @@ namespace TrueMogician.Extensions.Enumerable {
 			return count == set.Count;
 		}
 
+		/// <summary>
+		///     Applies <paramref name="action" /> to each element of <see cref="IEnumerable{T}" />, and returns itself for
+		///     chaining
+		///     actions.
+		/// </summary>
+		/// <param name="action">An action to be performed on each element of <see cref="IEnumerable{T}" /></param>
+		/// <returns>The <see cref="IEnumerable{T}" /> itself</returns>
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public static IEnumerable<T> Each<T>(this IEnumerable<T> source, Action<T> action) {
 			foreach (var item in source) {
@@ -122,6 +216,7 @@ namespace TrueMogician.Extensions.Enumerable {
 			}
 		}
 
+		/// <inheritdoc cref="Each{T}(IEnumerable{T},Action{T})" />
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public static IEnumerable<T> Each<T>(this IEnumerable<T> source, Action<T, int> action) {
 			foreach ((var item, int index) in source.ToIndexed()) {
@@ -130,6 +225,14 @@ namespace TrueMogician.Extensions.Enumerable {
 			}
 		}
 
+		/// <summary>
+		///     Projects each element of a sequence to a new sequence or single element, and flattens the results into one sequence
+		/// </summary>
+		/// <param name="selector">
+		///     A transform function to apply to each element. Should return <typeparamref name="TResult" /> or
+		///     a sequence of <typeparamref name="TResult" />
+		/// </param>
+		/// <exception cref="TypeException" />
 		public static IEnumerable<TResult> SelectSingleOrMany<TSource, TResult>(this IEnumerable<TSource> source, Func<TSource, object> selector) {
 			foreach (var item in source) {
 				object result = selector(item);
@@ -148,6 +251,23 @@ namespace TrueMogician.Extensions.Enumerable {
 			}
 		}
 
+		/// <summary>
+		///     Creates a tuple <see cref="IEnumerable{T}" />, whose element consists of elements from <paramref name="source1" />
+		///     and <paramref name="source2" /> at the same index.
+		/// </summary>
+		/// <param name="source1">
+		///     The first sequence to join, should contain the same number of elements as
+		///     <paramref name="source2" />.
+		/// </param>
+		/// <param name="source2">
+		///     The second sequence to join, should contain the same number of elements as
+		///     <paramref name="source1" />.
+		/// </param>
+		/// <returns>
+		///     An <see cref="IEnumerable{T}" />, holding elements of <paramref name="source1" /> and
+		///     <paramref name="source2" /> at the same index in a tuple.
+		/// </returns>
+		/// <exception cref="InvalidOperationException">Two sequence contains different number of elements</exception>
 		public static IEnumerable<(T1 First, T2 Second)> IndexJoin<T1, T2>(this IEnumerable<T1> source1, IEnumerable<T2> source2) {
 			using var e1 = source1.GetEnumerator();
 			using var e2 = source2.GetEnumerator();
@@ -159,6 +279,27 @@ namespace TrueMogician.Extensions.Enumerable {
 			}
 		}
 
+		/// <summary>
+		///     Creates a tuple <see cref="IEnumerable{T}" />, whose element consists of elements from <paramref name="source1" />,
+		///     <paramref name="source2" /> and <paramref name="source3" /> at the same index.
+		/// </summary>
+		/// <param name="source1">
+		///     The first sequence to join, should contain the same number of elements as
+		///     <paramref name="source2" /> and <paramref name="source3" />.
+		/// </param>
+		/// <param name="source2">
+		///     The second sequence to join, should contain the same number of elements as
+		///     <paramref name="source1" /> and <paramref name="source3" />.
+		/// </param>
+		/// <param name="source3">
+		///     The third sequence to join, should contain the same number of elements as
+		///     <paramref name="source1" /> and <paramref name="source2" />.
+		/// </param>
+		/// <returns>
+		///     An <see cref="IEnumerable{T}" />, holding elements of <paramref name="source1" />,
+		///     <paramref name="source2" /> and <paramref name="source3" /> at the same index in a tuple.
+		/// </returns>
+		/// <exception cref="InvalidOperationException">Three sequence contains different number of elements</exception>
 		public static IEnumerable<(T1 First, T2 Second, T3 Third)> IndexJoin<T1, T2, T3>(this IEnumerable<T1> source1, IEnumerable<T2> source2, IEnumerable<T3> source3) {
 			using var e1 = source1.GetEnumerator();
 			using var e2 = source2.GetEnumerator();
@@ -172,6 +313,32 @@ namespace TrueMogician.Extensions.Enumerable {
 			}
 		}
 
+		/// <summary>
+		///     Creates a tuple <see cref="IEnumerable{T}" />, whose element consists of elements from <paramref name="source1" />,
+		///     <paramref name="source2" />, <paramref name="source3" /> and <paramref name="source4" /> at the same index.
+		/// </summary>
+		/// <param name="source1">
+		///     The first sequence to join, should contain the same number of elements as
+		///     <paramref name="source2" />, <paramref name="source3" /> and <paramref name="source4" />.
+		/// </param>
+		/// <param name="source2">
+		///     The second sequence to join, should contain the same number of elements as
+		///     <paramref name="source1" />, <paramref name="source3" /> and <paramref name="source4" />.
+		/// </param>
+		/// <param name="source3">
+		///     The third sequence to join, should contain the same number of elements as
+		///     <paramref name="source1" />, <paramref name="source2" /> and <paramref name="source4" />.
+		/// </param>
+		/// <param name="source4">
+		///     The fourth sequence to join, should contain the same number of elements as
+		///     <paramref name="source1" />, <paramref name="source2" /> and <paramref name="source3" />.
+		/// </param>
+		/// <returns>
+		///     An <see cref="IEnumerable{T}" />, holding elements of <paramref name="source1" />,
+		///     <paramref name="source2" />, <paramref name="source3" /> and <paramref name="source4" /> at the same index in a
+		///     tuple.
+		/// </returns>
+		/// <exception cref="InvalidOperationException">Four sequence contains different number of elements</exception>
 		public static IEnumerable<(T1 First, T2 Second, T3 Third, T4 Fourth)> IndexJoin<T1, T2, T3, T4>(this IEnumerable<T1> source1, IEnumerable<T2> source2, IEnumerable<T3> source3, IEnumerable<T4> source4) {
 			using var e1 = source1.GetEnumerator();
 			using var e2 = source2.GetEnumerator();
@@ -188,20 +355,17 @@ namespace TrueMogician.Extensions.Enumerable {
 		}
 
 		/// <summary>
-		///     Append several <paramref name="items" /> to <paramref name="source" />
+		///     Appends several <paramref name="items" /> to <paramref name="source" />
 		/// </summary>
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public static IEnumerable<T> Append<T>(this IEnumerable<T> source, params T[] items) => source.Concat(items);
 
 		/// <summary>
-		///     Split <paramref name="source" /> into 2 parts according to
+		///     Splits <paramref name="source" /> into 2 parts according to
 		///     the result of <paramref name="predicate" /> on each item.
 		/// </summary>
-		/// <typeparam name="T"></typeparam>
-		/// <param name="source"></param>
-		/// <param name="predicate"></param>
 		/// <returns>
-		///     A tuple consists of 2 <see cref="List{T}" />, the first contains the items who returns <see langword="true" />
+		///     A tuple consists of two <see cref="List{T}" />, the first contains the items who returns <see langword="true" />
 		///     on <paramref name="predicate" />, the second contains the <see langword="false" /> ones.
 		/// </returns>
 		public static (List<T> TrueList, List<T> FalseList) Split<T>(this IEnumerable<T> source, Func<T, bool> predicate) {
@@ -215,10 +379,29 @@ namespace TrueMogician.Extensions.Enumerable {
 			return (trueList, falseList);
 		}
 
-		/// <inheritdoc cref="List{T}.IndexOf(T)" />
+		/// <summary>
+		///     Searches for the specific <paramref name="item" /> and returns the zero-based index of the first occurrence within
+		///     the entire <see cref="IEnumerable{T}" />
+		/// </summary>
+		/// <param name="item">
+		///     The object to locate in the <see cref="IEnumerable{T}" />. The value can be <see langword="null" />
+		///     for reference types.
+		/// </param>
+		/// <returns>
+		///     The zero-based index of the first occurrence of <paramref name="item" /> within the entire
+		///     <see cref="IEnumerable{T}" />, if found; otherwise, -1.
+		/// </returns>
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public static int IndexOf<T>(this IEnumerable<T> source, T item) => IndexOf(source, v => item?.Equals(v) == true);
 
+		/// <summary>
+		///     Searches for the item that satisfies <paramref name="predicate" /> and returns the zero-based index of the first
+		///     occurrence within the entire <see cref="IEnumerable{T}" />
+		/// </summary>
+		/// <returns>
+		///     The zero-based index of the first occurrence of an item satisfying <paramref name="predicate" /> within the
+		///     entire <see cref="IEnumerable{T}" />, if found; otherwise, -1.
+		/// </returns>
 		public static int IndexOf<T>(this IEnumerable<T> source, Func<T, bool> predicate) {
 			int index = -1;
 			foreach (var item in source) {
@@ -229,10 +412,29 @@ namespace TrueMogician.Extensions.Enumerable {
 			return -1;
 		}
 
-		/// <inheritdoc cref="List{T}.LastIndexOf(T)" />
+		/// <summary>
+		///     Searches for the specific <paramref name="item" /> and returns the zero-based index of the last occurrence within
+		///     the entire <see cref="IEnumerable{T}" />
+		/// </summary>
+		/// <param name="item">
+		///     The object to locate in the <see cref="IEnumerable{T}" />. The value can be <see langword="null" />
+		///     for reference types.
+		/// </param>
+		/// <returns>
+		///     The zero-based index of the last occurrence of <paramref name="item" /> within the entire
+		///     <see cref="IEnumerable{T}" />, if found; otherwise, -1.
+		/// </returns>
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public static int LastIndexOf<T>(this IEnumerable<T> source, T item) => LastIndexOf(source, v => item?.Equals(v) == true);
 
+		/// <summary>
+		///     Searches for the item that satisfies <paramref name="predicate" /> and returns the zero-based index of the last
+		///     occurrence within the entire <see cref="IEnumerable{T}" />
+		/// </summary>
+		/// <returns>
+		///     The zero-based index of the last occurrence of an item satisfying <paramref name="predicate" /> within the
+		///     entire <see cref="IEnumerable{T}" />, if found; otherwise, -1.
+		/// </returns>
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public static int LastIndexOf<T>(this IEnumerable<T> source, Func<T, bool> predicate) => source.Reverse().IndexOf(predicate);
 
@@ -248,7 +450,8 @@ namespace TrueMogician.Extensions.Enumerable {
 		}
 
 		/// <summary>
-		///     Create a <see cref="Dictionary{TKey,TValue}" /> from an <see cref="IEnumerable{T}" /> according to specific element
+		///     Creates a <see cref="Dictionary{TKey,TValue}" /> from an <see cref="IEnumerable{T}" /> according to specific
+		///     element
 		///     selector function.
 		/// </summary>
 		/// <param name="elementSelector">A transform function to produce a result element value from each element.</param>
