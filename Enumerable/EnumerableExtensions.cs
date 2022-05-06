@@ -7,7 +7,7 @@ using TrueMogician.Exceptions;
 
 namespace TrueMogician.Extensions.Enumerable {
 	public static class EnumerableExtensions {
-		#region AsIList
+		#region AsList, AsArray, AsIList
 		/// <summary>
 		///     Returns the <paramref name="source" /> itself if it's already <see cref="List{T}" />, else creates one.
 		/// </summary>
@@ -28,7 +28,7 @@ namespace TrueMogician.Extensions.Enumerable {
 		public static IList<T> AsIList<T>(this IEnumerable<T> source) => source is IList<T> list ? list : source.ToArray();
 		#endregion
 
-		#region ToIndexed
+		#region ToIndexed, ToIndexDictionary
 		/// <summary>
 		///     Creates an <see cref="IndexedEnumerable{T}" /> from <paramref name="source" />
 		/// </summary>
@@ -203,11 +203,12 @@ namespace TrueMogician.Extensions.Enumerable {
 		}
 		#endregion
 
-		#region Each
+		#region Each, ForEach
 		/// <summary>
 		///     Applies <paramref name="action" /> to each element of <see cref="IEnumerable{T}" />, and returns itself for
-		///     chaining
-		///     actions.
+		///     chaining actions. <br /> Note that if chaining is not intended, use
+		///     <see cref="ForEach{T}(IEnumerable{T},Action{T})" /> instead,
+		///     since unused return value will be optimized out and thus <paramref name="action" /> won't get performed.
 		/// </summary>
 		/// <param name="action">An action to be performed on each element of <see cref="IEnumerable{T}" /></param>
 		/// <returns>The <see cref="IEnumerable{T}" /> itself</returns>
@@ -222,10 +223,28 @@ namespace TrueMogician.Extensions.Enumerable {
 		/// <inheritdoc cref="Each{T}(IEnumerable{T},Action{T})" />
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public static IEnumerable<T> Each<T>(this IEnumerable<T> source, Action<T, int> action) {
-			foreach ((var item, int index) in source.ToIndexed()) {
-				action(item, index);
+			var index = 0;
+			foreach (var item in source) {
+				action(item, index++);
 				yield return item;
 			}
+		}
+
+		/// <summary>
+		///     Applies <paramref name="action" /> to each element of <see cref="IEnumerable{T}" />.
+		/// </summary>
+		/// <param name="action">An action to be performed on each element of <see cref="IEnumerable{T}" /></param>
+		/// <returns>The <see cref="IEnumerable{T}" /> itself</returns>
+		public static void ForEach<T>(this IEnumerable<T> source, Action<T> action) {
+			foreach (var item in source)
+				action(item);
+		}
+
+		/// <inheritdoc cref="ForEach{T}(IEnumerable{T},Action{T})" />
+		public static void ForEach<T>(this IEnumerable<T> source, Action<T, int> action) {
+			var index = 0;
+			foreach (var item in source)
+				action(item, index++);
 		}
 		#endregion
 
@@ -391,7 +410,7 @@ namespace TrueMogician.Extensions.Enumerable {
 		}
 		#endregion
 
-		#region IndexOf
+		#region IndexOf, LastIndexOf
 		/// <summary>
 		///     Searches for the specific <paramref name="item" /> and returns the zero-based index of the first occurrence within
 		///     the entire <see cref="IEnumerable{T}" />
@@ -424,9 +443,7 @@ namespace TrueMogician.Extensions.Enumerable {
 			}
 			return -1;
 		}
-		#endregion
 
-		#region LastIndexOf
 		/// <summary>
 		///     Searches for the specific <paramref name="item" /> and returns the zero-based index of the last occurrence within
 		///     the entire <see cref="IEnumerable{T}" />
