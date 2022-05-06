@@ -220,6 +220,17 @@ namespace TrueMogician.Extensions.Enumerable {
 			foreach (var item in source)
 				array[arrayIndex++] = item;
 		}
+
+		/// <summary>
+		///     Create a <see cref="Dictionary{TKey,TValue}" /> from an <see cref="IEnumerable{T}" /> according to specific element
+		///     selector function.
+		/// </summary>
+		/// <param name="elementSelector">A transform function to produce a result element value from each element.</param>
+		/// <exception cref="ArgumentException" />
+		/// <exception cref="ArgumentNullException" />
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static Dictionary<TSource, TResult> ToDictionaryWith<TSource, TResult>(this IEnumerable<TSource> source, Func<TSource, TResult> elementSelector) =>
+			source.ToDictionary(item => item, elementSelector);
 	}
 
 	/// <summary>
