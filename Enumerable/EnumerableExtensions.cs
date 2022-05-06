@@ -115,15 +115,19 @@ namespace TrueMogician.Extensions.Enumerable {
 		}
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public static void Each<T>(this IEnumerable<T> source, Action<T> action) {
-			foreach (var item in source)
+		public static IEnumerable<T> Each<T>(this IEnumerable<T> source, Action<T> action) {
+			foreach (var item in source) {
 				action(item);
+				yield return item;
+			}
 		}
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public static void Each<T>(this IEnumerable<T> source, Action<T, int> action) {
-			foreach ((var item, int index) in source.ToIndexed())
+		public static IEnumerable<T> Each<T>(this IEnumerable<T> source, Action<T, int> action) {
+			foreach ((var item, int index) in source.ToIndexed()) {
 				action(item, index);
+				yield return item;
+			}
 		}
 
 		public static IEnumerable<TResult> SelectSingleOrMany<TSource, TResult>(this IEnumerable<TSource> source, Func<TSource, object> selector) {
