@@ -45,7 +45,18 @@ namespace TrueMogician.Extensions.Enumerable {
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public static T? SameOrDefault<T>(this IEnumerable<T> source) => source.SameOrDefault(x => x);
 
-		public static TResult? SameOrDefault<TSource, TResult>(this IEnumerable<TSource> source, Func<TSource, TResult> predicate) {
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static T? SameOrDefault<T>(this IEnumerable<T> source, IEqualityComparer<T> comparer) => source.SameOrDefault(x => x, comparer);
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static TResult? SameOrDefault<TSource, TResult>(this IEnumerable<TSource> source, Func<TSource, TResult> predicate) =>
+			SameOrDefault(source, predicate, (a, b) => a?.Equals(b) == true);
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static TResult? SameOrDefault<TSource, TResult>(this IEnumerable<TSource> source, Func<TSource, TResult> predicate, IEqualityComparer<TResult> comparer) =>
+			SameOrDefault(source, predicate, comparer.Equals);
+
+		private static TResult? SameOrDefault<TSource, TResult>(this IEnumerable<TSource> source, Func<TSource, TResult> predicate, Func<TResult, TResult, bool> comparer) {
 			TResult? reference = default;
 			var first = true;
 			foreach (var item in source)
@@ -53,7 +64,7 @@ namespace TrueMogician.Extensions.Enumerable {
 					reference = predicate(item);
 					first = false;
 				}
-				else if (reference?.Equals(item) != true)
+				else if (!comparer(reference!, predicate(item)))
 					throw new InvalidOperationException("Values aren't the same");
 			return reference;
 		}
@@ -61,14 +72,25 @@ namespace TrueMogician.Extensions.Enumerable {
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public static T Same<T>(this IEnumerable<T> source) => source.Same(x => x);
 
-		public static TResult Same<TSource, TResult>(this IEnumerable<TSource> source, Func<TSource, TResult> predicate) {
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static T Same<T>(this IEnumerable<T> source, IEqualityComparer<T> comparer) => source.Same(x => x, comparer);
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static TResult Same<TSource, TResult>(this IEnumerable<TSource> source, Func<TSource, TResult> predicate) =>
+			Same(source, predicate, (a, b) => a?.Equals(b) == true);
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static TResult Same<TSource, TResult>(this IEnumerable<TSource> source, Func<TSource, TResult> predicate, IEqualityComparer<TResult> comparer) =>
+			Same(source, predicate, comparer.Equals);
+
+		private static TResult Same<TSource, TResult>(this IEnumerable<TSource> source, Func<TSource, TResult> predicate, Func<TResult, TResult, bool> comparer) {
 			using var enumerator = source.GetEnumerator();
 			bool success = enumerator.MoveNext();
 			if (!success)
 				throw new InvalidOperationException("Sequence contains no element");
 			var reference = predicate(enumerator.Current);
 			while (enumerator.MoveNext())
-				if (reference?.Equals(predicate(enumerator.Current)) != true)
+				if (!comparer(reference, predicate(enumerator.Current)))
 					throw new InvalidOperationException("Values aren't the same");
 			return reference;
 		}
