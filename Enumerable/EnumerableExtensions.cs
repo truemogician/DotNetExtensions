@@ -7,6 +7,7 @@ using TrueMogician.Exceptions;
 
 namespace TrueMogician.Extensions.Enumerable {
 	public static class EnumerableExtensions {
+		#region AsIList
 		/// <summary>
 		///     Returns the <paramref name="source" /> itself if it's already <see cref="List{T}" />, else creates one.
 		/// </summary>
@@ -25,10 +26,9 @@ namespace TrueMogician.Extensions.Enumerable {
 		/// </summary>
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public static IList<T> AsIList<T>(this IEnumerable<T> source) => source is IList<T> list ? list : source.ToArray();
+		#endregion
 
-		[Obsolete("This extension method does the same job as Enumerable.Cast<T>, use this instead")]
-		public static IEnumerable<T> AsType<T>(this IEnumerable source) => from object item in source select item is T result ? result : throw new InvalidCastException();
-
+		#region ToIndexed
 		/// <summary>
 		///     Creates an <see cref="IndexedEnumerable{T}" /> from <paramref name="source" />
 		/// </summary>
@@ -41,7 +41,9 @@ namespace TrueMogician.Extensions.Enumerable {
 		/// </summary>
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public static Dictionary<T, int> ToIndexDictionary<T>(this IEnumerable<T> source) => source.ToIndexed().ToDictionary(x => x.Value, x => x.Index);
+		#endregion
 
+		#region SameOrDefault
 		/// <summary>
 		///     Checks whether all elements from <see cref="IEnumerable{T}" /> are equal, and returns the first element if true, or
 		///     <see langword="default" /> if <see cref="IEnumerable{T}" /> is empty; otherwise, throws an
@@ -112,7 +114,9 @@ namespace TrueMogician.Extensions.Enumerable {
 					throw new InvalidOperationException("Values aren't the same");
 			return reference;
 		}
+		#endregion
 
+		#region Same
 		/// <summary>
 		///     Checks whether all elements from <see cref="IEnumerable{T}" /> are equal, and returns the first element if true;
 		///     otherwise, throws an <see cref="InvalidOperationException" />
@@ -167,7 +171,9 @@ namespace TrueMogician.Extensions.Enumerable {
 					throw new InvalidOperationException("Values aren't the same");
 			return reference;
 		}
+		#endregion
 
+		#region Unique
 		/// <summary>
 		///     Checks whether <paramref name="source" /> holds distinct values
 		/// </summary>
@@ -200,7 +206,9 @@ namespace TrueMogician.Extensions.Enumerable {
 			}
 			return count == set.Count;
 		}
+		#endregion
 
+		#region Each
 		/// <summary>
 		///     Applies <paramref name="action" /> to each element of <see cref="IEnumerable{T}" />, and returns itself for
 		///     chaining
@@ -224,7 +232,9 @@ namespace TrueMogician.Extensions.Enumerable {
 				yield return item;
 			}
 		}
+		#endregion
 
+		#region SelectSingleOrMany
 		/// <summary>
 		///     Projects each element of a sequence to a new sequence or single element, and flattens the results into one sequence
 		/// </summary>
@@ -250,7 +260,9 @@ namespace TrueMogician.Extensions.Enumerable {
 				}
 			}
 		}
+		#endregion
 
+		#region IndexJoin
 		/// <summary>
 		///     Creates a tuple <see cref="IEnumerable{T}" />, whose element consists of elements from <paramref name="source1" />
 		///     and <paramref name="source2" /> at the same index.
@@ -353,13 +365,17 @@ namespace TrueMogician.Extensions.Enumerable {
 				status4 = e4.MoveNext();
 			}
 		}
+		#endregion
 
+		#region Append
 		/// <summary>
 		///     Appends several <paramref name="items" /> to <paramref name="source" />
 		/// </summary>
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public static IEnumerable<T> Append<T>(this IEnumerable<T> source, params T[] items) => source.Concat(items);
+		#endregion
 
+		#region Split
 		/// <summary>
 		///     Splits <paramref name="source" /> into 2 parts according to
 		///     the result of <paramref name="predicate" /> on each item.
@@ -378,7 +394,9 @@ namespace TrueMogician.Extensions.Enumerable {
 					falseList.Add(item);
 			return (trueList, falseList);
 		}
+		#endregion
 
+		#region IndexOf
 		/// <summary>
 		///     Searches for the specific <paramref name="item" /> and returns the zero-based index of the first occurrence within
 		///     the entire <see cref="IEnumerable{T}" />
@@ -411,7 +429,9 @@ namespace TrueMogician.Extensions.Enumerable {
 			}
 			return -1;
 		}
+		#endregion
 
+		#region LastIndexOf
 		/// <summary>
 		///     Searches for the specific <paramref name="item" /> and returns the zero-based index of the last occurrence within
 		///     the entire <see cref="IEnumerable{T}" />
@@ -437,7 +457,9 @@ namespace TrueMogician.Extensions.Enumerable {
 		/// </returns>
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public static int LastIndexOf<T>(this IEnumerable<T> source, Func<T, bool> predicate) => source.Reverse().IndexOf(predicate);
+		#endregion
 
+		#region CopyTo
 		/// <inheritdoc cref="List{T}.CopyTo(T[])" />
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public static void CopyTo<T>(this IEnumerable<T> source, T[] array) => CopyTo(source, array, 0);
@@ -448,7 +470,9 @@ namespace TrueMogician.Extensions.Enumerable {
 			foreach (var item in source)
 				array[arrayIndex++] = item;
 		}
+		#endregion
 
+		#region ToDictionary
 		/// <summary>
 		///     Creates a <see cref="Dictionary{TKey,TValue}" /> from an <see cref="IEnumerable{T}" /> according to specific
 		///     element
@@ -460,6 +484,12 @@ namespace TrueMogician.Extensions.Enumerable {
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public static Dictionary<TSource, TResult> ToDictionaryWith<TSource, TResult>(this IEnumerable<TSource> source, Func<TSource, TResult> elementSelector) =>
 			source.ToDictionary(item => item, elementSelector);
+		#endregion
+
+		#region Obsolete
+		[Obsolete("This extension method does the same job as Enumerable.Cast<T>, use this instead")]
+		public static IEnumerable<T> AsType<T>(this IEnumerable source) => from object item in source select item is T result ? result : throw new InvalidCastException();
+		#endregion
 	}
 
 	/// <summary>
