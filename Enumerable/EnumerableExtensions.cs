@@ -118,49 +118,44 @@ namespace TrueMogician.Extensions.Enumerable {
 
 		#region Same
 		/// <summary>
-		///     Checks whether all elements from <see cref="IEnumerable{T}" /> are equal, and returns the first element if true;
-		///     otherwise, throws an <see cref="InvalidOperationException" />
+		///     Checks whether all elements in <see cref="IEnumerable{T}" /> are equal, or throws
+		///     <see cref="InvalidOperationException" /> if <see cref="IEnumerable{T}" /> is empty.
 		/// </summary>
-		/// <returns>The first element if all elements are equal</returns>
 		/// <exception cref="InvalidOperationException" />
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public static T Same<T>(this IEnumerable<T> source) => source.Same(x => x);
+		public static bool Same<T>(this IEnumerable<T> source) => source.Same(x => x);
 
 		/// <summary>
-		///     Checks whether all elements from <see cref="IEnumerable{T}" /> are equal
-		///     by <paramref name="comparer" />, and returns the first element if true; otherwise, throws an
-		///     <see cref="InvalidOperationException" />
+		///     Checks whether all elements in <see cref="IEnumerable{T}" /> are equal by <paramref name="comparer" />, or throws
+		///     <see cref="InvalidOperationException" /> if <see cref="IEnumerable{T}" /> is empty.
 		/// </summary>
-		/// <returns>The first element if all elements are equal by <paramref name="comparer" /></returns>
 		/// <exception cref="InvalidOperationException" />
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public static T Same<T>(this IEnumerable<T> source, IEqualityComparer<T> comparer) => source.Same(x => x, comparer);
+		public static bool Same<T>(this IEnumerable<T> source, IEqualityComparer<T> comparer) => source.Same(x => x, comparer);
 
 		/// <summary>
-		///     Checks whether all values projected from <see cref="IEnumerable{T}" /> by <paramref name="predicate" /> are equal,
-		///     and returns the first value if true; otherwise, throws an
-		///     <see cref="InvalidOperationException" />
+		///     Checks whether all values projected by <paramref name="predicate" /> from <see cref="IEnumerable{T}" /> are equal,
+		///     or throws <see cref="InvalidOperationException" /> if
+		///     <see cref="IEnumerable{T}" /> is empty.
 		/// </summary>
 		/// <param name="predicate">A transform function to apply to each element.</param>
-		/// <returns>Projected value of the first element if all values are equal</returns>
 		/// <exception cref="InvalidOperationException" />
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public static TResult Same<TSource, TResult>(this IEnumerable<TSource> source, Func<TSource, TResult> predicate) =>
+		public static bool Same<TSource, TResult>(this IEnumerable<TSource> source, Func<TSource, TResult> predicate) =>
 			Same(source, predicate, (a, b) => a?.Equals(b) == true);
 
 		/// <summary>
-		///     Checks whether all values projected from <see cref="IEnumerable{T}" /> by <paramref name="predicate" /> are equal
-		///     by <paramref name="comparer" />, and returns the first value if true; otherwise, throws an
-		///     <see cref="InvalidOperationException" />
+		///     Checks whether all values projected by <paramref name="predicate" /> from <see cref="IEnumerable{T}" /> are equal
+		///     by <paramref name="comparer" />, or throws <see cref="InvalidOperationException" /> if
+		///     <see cref="IEnumerable{T}" /> is empty.
 		/// </summary>
 		/// <param name="predicate">A transform function to apply to each element.</param>
-		/// <returns>Projected value of the first element if all values are equal by <paramref name="comparer" /></returns>
 		/// <exception cref="InvalidOperationException" />
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public static TResult Same<TSource, TResult>(this IEnumerable<TSource> source, Func<TSource, TResult> predicate, IEqualityComparer<TResult> comparer) =>
+		public static bool Same<TSource, TResult>(this IEnumerable<TSource> source, Func<TSource, TResult> predicate, IEqualityComparer<TResult> comparer) =>
 			Same(source, predicate, comparer.Equals);
 
-		private static TResult Same<TSource, TResult>(this IEnumerable<TSource> source, Func<TSource, TResult> predicate, Func<TResult, TResult, bool> comparer) {
+		private static bool Same<TSource, TResult>(this IEnumerable<TSource> source, Func<TSource, TResult> predicate, Func<TResult, TResult, bool> comparer) {
 			using var enumerator = source.GetEnumerator();
 			bool success = enumerator.MoveNext();
 			if (!success)
@@ -168,8 +163,8 @@ namespace TrueMogician.Extensions.Enumerable {
 			var reference = predicate(enumerator.Current);
 			while (enumerator.MoveNext())
 				if (!comparer(reference, predicate(enumerator.Current)))
-					throw new InvalidOperationException("Values aren't the same");
-			return reference;
+					return false;
+			return true;
 		}
 		#endregion
 
@@ -484,11 +479,6 @@ namespace TrueMogician.Extensions.Enumerable {
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public static Dictionary<TSource, TResult> ToDictionaryWith<TSource, TResult>(this IEnumerable<TSource> source, Func<TSource, TResult> elementSelector) =>
 			source.ToDictionary(item => item, elementSelector);
-		#endregion
-
-		#region Obsolete
-		[Obsolete("This extension method does the same job as Enumerable.Cast<T>, use this instead")]
-		public static IEnumerable<T> AsType<T>(this IEnumerable source) => from object item in source select item is T result ? result : throw new InvalidCastException();
 		#endregion
 	}
 
