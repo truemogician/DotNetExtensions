@@ -1,71 +1,76 @@
-function Publish-Package([string] $project, [string] $version) {
-	if (!(Test-Path "$project/*.csproj")) {
-		return "Project $project not found";
+$NUGET_SOURCE = 'GitHub-truemogician'
+
+function Publish-Package {
+	param(
+		[Parameter(Mandatory, Position = 0)]
+		[string]$Project,
+		[Parameter(Position = 1)]
+		[ValidatePattern('^(?:latest|\d+\.\d+\.\d+)$', Options = 'IgnoreCase')]
+		[string]$Version
+	)
+
+	if (-not (Test-Path "$Project/*.csproj" -ErrorAction SilentlyContinue)) {
+		throw New-Object -TypeName System.IO.FileNotFoundException -ArgumentList "Project $project not found.";
 	}
-	$csprojPath = Get-ChildItem "$project/*.csproj" -File -Name;
-	$structure = [xml](Get-Content "$project/$csprojPath");
+	$csprojPath = Get-ChildItem "$Project/*.csproj" -File -Name;
+	$structure = [xml](Get-Content "$Project/$csprojPath");
 	$packageId = $structure.SelectSingleNode("/Project/PropertyGroup/PackageId").InnerText;
-	Set-Location "$project/bin/Release";
-	if (!$version) {
+	Set-Location "$Project/bin/Release";
+	if (-not $Version) {
 		$pkgs = [string[]](Get-ChildItem "$packageId.*.nupkg" -File -Name);
 		foreach ($pkg in $pkgs) {
-			Invoke-Expression "dotnet nuget push `"$pkg`" --source github-personal"
+			dotnet nuget push $pkg --source $NUGET_SOURCE;
 		}
+	}
+	elseif ($Version.ToLower() -eq 'latest') {
+		$pkgs = [string[]](Get-ChildItem "$packageId.*.nupkg" -File -Name);
+		$major = 0;
+		$minor = 0;
+		$patch = 0;
+		foreach ($pkg in $pkgs) {
+			$match = [Regex]::Match($pkg, "$packageId\.(?<major>\d+)\.(?<minor>\d+)\.(?<fix>\d+)\.nupkg");
+			if ($match.Success -eq $false) {
+				continue;
+			}
+			$curMajor = [int]($match.Groups['major'].Value);
+			$curMinor = [int]($match.Groups['minor'].Value);
+			$curPatch = [int]($match.Groups['fix'].Value);
+			if ($curMajor -gt $major -or ($curMajor -eq $major -and ($curMinor -gt $minor -or ($curMinor -eq $minor -and $curPatch -gt $patch)))) {
+				$major = $curMajor;
+				$minor = $curMinor;
+				$patch = $curPatch;
+			}
+		}
+		dotnet nuget push "`"$packageId.$major.$minor.$patch.nupkg`"" --source $NUGET_SOURCE;
 	}
 	else {
-		if ($version -eq 'latest') {
-			$pkgs = [string[]](Get-ChildItem "$packageId.*.nupkg" -File -Name);
-			$major = 0;
-			$minor = 0;
-			$patch = 0;
-			foreach ($pkg in $pkgs) {
-				$match = [Regex]::Match($pkg, "$packageId\.(?<major>\d+)\.(?<minor>\d+)\.(?<fix>\d+)\.nupkg");
-				if ($match.Success -eq $false) {
-					continue;
-				}
-				$curMajor = [int]($match.Groups['major'].Value);
-				$curMinor = [int]($match.Groups['minor'].Value);
-				$curPatch = [int]($match.Groups['fix'].Value);
-				if ($curMajor -gt $major -or ($curMajor -eq $major -and ($curMinor -gt $minor -or ($curMinor -eq $minor -and $curPatch -gt $patch)))) {
-					$major = $curMajor;
-					$minor = $curMinor;
-					$patch = $curPatch;
-				}
-			}
-			Invoke-Expression "dotnet nuget push `"$packageId.$major.$minor.$patch.nupkg`" --source github-personal";
+		$package = "$packageId.$Version.nupkg";
+		if (-not (Test-Path $package -ErrorAction SilentlyContinue)) {
+			throw New-Object -TypeName System.IO.FileNotFoundException -ArgumentList "Package not found: $package";
 		}
-		else {
-			if (!($version -match '\d+\.\d+\.\d+')) {
-				return "Wrong version syntax";
-			}
-			$package = "$packageId.$version.nupkg";
-			if (!(Test-Path $package)) {
-				return "$package not found";
-			}
-			Invoke-Expression "dotnet nuget push `"$package`" --source github-personal";
-		}
+		dotnet nuget push $package --source $NUGET_SOURCE;
 	}
 	Set-Location "../../../";
-	return $true;
 }
+
 $location = Get-Location;
 Set-Location $PSScriptRoot;
 if ($args.Count -eq 0) {
 	$projects = [string[]](Get-ChildItem -Directory -Name);
 	foreach ($project in $projects) {
-		Publish-Package $project;
+		Publish-Package -Project $project;
 	}
 }
 else {
 	foreach ($project in $args) {
 		$separator = $project.IndexOf('@');
 		if ($separator -eq -1) {
-			Publish-Package $project;
+			Publish-Package -Project $project;
 		}
 		else {
 			$version = $project.Substring($separator + 1);
 			$project = $project.Substring(0, $separator);
-			Publish-Package $project $version;
+			Publish-Package -Project $project -Version $version;
 		}
 	}
 }
