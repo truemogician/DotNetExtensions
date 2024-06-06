@@ -17,7 +17,7 @@ namespace TrueMogician.Extensions.String {
         /// <param name="str">The current string.</param>
 		/// <returns>A variable of <typeparamref name="T"/> converted from <paramref name="str"/>.</returns>
         /// <exception cref="TypeException"></exception>
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public static T ConvertTo<T>(this string str) => (T)ConvertTo(str, typeof(T));
 
 		/// <summary>
@@ -35,7 +35,40 @@ namespace TrueMogician.Extensions.String {
 			if (typeof(IConvertible).IsAssignableFrom(targetType))
 				return Convert.ChangeType(str, targetType);
 			var constructor = targetType.GetConstructors().FirstOrDefault(c => c.GetParameters() is var p && p.Length == 1 && p[0].ParameterType == typeof(string));
-			return constructor?.Invoke(new object[] {str}) ?? throw new TypeException(targetType, $"{targetType.FullName} cannot be converted from a string");
+			return constructor?.Invoke([str]) ?? throw new TypeException(targetType, $"{targetType.FullName} cannot be converted from a string");
 		}
-	}
+
+		/// <summary>
+		/// Return a copy of the <see cref="string" /> with its first letter converted to uppercase.
+		/// </summary>
+		/// <param name="str">The current string.</param>
+		/// <param name="preserveRest">
+		/// If <see langword="true" />, the case of the remaining string (string excluding the first letter) will remain untouched, otherwise it'll be converted to lowercase.  
+		/// Default is <see langword="false" />.
+		/// </param>
+		/// <returns>A capitalized equivalent of <paramref name="str"/>.</returns>
+		public static string Capitalize(this string str, bool preserveRest = false) {
+			return str.Length switch {
+				0 => str,
+				1 => str.ToUpper(),
+				_ => char.ToUpper(str[0]) + (preserveRest ? str.Substring(1) : str.Substring(1).ToLower())
+			};
+		}
+
+        /// <summary>
+        /// Return a copy of the <see cref="string" /> with its first letter converted to uppercase using the casing rule of the invariant culture.
+        /// </summary>
+        /// <param name="preserveRest">
+        /// If <see langword="true" />, the case of the remaining string (string excluding the first letter) will remain untouched, otherwise it'll be converted to lowercase.  
+        /// Default is <see langword="false" />.
+        /// </param>
+        /// <returns>A capitalized equivalent of <paramref name="str"/>.</returns>
+        public static string CapitalizeInvariant(this string str, bool preserveRest = false) {
+			return str.Length switch {
+				0 => str,
+				1 => str.ToUpperInvariant(),
+				_ => char.ToUpperInvariant(str[0]) + (preserveRest ? str.Substring(1) : str.Substring(1).ToLowerInvariant())
+			};
+		}
+    }
 }
