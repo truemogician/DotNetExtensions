@@ -489,6 +489,118 @@ namespace TrueMogician.Extensions.Enumerable {
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public static Dictionary<TSource, TResult> ToDictionaryWith<TSource, TResult>(this IEnumerable<TSource> source, Func<TSource, TResult> elementSelector) =>
 			source.ToDictionary(item => item, elementSelector);
+        #endregion
+
+        #region Count Comparer
+        /// <summary>
+        ///		Determines whether the number of elements in the source sequence is larger than the specified <paramref name="count" />.
+        /// </summary>
+        /// <param name="count">The number of elements to compare against.</param>
+        /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="count"/> is negative.</exception>
+        public static bool CountLargerThan<TSource>(this IEnumerable<TSource> source, int count) {
+			if (count < 0)
+				throw new ArgumentOutOfRangeException(nameof(count), "Count cannot be negative");
+			using var e = source.GetEnumerator();
+			for (int i = 0; i <= count; ++i) {
+				if (!e.MoveNext())
+					return false;
+			}
+            return true;
+        }
+
+        /// <summary>
+        ///		Determines whether the number of elements in the source sequence is larger than or equal to the specified <paramref name="count" />.
+        /// </summary>
+        /// <inheritdoc cref="CountLargerThan{TSource}(IEnumerable{TSource}, int)"/>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool CountLargerThanOrEqualTo<TSource>(this IEnumerable<TSource> source, int count)
+			=> source.CountLargerThan(count - 1);
+
+		/// <summary>
+		///		Determines whether the number of elements in the source sequence is smaller than the specified <paramref name="count" />.
+		/// </summary>
+		/// <inheritdoc cref="CountLargerThan{TSource}(IEnumerable{TSource}, int)"/>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool CountSmallerThan<TSource>(this IEnumerable<TSource> source, int count)
+			=> !source.CountLargerThan(count - 1);
+
+		/// <summary>
+		///		Determines whether the number of elements in the source sequence is smaller than or equal to the specified <paramref name="count" />.
+		/// </summary>
+		/// <inheritdoc cref="CountLargerThan{TSource}(IEnumerable{TSource}, int)"/>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool CountSmallerThanOrEqualTo<TSource>(this IEnumerable<TSource> source, int count)
+			=> !source.CountLargerThan(count);
+        #endregion
+
+        #region Statistics
+        /// <summary>
+        ///		Counts the occurrences of each element in the source sequence.
+        /// </summary>
+        /// <param name="comparer">An optional equality comparer to compare elements.</param>
+        /// <returns>A dictionary where the keys are the elements from the source sequence and the values are their respective counts.</returns>
+        public static Dictionary<TSource, int> ToCountDictionary<TSource>(this IEnumerable<TSource> source, IEqualityComparer<TSource>? comparer = null) {
+			var dict = new Dictionary<TSource, int>(comparer);
+			foreach (var item in source) {
+				if (!dict.TryGetValue(item, out var count))
+					count = 0;
+				dict[item] = count + 1;
+			}
+			return dict;
+        }
+
+        /// <summary>
+        ///		Finds the mode (most frequently occurring element) in the source sequence along with its count.
+        /// </summary>
+        /// <param name="comparer">An optional equality comparer to compare elements.</param>
+        /// <returns>A tuple containing the mode and its count. If the source sequence is empty, the mode will be null and the count will be 0.</returns>
+        public static (TSource? Mode, int Count) ModeAndCount<TSource>(this IEnumerable<TSource> source, IEqualityComparer<TSource>? comparer = null) {
+			var counts = source.ToCountDictionary(comparer);
+			if (counts.Count == 0)
+				return (default, 0);
+			var pair = counts.Aggregate((l, r) => l.Value >= r.Value ? l : r);
+			return (pair.Key, pair.Value);
+		}
+        
+		/// <summary>
+        ///		Finds the mode (most frequently occurring element) in the source sequence.
+        /// </summary>
+        /// <returns>The mode element or <see langword="default" /> if the sequence is empty.</returns>
+        /// <inheritdoc cref="ModeAndCount{TSource}(IEnumerable{TSource}, IEqualityComparer{TSource}?)"/>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static TSource? ModeOrDefault<TSource>(this IEnumerable<TSource> source, IEqualityComparer<TSource>? comparer = null)
+			=> source.ModeAndCount(comparer).Mode;
+
+		/// <returns>The mode element. An <see cref="InvalidOperationException"/> is thrown when the sequence is empty.</returns>
+		/// <exception cref="InvalidOperationException" />
+		/// <inheritdoc cref="ModeOrDefault{TSource}(IEnumerable{TSource}, IEqualityComparer{TSource}?)"/>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static TSource Mode<TSource>(this IEnumerable<TSource> source, IEqualityComparer<TSource>? comparer = null)
+			=> source.ModeAndCount(comparer) is { Count: > 0 } r ? r.Mode! : throw new InvalidOperationException("Sequence contains no elements");
+
+		/// <summary>
+		///		Finds the modes (most frequently occurring elements) in the source sequence along with their count.
+		/// </summary>
+		/// <param name="comparer">An optional equality comparer to compare elements.</param>
+		/// <returns>A tuple containing the modes and their count. If the source sequence is empty, the modes will be an empty array and the count will be 0.</returns>
+        public static (TSource[] Modes, int Count) ModesAndCount<TSource>(this IEnumerable<TSource> source, IEqualityComparer<TSource>? comparer = null) {
+			var counts = source.ToCountDictionary(comparer);
+			if (counts.Count == 0)
+				return ([], 0);
+			var maxCount = counts.Values.Max();
+			var modes = counts.Where(p => p.Value == maxCount).Select(kvp => kvp.Key).ToArray();
+			return (modes, maxCount);
+		}
+
+        /// <summary>
+        ///		Finds the modes (most frequently occurring elements) in the source sequence.
+        /// </summary>
+        /// <param name="comparer">An optional equality comparer to compare elements.</param>
+        /// <returns>An array of mode elements. If the sequence is empty, an empty array is returned.</returns>
+        /// <inheritdoc cref="ModesAndCount{TSource}(IEnumerable{TSource}, IEqualityComparer{TSource}?)"/>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static TSource[] Modes<TSource>(this IEnumerable<TSource> source, IEqualityComparer<TSource>? comparer = null)
+			=> source.ModesAndCount(comparer).Modes;
 		#endregion
 	}
 
