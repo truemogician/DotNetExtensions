@@ -12,20 +12,19 @@ namespace TrueMogician.Extensions.Enumerable {
 		///     Returns the <paramref name="source" /> itself if it's already <see cref="List{T}" />, else creates one.
 		/// </summary>
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public static List<T> AsList<T>(this IEnumerable<T> source) => source is List<T> list ? list : source.ToList();
+		public static List<T> AsList<T>(this IEnumerable<T> source) => source as List<T> ?? source.ToList();
 
-		/// <summary>
-		///     Returns the <paramref name="source" /> itself if it's already <see cref="T:T[]" />, else creates one.
-		/// </summary>
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public static T[] AsArray<T>(this IEnumerable<T> source) => source is T[] array ? array : source.ToArray();
+        /// <summary>
+        ///     Returns the <paramref name="source" /> itself if it's already an array of <typeparamref name="T"/>, else creates one.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static T[] AsArray<T>(this IEnumerable<T> source) => source as T[] ?? source.ToArray();
 
-		/// <summary>
-		///     Returns the <paramref name="source" /> itself if it's already <see cref="IList{T}" />,
-		///     else creates an <see cref="T:T[]" />.
-		/// </summary>
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public static IList<T> AsIList<T>(this IEnumerable<T> source) => source is IList<T> list ? list : source.ToArray();
+        /// <summary>
+        ///     Returns the <paramref name="source" /> itself if it's already <see cref="IList{T}" />, else creates an array of <typeparamref name="T"/>.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static IList<T> AsIList<T>(this IEnumerable<T> source) => source as IList<T> ?? source.ToArray();
 		#endregion
 
 		#region ToIndexed, ToIndexDictionary
@@ -206,9 +205,8 @@ namespace TrueMogician.Extensions.Enumerable {
 		#region Each, ForEach
 		/// <summary>
 		///     Applies <paramref name="action" /> to each element of <see cref="IEnumerable{T}" />, and returns itself for
-		///     chaining actions. <br /> Note that if chaining is not intended, use
-		///     <see cref="ForEach{T}(IEnumerable{T},Action{T})" /> instead,
-		///     since unused return value will be optimized out and thus <paramref name="action" /> won't get performed.
+		///     chaining actions. <br /> Note that if chaining is not intended, use <see cref="ForEach{T}(IEnumerable{T},Action{T})" /> instead,
+		///     since unused return value will be optimized out and thus <paramref name="action" /> will not be performed.
 		/// </summary>
 		/// <param name="action">An action to be performed on each element of <see cref="IEnumerable{T}" /></param>
 		/// <returns>The <see cref="IEnumerable{T}" /> itself</returns>
@@ -391,21 +389,17 @@ namespace TrueMogician.Extensions.Enumerable {
 
 		#region Split
 		/// <summary>
-		///     Splits <paramref name="source" /> into 2 parts according to
-		///     the result of <paramref name="predicate" /> on each item.
+		///     Splits <paramref name="source" /> into 2 parts according to the result of <paramref name="predicate" /> on each item.
 		/// </summary>
 		/// <returns>
-		///     A tuple consists of two <see cref="List{T}" />, the first contains the items who returns <see langword="true" />
-		///     on <paramref name="predicate" />, the second contains the <see langword="false" /> ones.
+		///     A tuple consists of two <see cref="List{T}" />, the first containing the items that return <see langword="true" />
+		///     on <paramref name="predicate" />, the second containing the <see langword="false" /> ones.
 		/// </returns>
 		public static (List<T> TrueList, List<T> FalseList) Split<T>(this IEnumerable<T> source, Func<T, bool> predicate) {
 			var trueList = new List<T>();
 			var falseList = new List<T>();
 			foreach (var item in source)
-				if (predicate(item))
-					trueList.Add(item);
-				else
-					falseList.Add(item);
+				(predicate(item) ? trueList : falseList).Add(item);
 			return (trueList, falseList);
 		}
 		#endregion
@@ -487,8 +481,7 @@ namespace TrueMogician.Extensions.Enumerable {
 		#region ToDictionary
 		/// <summary>
 		///     Creates a <see cref="Dictionary{TKey,TValue}" /> from an <see cref="IEnumerable{T}" /> according to specific
-		///     element
-		///     selector function.
+		///     element selector function.
 		/// </summary>
 		/// <param name="elementSelector">A transform function to produce a result element value from each element.</param>
 		/// <exception cref="ArgumentException" />
@@ -502,10 +495,8 @@ namespace TrueMogician.Extensions.Enumerable {
 	/// <summary>
 	///     An enumerable class that yields index along with value.
 	/// </summary>
-	public class IndexedEnumerable<T> : IEnumerable<(T Value, int Index)> {
-		public IndexedEnumerable(IEnumerable<T> source) => Enumerable = source;
-
-		protected IEnumerable<T> Enumerable { get; }
+	public class IndexedEnumerable<T>(IEnumerable<T> source) : IEnumerable<(T Value, int Index)> {
+		protected IEnumerable<T> Enumerable { get; } = source;
 
 		public IEnumerator<(T Value, int Index)> GetEnumerator() {
 			var index = 0;

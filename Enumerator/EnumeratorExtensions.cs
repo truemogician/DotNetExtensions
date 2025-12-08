@@ -67,7 +67,7 @@ namespace TrueMogician.Extensions.Enumerator {
 
 		/// <summary>
 		///     Create an <see cref="ExtendedEnumerator{T}" /> from <paramref name="enumerator" />. Note that
-		///     <paramref name="enumerator" /> should be an not-started <see cref="IEnumerator{T}" /> instead of a midway one.
+		///     <paramref name="enumerator" /> should be a not-started <see cref="IEnumerator{T}" /> instead of a midway one.
 		/// </summary>
 		public static IExtendedEnumerator<T> ToExtended<T>(this IEnumerator<T> enumerator) => new ExtendedEnumerator<T>(enumerator);
 
@@ -75,6 +75,6 @@ namespace TrueMogician.Extensions.Enumerator {
 		///     <paramref name="enumerator" /> itself if <paramref name="enumerator" /> is already an
 		///     <see cref="IExtendedEnumerator{T}" />, otherwise a newly created <see cref="ExtendedEnumerator{T}" />
 		/// </returns>
-		public static IExtendedEnumerator<T> AsExtended<T>(this IEnumerator<T> enumerator) => enumerator is IExtendedEnumerator<T> e ? e : new ExtendedEnumerator<T>(enumerator);
+		public static IExtendedEnumerator<T> AsExtended<T>(this IEnumerator<T> enumerator) => enumerator as IExtendedEnumerator<T> ?? new ExtendedEnumerator<T>(enumerator);
 	}
 }
