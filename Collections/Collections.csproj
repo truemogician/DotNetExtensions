@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
 		<TargetFrameworks>netstandard2.0;netstandard2.1;net5.0</TargetFrameworks>
@@ -19,8 +19,8 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="TrueMogician.Extensions.Enumerable" Version="1.6.0" />
-		<PackageReference Include="TrueMogician.Extensions.Events" Version="1.0.0" />
+		<PackageReference Include="TrueMogician.Extensions.Enumerable" Version="2.1.0" />
+		<PackageReference Include="TrueMogician.Extensions.Events" Version="1.0.1" />
 	</ItemGroup>
 
 	<PropertyGroup>
