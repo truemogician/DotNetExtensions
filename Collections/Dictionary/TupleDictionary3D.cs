@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 #if NET5_0_OR_GREATER
@@ -35,11 +36,10 @@ public class TupleDictionary3D<TKey1, TKey2, TValue> : IDictionary3D<TKey1, TKey
 		IDictionary3D<TKey1, TKey2, TValue> other,
 		IEqualityComparer<TKey1> comparer1,
 		IEqualityComparer<TKey2> comparer2
-	) : this(other) {
-		Comparer1 = comparer1;
-		Comparer2 = comparer2;
-		_dict = new Dictionary<(TKey1, TKey2), TValue>(new TupleEqualityComparer<TKey1, TKey2>(comparer1, comparer2));
-	}
+	) : this(comparer1, comparer2) {
+		foreach (var (key1, key2, value) in other)
+			_dict[(key1, key2)] = value;
+    }
 
 	public int Count => _dict.Count;
 
@@ -68,7 +68,13 @@ public class TupleDictionary3D<TKey1, TKey2, TValue> : IDictionary3D<TKey1, TKey
 		=> _dict.TryGetValue((item.Item1, item.Item2), out var value) && EqualityComparer<TValue>.Default.Equals(value, item.Item3);
 
 	public void CopyTo((TKey1, TKey2, TValue)[] array, int arrayIndex) {
-		foreach (var tuple in this)
+		if (array is null)
+			throw new ArgumentNullException(nameof(array));
+		if (arrayIndex < 0)
+			throw new ArgumentOutOfRangeException(nameof(arrayIndex));
+		if (array.Length - arrayIndex < Count)
+			throw new ArgumentException("The destination array has fewer elements than the collection.");
+        foreach (var tuple in this)
 			array[arrayIndex++] = tuple;
 	}
 
@@ -117,13 +123,13 @@ public class TupleDictionary3D<TKey1, TKey2, TValue> : IDictionary3D<TKey1, TKey
 	/// </returns>
 	public IEqualityComparer<TKey2>? Comparer2 { get; }
 
-	/// <summary>
-	///     Creates a new <see cref="TupleDictionary3D{TKey2,TKey1,TValue}" /> with transposed keys.
-	/// </summary>
+    /// <summary>
+    ///     Creates a new <see cref="TupleDictionary3D{TKey2,TKey1,TValue}" /> with transposed keys.
+    /// </summary>
 	public TupleDictionary3D<TKey2, TKey1, TValue> Transpose() {
-		var result = Comparer1 is not null && Comparer2 is not null
-			? new TupleDictionary3D<TKey2, TKey1, TValue>(Comparer2, Comparer1)
-			: new TupleDictionary3D<TKey2, TKey1, TValue>(Count);
+		var c1 = Comparer1 ?? EqualityComparer<TKey1>.Default;
+		var c2 = Comparer2 ?? EqualityComparer<TKey2>.Default;
+		var result = new TupleDictionary3D<TKey2, TKey1, TValue>(c2, c1);
 		foreach (var (key1, key2, value) in this)
 			result[key2, key1] = value;
 		return result;
@@ -136,7 +142,9 @@ public class TupleEqualityComparer<T1, T2>(IEqualityComparer<T1> comparer1, IEqu
 
 	public int GetHashCode((T1, T2) obj) {
 		unchecked {
-			return (comparer1.GetHashCode(obj.Item1!) * 397) ^ comparer2.GetHashCode(obj.Item2!);
+			var h1 = obj.Item1 is null ? 0 : comparer1.GetHashCode(obj.Item1);
+			var h2 = obj.Item2 is null ? 0 : comparer2.GetHashCode(obj.Item2);
+			return (h1 * 397) ^ h2;
 		}
-	}
+    }
 }
