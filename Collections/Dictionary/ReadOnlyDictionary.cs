@@ -6,27 +6,24 @@ using TrueMogician.Exceptions;
 using System.Diagnostics.CodeAnalysis;
 #endif
 
-namespace TrueMogician.Extensions.Collections {
-	public class ValueReadOnlyDictionary<TKey, TValue, TReadOnlyValue> : IReadOnlyDictionary<TKey, TReadOnlyValue> where TValue : TReadOnlyValue {
-		private readonly IDictionary<TKey, TValue> _dictionary;
-
-		public ValueReadOnlyDictionary(IDictionary<TKey, TValue> dictionary) => _dictionary = dictionary;
+namespace TrueMogician.Extensions.Collections.Dictionary {
+	public class ValueReadOnlyDictionary<TKey, TValue, TReadOnlyValue>(IDictionary<TKey, TValue> dictionary) : IReadOnlyDictionary<TKey, TReadOnlyValue>
+		where TValue : TReadOnlyValue {
+		/// <inheritdoc />
+		public int Count => dictionary.Count;
 
 		/// <inheritdoc />
-		public int Count => _dictionary.Count;
+		public IEnumerable<TKey> Keys => dictionary.Keys;
 
 		/// <inheritdoc />
-		public IEnumerable<TKey> Keys => _dictionary.Keys;
+		public IEnumerable<TReadOnlyValue> Values => dictionary.Values.Cast<TReadOnlyValue>();
 
 		/// <inheritdoc />
-		public IEnumerable<TReadOnlyValue> Values => _dictionary.Values.Cast<TReadOnlyValue>();
-
-		/// <inheritdoc />
-		public TReadOnlyValue this[TKey key] => _dictionary[key];
+		public TReadOnlyValue this[TKey key] => dictionary[key];
 
 		/// <inheritdoc />
 		public IEnumerator<KeyValuePair<TKey, TReadOnlyValue>> GetEnumerator()
-			=> _dictionary
+			=> dictionary
 				.Select(x => new KeyValuePair<TKey, TReadOnlyValue>(x.Key, x.Value))
 				.GetEnumerator();
 
@@ -34,7 +31,7 @@ namespace TrueMogician.Extensions.Collections {
 		IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
 		/// <inheritdoc />
-		public bool ContainsKey(TKey key) => _dictionary.ContainsKey(key);
+		public bool ContainsKey(TKey key) => dictionary.ContainsKey(key);
 
 		/// <inheritdoc />
 		public bool TryGetValue(
@@ -44,35 +41,32 @@ namespace TrueMogician.Extensions.Collections {
 #endif
 			out TReadOnlyValue value
 		) {
-			bool result = _dictionary.TryGetValue(key, out var v);
+			bool result = dictionary.TryGetValue(key, out var v);
 			value = v;
 			return result;
 		}
 	}
 
-	public class KeyReadOnlyDictionary<TKey, TValue, TReadOnlyKey> : IReadOnlyDictionary<TReadOnlyKey, TValue> where TKey : TReadOnlyKey {
-		private readonly IDictionary<TKey, TValue> _dictionary;
-
-		public KeyReadOnlyDictionary(IDictionary<TKey, TValue> dictionary) => _dictionary = dictionary;
+	public class KeyReadOnlyDictionary<TKey, TValue, TReadOnlyKey>(IDictionary<TKey, TValue> dictionary) : IReadOnlyDictionary<TReadOnlyKey, TValue>
+		where TKey : TReadOnlyKey {
+		/// <inheritdoc />
+		public int Count => dictionary.Count;
 
 		/// <inheritdoc />
-		public int Count => _dictionary.Count;
+		public IEnumerable<TReadOnlyKey> Keys => dictionary.Keys.Cast<TReadOnlyKey>();
 
 		/// <inheritdoc />
-		public IEnumerable<TReadOnlyKey> Keys => _dictionary.Keys.Cast<TReadOnlyKey>();
-
-		/// <inheritdoc />
-		public IEnumerable<TValue> Values => _dictionary.Values;
+		public IEnumerable<TValue> Values => dictionary.Values;
 
 		/// <param name="key">
 		///     <inheritdoc cref="ContainsKey" />
 		/// </param>
 		/// <inheritdoc />
-		public TValue this[TReadOnlyKey key] => key is TKey realKey ? _dictionary[realKey] : throw new InvariantTypeException(typeof(TKey), key?.GetType());
+		public TValue this[TReadOnlyKey key] => key is TKey realKey ? dictionary[realKey] : throw new InvariantTypeException(typeof(TKey), key?.GetType());
 
 		/// <inheritdoc />
 		public IEnumerator<KeyValuePair<TReadOnlyKey, TValue>> GetEnumerator()
-			=> _dictionary
+			=> dictionary
 				.Select(x => new KeyValuePair<TReadOnlyKey, TValue>(x.Key, x.Value))
 				.GetEnumerator();
 
@@ -85,7 +79,7 @@ namespace TrueMogician.Extensions.Collections {
 		///     <see cref="InvariantTypeException" /> will be thrown
 		/// </param>
 		/// <inheritdoc />
-		public bool ContainsKey(TReadOnlyKey key) => key is TKey realKey ? _dictionary.ContainsKey(realKey) : throw new InvariantTypeException(typeof(TKey), key?.GetType());
+		public bool ContainsKey(TReadOnlyKey key) => key is TKey realKey ? dictionary.ContainsKey(realKey) : throw new InvariantTypeException(typeof(TKey), key?.GetType());
 
 		/// <param name="key">
 		///     <inheritdoc cref="ContainsKey" />
@@ -98,32 +92,30 @@ namespace TrueMogician.Extensions.Collections {
 #endif
 			out TValue value
 		)
-			=> key is TKey realKey ? _dictionary.TryGetValue(realKey, out value) : throw new InvariantTypeException(typeof(TKey), key?.GetType());
+			=> key is TKey realKey ? dictionary.TryGetValue(realKey, out value) : throw new InvariantTypeException(typeof(TKey), key?.GetType());
 	}
 
-	public class KeyValueReadOnlyDictionary<TKey, TValue, TReadOnlyKey, TReadOnlyValue> : IReadOnlyDictionary<TReadOnlyKey, TReadOnlyValue> where TKey : TReadOnlyKey where TValue : TReadOnlyValue {
-		private readonly IDictionary<TKey, TValue> _dictionary;
-
-		public KeyValueReadOnlyDictionary(IDictionary<TKey, TValue> dictionary) => _dictionary = dictionary;
+	public class KeyValueReadOnlyDictionary<TKey, TValue, TReadOnlyKey, TReadOnlyValue>(IDictionary<TKey, TValue> dictionary) : IReadOnlyDictionary<TReadOnlyKey, TReadOnlyValue>
+		where TKey : TReadOnlyKey
+		where TValue : TReadOnlyValue {
+		/// <inheritdoc />
+		public int Count => dictionary.Count;
 
 		/// <inheritdoc />
-		public int Count => _dictionary.Count;
+		public IEnumerable<TReadOnlyKey> Keys => dictionary.Keys.Cast<TReadOnlyKey>();
 
 		/// <inheritdoc />
-		public IEnumerable<TReadOnlyKey> Keys => _dictionary.Keys.Cast<TReadOnlyKey>();
-
-		/// <inheritdoc />
-		public IEnumerable<TReadOnlyValue> Values => _dictionary.Values.Cast<TReadOnlyValue>();
+		public IEnumerable<TReadOnlyValue> Values => dictionary.Values.Cast<TReadOnlyValue>();
 
 		/// <param name="key">
 		///     <inheritdoc cref="ContainsKey" />
 		/// </param>
 		/// <inheritdoc />
-		public TReadOnlyValue this[TReadOnlyKey key] => key is TKey realKey ? _dictionary[realKey] : throw new InvariantTypeException(typeof(TKey), key?.GetType());
+		public TReadOnlyValue this[TReadOnlyKey key] => key is TKey realKey ? dictionary[realKey] : throw new InvariantTypeException(typeof(TKey), key?.GetType());
 
 		/// <inheritdoc />
 		public IEnumerator<KeyValuePair<TReadOnlyKey, TReadOnlyValue>> GetEnumerator()
-			=> _dictionary
+			=> dictionary
 				.Select(x => new KeyValuePair<TReadOnlyKey, TReadOnlyValue>(x.Key, x.Value))
 				.GetEnumerator();
 
@@ -134,7 +126,7 @@ namespace TrueMogician.Extensions.Collections {
 		///     <inheritdoc cref="KeyReadOnlyDictionary{TKey,TValue,TReadOnlyKey}.ContainsKey" />
 		/// </param>
 		/// <inheritdoc />
-		public bool ContainsKey(TReadOnlyKey key) => key is TKey realKey ? _dictionary.ContainsKey(realKey) : throw new InvariantTypeException(typeof(TKey), key?.GetType());
+		public bool ContainsKey(TReadOnlyKey key) => key is TKey realKey ? dictionary.ContainsKey(realKey) : throw new InvariantTypeException(typeof(TKey), key?.GetType());
 
 		/// <param name="key">
 		///     <inheritdoc cref="ContainsKey" />
@@ -149,7 +141,7 @@ namespace TrueMogician.Extensions.Collections {
 		) {
 			if (key is not TKey realKey)
 				throw new InvariantTypeException(typeof(TKey), key?.GetType());
-			bool result = _dictionary.TryGetValue(realKey, out var v);
+			bool result = dictionary.TryGetValue(realKey, out var v);
 			value = v;
 			return result;
 		}
