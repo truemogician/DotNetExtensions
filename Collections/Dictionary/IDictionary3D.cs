@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 #if !NETSTANDARD2_0
 using System.Diagnostics.CodeAnalysis;
@@ -11,8 +10,37 @@ namespace TrueMogician.Extensions.Collections.Dictionary;
 /// <typeparam name="TKey1">The type of the first component of the keys in the dictionary.</typeparam>
 /// <typeparam name="TKey2">The type of the second component of the keys in the dictionary.</typeparam>
 /// <typeparam name="TValue">The type of values in the dictionary.</typeparam>
-public interface IDictionary3D<TKey1, TKey2, TValue>
-	: ICollection<(TKey1, TKey2, TValue)>, IEnumerable<(TKey1, TKey2, TValue)>, IEnumerable {
+public interface IDictionary3D<TKey1, TKey2, TValue> : ICollection<(TKey1, TKey2, TValue)> {
+	/// <summary>
+	///     Gets the <see cref="IEqualityComparer{T}" /> that is used to determine equality of the first keys for the
+	///     dictionary.
+	/// </summary>
+	/// <returns>
+	///     The <see cref="IEqualityComparer{T}" /> generic interface implementation that is used to determine equality of
+	///     the first keys for the current <see cref="TupleDictionary3D{TKey1,TKey2,TValue}" />.
+	/// </returns>
+	IEqualityComparer<TKey1> Comparer1
+#if NETSTANDARD2_0
+		{ get; }
+#else
+		=> EqualityComparer<TKey1>.Default;
+#endif
+
+	/// <summary>
+	///     Gets the <see cref="IEqualityComparer{T}" /> that is used to determine equality of the second keys for the
+	///     dictionary.
+	/// </summary>
+	/// <returns>
+	///     The <see cref="IEqualityComparer{T}" /> generic interface implementation that is used to determine equality of
+	///     the second keys for the current <see cref="TupleDictionary3D{TKey1,TKey2,TValue}" />.
+	/// </returns>
+	IEqualityComparer<TKey2> Comparer2
+#if NETSTANDARD2_0
+		{ get; }
+#else
+		=> EqualityComparer<TKey2>.Default;
+#endif
+
 	/// <summary>
 	///     Gets an <see cref="ICollection{T}" /> containing the composite keys of the
 	///     <see cref="IDictionary3D{TKey1, TKey2, TValue}" />.

@@ -26,8 +26,7 @@ public class TupleDictionary3D<TKey1, TKey2, TValue> : IDictionary3D<TKey1, TKey
 		_dict = new Dictionary<(TKey1, TKey2), TValue>(new TupleEqualityComparer<TKey1, TKey2>(comparer1, comparer2));
 	}
 
-	public TupleDictionary3D(IDictionary3D<TKey1, TKey2, TValue> other) {
-		_dict = new Dictionary<(TKey1, TKey2), TValue>();
+	public TupleDictionary3D(IDictionary3D<TKey1, TKey2, TValue> other) : this(other.Comparer1, other.Comparer2) {
 		foreach (var (key1, key2, value) in other)
 			_dict[(key1, key2)] = value;
 	}
@@ -39,7 +38,7 @@ public class TupleDictionary3D<TKey1, TKey2, TValue> : IDictionary3D<TKey1, TKey
 	) : this(comparer1, comparer2) {
 		foreach (var (key1, key2, value) in other)
 			_dict[(key1, key2)] = value;
-    }
+	}
 
 	public int Count => _dict.Count;
 
@@ -74,7 +73,7 @@ public class TupleDictionary3D<TKey1, TKey2, TValue> : IDictionary3D<TKey1, TKey
 			throw new ArgumentOutOfRangeException(nameof(arrayIndex));
 		if (array.Length - arrayIndex < Count)
 			throw new ArgumentException("The destination array has fewer elements than the collection.");
-        foreach (var tuple in this)
+		foreach (var tuple in this)
 			array[arrayIndex++] = tuple;
 	}
 
@@ -103,33 +102,15 @@ public class TupleDictionary3D<TKey1, TKey2, TValue> : IDictionary3D<TKey1, TKey
 		out TValue value
 	) => _dict.TryGetValue((key1, key2), out value);
 
-	/// <summary>
-	///     Gets the <see cref="IEqualityComparer{T}" /> that is used to determine equality of the first keys for the
-	///     dictionary.
-	/// </summary>
-	/// <returns>
-	///     The <see cref="IEqualityComparer{T}" /> generic interface implementation that is used to determine equality of
-	///     the first keys for the current <see cref="TupleDictionary3D{TKey1,TKey2,TValue}" />.
-	/// </returns>
-	public IEqualityComparer<TKey1>? Comparer1 { get; }
+	public IEqualityComparer<TKey1> Comparer1 { get; } = EqualityComparer<TKey1>.Default;
+
+	public IEqualityComparer<TKey2> Comparer2 { get; } = EqualityComparer<TKey2>.Default;
 
 	/// <summary>
-	///     Gets the <see cref="IEqualityComparer{T}" /> that is used to determine equality of the second keys for the
-	///     dictionary.
+	///     Creates a new <see cref="TupleDictionary3D{TKey2,TKey1,TValue}" /> with transposed keys.
 	/// </summary>
-	/// <returns>
-	///     The <see cref="IEqualityComparer{T}" /> generic interface implementation that is used to determine equality of
-	///     the second keys for the current <see cref="TupleDictionary3D{TKey1,TKey2,TValue}" />.
-	/// </returns>
-	public IEqualityComparer<TKey2>? Comparer2 { get; }
-
-    /// <summary>
-    ///     Creates a new <see cref="TupleDictionary3D{TKey2,TKey1,TValue}" /> with transposed keys.
-    /// </summary>
 	public TupleDictionary3D<TKey2, TKey1, TValue> Transpose() {
-		var c1 = Comparer1 ?? EqualityComparer<TKey1>.Default;
-		var c2 = Comparer2 ?? EqualityComparer<TKey2>.Default;
-		var result = new TupleDictionary3D<TKey2, TKey1, TValue>(c2, c1);
+		var result = new TupleDictionary3D<TKey2, TKey1, TValue>(Comparer2, Comparer1);
 		foreach (var (key1, key2, value) in this)
 			result[key2, key1] = value;
 		return result;
@@ -146,5 +127,5 @@ public class TupleEqualityComparer<T1, T2>(IEqualityComparer<T1> comparer1, IEqu
 			var h2 = obj.Item2 is null ? 0 : comparer2.GetHashCode(obj.Item2);
 			return (h1 * 397) ^ h2;
 		}
-    }
+	}
 }
