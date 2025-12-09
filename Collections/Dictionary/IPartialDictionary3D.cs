@@ -18,14 +18,14 @@ namespace TrueMogician.Extensions.Collections.Dictionary;
 /// <typeparam name="TValue">The type of values in the dictionary.</typeparam>
 public interface IPartialDictionary3D<TKey1, TKey2, TValue> : IDictionary3D<TKey1, TKey2, TValue> {
 	/// <summary>
-	///     Gets an <see cref="ICollection{T}" /> containing the unique first key components in the
+	///     Gets an <see cref="IReadOnlyCollection{T}" /> containing the unique first key components in the
 	///     <see cref="IPartialDictionary3D{TKey1, TKey2, TValue}" />.
 	/// </summary>
 	/// <returns>
-	///     An <see cref="ICollection{T}" /> containing the unique first key components of the object that implements
+	///     An <see cref="IReadOnlyCollection{T}" /> containing the unique first key components of the object that implements
 	///     <see cref="IPartialDictionary3D{TKey1, TKey2, TValue}" />.
 	/// </returns>
-	ICollection<TKey1> FirstKeys
+	IReadOnlyCollection<TKey1> FirstKeys
 #if NETSTANDARD2_0
 		{ get; }
 #else
@@ -38,10 +38,10 @@ public interface IPartialDictionary3D<TKey1, TKey2, TValue> : IDictionary3D<TKey
 	/// <param name="key1">The first component of the key of the elements to retrieve.</param>
 	/// <exception cref="KeyNotFoundException">The property is retrieved and <paramref name="key1" /> is not found.</exception>
 	/// <returns>
-	///     An <see cref="IDictionary{TKey, TValue}" /> containing the second key components and values associated with
+	///     An <see cref="IReadOnlyDictionary{TKey, TValue}" /> containing the second key components and values associated with
 	///     <paramref name="key1" />.
 	/// </returns>
-	IDictionary<TKey2, TValue> this[TKey1 key1]
+	IReadOnlyDictionary<TKey2, TValue> this[TKey1 key1]
 #if NETSTANDARD2_0
 		{ get; }
 #else
@@ -122,7 +122,7 @@ public interface IPartialDictionary3D<TKey1, TKey2, TValue> : IDictionary3D<TKey
 	///     <see langword="true" /> if the <see cref="IPartialDictionary3D{TKey1, TKey2, TValue}" /> contains elements with the
 	///     specified first key component; otherwise, <see langword="false" />.
 	/// </returns>
-	bool TryGetValues(TKey1 key1, out IDictionary<TKey2, TValue> values)
+	bool TryGetValues(TKey1 key1, out IReadOnlyDictionary<TKey2, TValue> values)
 #if NETSTANDARD2_0
 		;
 #else

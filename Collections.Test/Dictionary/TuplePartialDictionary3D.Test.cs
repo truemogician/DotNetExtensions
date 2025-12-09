@@ -96,14 +96,6 @@ namespace Collections.Test {
 		}
 
 		[Test]
-		public void TryGetValues_ReturnedDictionary_IsCopy_NotLiveView() {
-			_dict.Add("A", 1, "Original");
-			_dict.TryGetValues("A", out var snapshot); 
-			snapshot[1] = "Changed";
-			Assert.That(_dict["A", 1], Is.EqualTo("Original"));
-		}
-
-		[Test]
 		public void Add_Partial_Bulk_ShouldAddAllItems() {
 			var bulkItems = new Dictionary<int, string> {
 				{ 10, "Ten" },

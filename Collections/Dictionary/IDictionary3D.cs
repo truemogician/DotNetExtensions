@@ -42,24 +42,24 @@ public interface IDictionary3D<TKey1, TKey2, TValue> : ICollection<(TKey1, TKey2
 #endif
 
 	/// <summary>
-	///     Gets an <see cref="ICollection{T}" /> containing the composite keys of the
+	///     Gets an <see cref="IReadOnlyCollection{T}" /> containing the composite keys of the
 	///     <see cref="IDictionary3D{TKey1, TKey2, TValue}" />.
 	/// </summary>
 	/// <returns>
-	///     An <see cref="ICollection{T}" /> containing the keys of the object that implements
+	///     An <see cref="IReadOnlyCollection{T}" /> containing the keys of the object that implements
 	///     <see cref="IDictionary3D{TKey1, TKey2, TValue}" />.
 	/// </returns>
-	ICollection<(TKey1, TKey2)> Keys { get; }
+	IReadOnlyCollection<(TKey1, TKey2)> Keys { get; }
 
 	/// <summary>
-	///     Gets an <see cref="ICollection{T}" /> containing the values in the
+	///     Gets an <see cref="IReadOnlyCollection{T}" /> containing the values in the
 	///     <see cref="IDictionary3D{TKey1, TKey2, TValue}" />.
 	/// </summary>
 	/// <returns>
-	///     An <see cref="ICollection{T}" /> containing the values in the object that implements
+	///     An <see cref="IReadOnlyCollection{T}" /> containing the values in the object that implements
 	///     <see cref="IDictionary3D{TKey1, TKey2, TValue}" />.
 	/// </returns>
-	ICollection<TValue> Values { get; }
+	IReadOnlyCollection<TValue> Values { get; }
 
 	/// <summary>Gets or sets the element with the specified composite key.</summary>
 	/// <param name="key1">The first component of the key of the element to get or set.</param>

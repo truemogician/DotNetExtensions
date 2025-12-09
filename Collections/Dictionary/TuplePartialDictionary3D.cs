@@ -25,10 +25,10 @@ public class TuplePartialDictionary3D<TKey1, TKey2, TValue>
 	public TuplePartialDictionary3D(IDictionary3D<TKey1, TKey2, TValue> other) : base(other) { }
 
 	/// <inheritdoc/>
-	public ICollection<TKey1> FirstKeys => Keys.Select(k => k.Item1).Distinct().ToArray();
+	public IReadOnlyCollection<TKey1> FirstKeys => Keys.Select(k => k.Item1).Distinct().ToArray();
 
 	/// <inheritdoc/>
-	public IDictionary<TKey2, TValue> this[TKey1 key1]
+	public IReadOnlyDictionary<TKey2, TValue> this[TKey1 key1]
 		=> TryGetValues(key1, out var dict) ? dict : throw new KeyNotFoundException();
 
 	/// <inheritdoc/>
@@ -41,10 +41,10 @@ public class TuplePartialDictionary3D<TKey1, TKey2, TValue>
 	}
 
 	/// <inheritdoc/>
-    public bool ContainsKey(TKey1 key1) => Keys.Any(k => Comparer1.Equals(k.Item1, key1));
+	public bool ContainsKey(TKey1 key1) => Keys.Any(k => Comparer1.Equals(k.Item1, key1));
 
 	/// <inheritdoc/>
-    public int Remove(TKey1 key1) {
+	public int Remove(TKey1 key1) {
 		var keys = Keys.Where(k => Comparer1.Equals(k.Item1, key1)).ToArray();
 		var count = 0;
 		foreach (var (_, key2) in keys) {
@@ -55,7 +55,7 @@ public class TuplePartialDictionary3D<TKey1, TKey2, TValue>
 	}
 
 	/// <inheritdoc/>
-	public bool TryGetValues(TKey1 key1, out IDictionary<TKey2, TValue> values) {
+	public bool TryGetValues(TKey1 key1, out IReadOnlyDictionary<TKey2, TValue> values) {
 		values = this.Where(t => Comparer1.Equals(t.Item1, key1))
 			.ToDictionary(t => t.Item2, t => t.Item3);
 		return values.Count > 0;

@@ -44,9 +44,9 @@ public class TupleDictionary3D<TKey1, TKey2, TValue> : IDictionary3D<TKey1, TKey
 
 	public bool IsReadOnly => false;
 
-	public ICollection<(TKey1, TKey2)> Keys => _dict.Keys;
+	public IReadOnlyCollection<(TKey1, TKey2)> Keys => _dict.Keys;
 
-	public ICollection<TValue> Values => _dict.Values;
+	public IReadOnlyCollection<TValue> Values => _dict.Values;
 
 	public TValue this[TKey1 key1, TKey2 key2] {
 		get => _dict.TryGetValue((key1, key2), out var value) ? value : throw new KeyNotFoundException();
