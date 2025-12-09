@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-#if NET5_0_OR_GREATER
+#if !NETSTANDARD2_0
 using System.Diagnostics.CodeAnalysis;
 #endif
 
@@ -97,7 +97,7 @@ public class TupleDictionary3D<TKey1, TKey2, TValue> : IDictionary3D<TKey1, TKey
 	public bool TryGetValue(
 		TKey1 key1,
 		TKey2 key2,
-#if NET5_0_OR_GREATER
+#if !NETSTANDARD2_0
 		[MaybeNullWhen(false)]
 #endif
 		out TValue value
