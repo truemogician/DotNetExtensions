@@ -1,0 +1,23 @@
+<Solution>
+	<Folder Name="/Solution Items/">
+		<File Path=".gitattributes" />
+		<File Path=".gitignore" />
+		<File Path="Pack.ps1" />
+		<File Path="Publish.ps1" />
+		<File Path="README.md" />
+	</Folder>
+	<Project Path="Array/Array.csproj" />
+	<Project Path="Collections.Test/Collections.Test.csproj" />
+	<Project Path="Collections/Collections.csproj" />
+	<Project Path="Diagnostics.CodeAnalysis.NullableAttributes/Diagnostics.CodeAnalysis.NullableAttributes.csproj" />
+	<Project Path="Enumerable/Enumerable.csproj" />
+	<Project Path="Enumerator/Enumerator.csproj" />
+	<Project Path="Events/Events.csproj" />
+	<Project Path="Exceptions/Exceptions.csproj" />
+	<Project Path="List/List.csproj" />
+	<Project Path="Number/Number.csproj" />
+	<Project Path="Reflection/Reflection.csproj" />
+	<Project Path="String.Test/String.Test.csproj" />
+	<Project Path="String/String.csproj" />
+	<Project Path="WPF/WPF.csproj" />
+</Solution>
