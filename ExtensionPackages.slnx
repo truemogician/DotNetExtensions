@@ -14,6 +14,7 @@
 	<Project Path="Enumerator/Enumerator.csproj" />
 	<Project Path="Events/Events.csproj" />
 	<Project Path="Exceptions/Exceptions.csproj" />
+	<Project Path="IO/IO.csproj" Id="6e585ff4-3510-4a15-9544-8791486e8e83" />
 	<Project Path="List/List.csproj" />
 	<Project Path="Number/Number.csproj" />
 	<Project Path="Reflection/Reflection.csproj" />
