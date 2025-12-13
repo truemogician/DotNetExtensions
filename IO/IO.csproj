@@ -11,7 +11,7 @@
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<Description>Some extension methods for classes in System.IO</Description>
 		<RepositoryUrl>https://github.com/truemogician/DotNetExtensions</RepositoryUrl>
-		<Version>1.1.0</Version>
+		<Version>1.1.1</Version>
 		<SignAssembly>true</SignAssembly>
 		<AssemblyOriginatorKeyFile>IO.snk</AssemblyOriginatorKeyFile>
 		<GenerateDocumentationFile>true</GenerateDocumentationFile>
