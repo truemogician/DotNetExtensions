@@ -2,28 +2,27 @@
 
 	<PropertyGroup>
 		<TargetFrameworks>netstandard2.0;net5.0</TargetFrameworks>
-		<Nullable>enable</Nullable>
 		<RootNamespace>TrueMogician.Exceptions</RootNamespace>
+		<Nullable>enable</Nullable>
 		<LangVersion>latest</LangVersion>
 		<PackageId>TrueMogician.Exceptions</PackageId>
+		<Version>1.4.2</Version>
 		<Authors>true_mogician</Authors>
 		<Description>Some common exceptions additional to System.Exceptions</Description>
-		<GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+		<PackageReleaseNotes>Change assembly name</PackageReleaseNotes>
+		<Product>$(PackageId)</Product>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
-		<Version>1.4.1</Version>
-		<PackageReleaseNotes>Add more exceptions</PackageReleaseNotes>
 		<RepositoryUrl>https://github.com/truemogician/DotNetExtensions</RepositoryUrl>
 		<SignAssembly>true</SignAssembly>
 		<AssemblyOriginatorKeyFile>Exceptions.snk</AssemblyOriginatorKeyFile>
+		<GeneratePackageOnBuild>false</GeneratePackageOnBuild>
 		<GenerateDocumentationFile>true</GenerateDocumentationFile>
+		<AssemblyName>$(PackageId)</AssemblyName>
+		<NoWarn>1701;1702;1591;1573</NoWarn>
 	</PropertyGroup>
 
 	<PropertyGroup>
 		<DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
-	</PropertyGroup>
-
-	<PropertyGroup>
-		<NoWarn>1701;1702;1591;1573</NoWarn>
 	</PropertyGroup>
 
 </Project>

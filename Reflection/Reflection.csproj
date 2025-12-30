@@ -2,32 +2,32 @@
 
 	<PropertyGroup>
 		<TargetFramework>netstandard2.0</TargetFramework>
+		<RootNamespace>TrueMogician.Extensions.Reflection</RootNamespace>
 		<Nullable>enable</Nullable>
 		<LangVersion>latest</LangVersion>
-		<RootNamespace>TrueMogician.Extensions.Reflection</RootNamespace>
-		<GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+		<PackageId>TrueMogician.Extensions.Reflection</PackageId>
+		<Version>1.1.1</Version>
 		<Authors>true_mogician</Authors>
 		<Description>Some useful extension methods that focus on reflection</Description>
+		<PackageReleaseNotes>Change assembly name</PackageReleaseNotes>
+		<Product>$(PackageId)</Product>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
-		<PackageId>TrueMogician.Extensions.Reflection</PackageId>
 		<RepositoryUrl>https://github.com/truemogician/DotNetExtensions</RepositoryUrl>
-		<Version>1.1.0</Version>
 		<SignAssembly>true</SignAssembly>
 		<AssemblyOriginatorKeyFile>Reflection.snk</AssemblyOriginatorKeyFile>
+		<GeneratePackageOnBuild>false</GeneratePackageOnBuild>
 		<GenerateDocumentationFile>true</GenerateDocumentationFile>
+		<AssemblyName>$(PackageId)</AssemblyName>
+		<NoWarn>1701;1702;1591;1573</NoWarn>
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="TrueMogician.Exceptions" Version="1.1.1" />
-		<PackageReference Include="TrueMogician.Extensions.Enumerable" Version="1.0.2" />
+		<PackageReference Include="TrueMogician.Exceptions" Version="1.4.2" />
+		<PackageReference Include="TrueMogician.Extensions.Enumerable" Version="2.1.1" />
 	</ItemGroup>
 
 	<PropertyGroup>
 		<DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
-	</PropertyGroup>
-
-	<PropertyGroup>
-		<NoWarn>1701;1702;1591;1573</NoWarn>
 	</PropertyGroup>
 
 </Project>

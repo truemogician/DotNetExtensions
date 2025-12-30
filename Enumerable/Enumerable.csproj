@@ -6,27 +6,27 @@
 		<Nullable>enable</Nullable>
 		<LangVersion>latest</LangVersion>
 		<PackageId>TrueMogician.Extensions.Enumerable</PackageId>
+		<Version>2.1.1</Version>
 		<Authors>true_mogician</Authors>
 		<Description>Some extension methods on IEnumerable&lt;T&gt;</Description>
+		<PackageReleaseNotes>Change assembly name</PackageReleaseNotes>
+		<Product>$(PackageId)</Product>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
-		<GeneratePackageOnBuild>false</GeneratePackageOnBuild>
 		<RepositoryUrl>https://github.com/truemogician/DotNetExtensions</RepositoryUrl>
-		<Version>2.1.0</Version>
 		<SignAssembly>true</SignAssembly>
 		<AssemblyOriginatorKeyFile>Enumerable.snk</AssemblyOriginatorKeyFile>
+		<GeneratePackageOnBuild>false</GeneratePackageOnBuild>
 		<GenerateDocumentationFile>true</GenerateDocumentationFile>
+		<AssemblyName>$(PackageId)</AssemblyName>
+		<NoWarn>1701;1702;1591;1573</NoWarn>
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="TrueMogician.Exceptions" Version="1.1.1" />
+		<PackageReference Include="TrueMogician.Exceptions" Version="1.4.2" />
 	</ItemGroup>
 
 	<PropertyGroup>
 		<DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
-	</PropertyGroup>
-
-	<PropertyGroup>
-		<NoWarn>1701;1702;1591;1573</NoWarn>
 	</PropertyGroup>
 
 </Project>

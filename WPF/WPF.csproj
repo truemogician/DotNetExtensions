@@ -1,33 +1,33 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
 		<TargetFrameworks>net5.0-windows;net462</TargetFrameworks>
-		<UseWPF>true</UseWPF>
 		<RootNamespace>TrueMogician.Extensions.WPF</RootNamespace>
+		<UseWPF>true</UseWPF>
 		<Nullable>enable</Nullable>
 		<LangVersion>latest</LangVersion>
 		<PackageId>TrueMogician.Extensions.WPF</PackageId>
+		<Version>1.1.1</Version>
 		<Authors>true_mogician</Authors>
+		<Description>Some extension classes and methods for WPF</Description>
+		<PackageReleaseNotes>Change assembly name</PackageReleaseNotes>
 		<Product>TrueMogician.WPF</Product>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
-		<Description>Some extension classes and methods for WPF</Description>
 		<RepositoryUrl>https://github.com/truemogician/DotNetExtensions</RepositoryUrl>
-		<Version>1.1.0</Version>
 		<SignAssembly>true</SignAssembly>
 		<AssemblyOriginatorKeyFile>WPF.snk</AssemblyOriginatorKeyFile>
+		<GeneratePackageOnBuild>false</GeneratePackageOnBuild>
 		<GenerateDocumentationFile>true</GenerateDocumentationFile>
-	</PropertyGroup>
-
-	<PropertyGroup>
-		<DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
-	</PropertyGroup>
-
-	<PropertyGroup>
+		<AssemblyName>$(PackageId)</AssemblyName>
 		<NoWarn>1701;1702;1591;1573</NoWarn>
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="TrueMogician.Exceptions" Version="1.4.1" />
+		<PackageReference Include="TrueMogician.Exceptions" Version="1.4.2" />
 	</ItemGroup>
+
+	<PropertyGroup>
+		<DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
+	</PropertyGroup>
 
 </Project>

@@ -6,23 +6,23 @@
 		<Nullable>enable</Nullable>
 		<LangVersion>latest</LangVersion>
 		<PackageId>TrueMogician.Extensions.Enumerator</PackageId>
+		<Version>1.1.1</Version>
 		<Authors>true_mogician</Authors>
-		<Product>TrueMogician.Enumerator</Product>
-		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<Description>Some extension methods for IEnumerator&lt;T&gt; and some extended enumerator classes</Description>
+		<PackageReleaseNotes>Change assembly name</PackageReleaseNotes>
+		<Product>$(PackageId)</Product>
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<RepositoryUrl>https://github.com/truemogician/DotNetExtensions</RepositoryUrl>
-		<Version>1.1.0</Version>
 		<SignAssembly>true</SignAssembly>
 		<AssemblyOriginatorKeyFile>Enumerator.snk</AssemblyOriginatorKeyFile>
+		<GeneratePackageOnBuild>false</GeneratePackageOnBuild>
 		<GenerateDocumentationFile>true</GenerateDocumentationFile>
+		<AssemblyName>$(PackageId)</AssemblyName>
+		<NoWarn>1701;1702;1591;1573</NoWarn>
 	</PropertyGroup>
 
 	<PropertyGroup>
 		<DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
-	</PropertyGroup>
-
-	<PropertyGroup>
-		<NoWarn>1701;1702;1591;1573</NoWarn>
 	</PropertyGroup>
 
 </Project>
