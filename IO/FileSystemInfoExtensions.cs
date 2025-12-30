@@ -1,10 +1,40 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 
 namespace TrueMogician.Extensions.IO;
 
 public static class FileSystemInfoExtensions {
+	/// <summary>
+	///     Determines whether the specified file or directory exists.
+	/// </summary>
+	/// <remarks>
+	///     This method returns <see langword="true"/> if the caller does not have sufficient permissions to read the specified
+	///     file or directory, but the file or directory does exist. The method does not check whether the caller has
+	///     permission to access the file or directory beyond its existence.
+	/// </remarks>
+	/// <param name="path">
+	///     The path to the file or directory to check. The path is not case-sensitive. This parameter can refer to either a
+	///     file or a directory.
+	/// </param>
+	/// <returns><see langword="true"/> if the specified file or directory exists; otherwise, <see langword="false"/>.</returns>
+	public static bool Exists(string path) {
+		try {
+			File.GetAttributes(path);
+			return true;
+		}
+		catch (UnauthorizedAccessException) {
+			return true;
+		}
+		catch (FileNotFoundException) {
+			return false;
+		}
+		catch (DirectoryNotFoundException) {
+			return false;
+		}
+	}
+
 	extension(FileSystemInfo self) {
 #if !NETSTANDARD2_0
 		public string RelativeTo(DirectoryInfo @base)

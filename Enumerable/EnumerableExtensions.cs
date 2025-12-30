@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -45,7 +45,8 @@ public static class EnumerableExtensions {
 
 		#region Split
 		/// <summary>
-		///     Splits <paramref name="source" /> into 2 parts according to the result of <paramref name="predicate" /> on each item.
+		///     Splits <paramref name="source" /> into 2 parts according to the result of <paramref name="predicate" /> on each
+		///     item.
 		/// </summary>
 		/// <returns>
 		///     A tuple consists of two <see cref="List{T}" />, the first containing the items that return <see langword="true" />
@@ -75,19 +76,20 @@ public static class EnumerableExtensions {
 
 		#region AsList, AsArray, AsIList
 		/// <summary>
-		///     Returns the <paramref name="source" /> itself if it's already <see cref="List{T}" />, else creates one.
+		///     Returns the current <see cref="IEnumerable{T}" /> itself if it's already <see cref="List{T}" />, else creates one.
 		/// </summary>
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public List<T> AsList() => source as List<T> ?? source.ToList();
 
 		/// <summary>
-		///     Returns the <paramref name="source" /> itself if it's already an array of <typeparamref name="T" />, else creates one.
+		///     Returns the current <see cref="IEnumerable{T}" /> itself if it's already an array of <typeparamref name="T" />, else
+		///     creates one.
 		/// </summary>
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public T[] AsArray() => source as T[] ?? source.ToArray();
 
 		/// <summary>
-		///     Returns the <paramref name="source" /> itself if it's already <see cref="IList{T}" />, else creates an array of
+		///     Returns the current <see cref="IEnumerable{T}" /> itself if it's already <see cref="IList{T}" />, else creates an array of
 		///     <typeparamref name="T" />.
 		/// </summary>
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -96,13 +98,13 @@ public static class EnumerableExtensions {
 
 		#region ToIndexed, ToIndexDictionary
 		/// <summary>
-		///     Creates an <see cref="IndexedEnumerable{T}" /> from <paramref name="source" />
+		///     Creates an <see cref="IndexedEnumerable{T}" /> from the current <see cref="IEnumerable{T}"/>
 		/// </summary>
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public IndexedEnumerable<T> ToIndexed() => new(source);
 
 		/// <summary>
-		///     Creates a <see cref="Dictionary{TKey,TValue}" /> that uses <paramref name="source" />'s items as key
+		///     Creates a <see cref="Dictionary{TKey,TValue}" /> that uses the current <see cref="IEnumerable{T}"/>'s items as key
 		///     and their indices as value.
 		/// </summary>
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -235,7 +237,7 @@ public static class EnumerableExtensions {
 
 		#region Unique
 		/// <summary>
-		///     Checks whether <paramref name="source" /> holds distinct values
+		///     Checks whether the current <see cref="IEnumerable{T}"/> holds distinct values
 		/// </summary>
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public bool Unique() => source.Unique(null);
@@ -373,7 +375,7 @@ public static class EnumerableExtensions {
 		/// </param>
 		/// <returns>
 		///     An <see cref="IEnumerable{T}" />, holding elements of <paramref name="source" />, <paramref name="source" />,
-		///		<paramref name="source3" /> and <paramref name="source4" /> at the same index in a tuple.
+		///     <paramref name="source3" /> and <paramref name="source4" /> at the same index in a tuple.
 		/// </returns>
 		/// <inheritdoc cref="EnumerableExtensions.IndexJoin{T,T2,T3}" />
 		public IEnumerable<(T First, T2 Second, T3 Third, T4 Fourth)> IndexJoin<T2, T3, T4>(IEnumerable<T2> source2, IEnumerable<T3> source3, IEnumerable<T4> source4) {

@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using TrueMogician.Exceptions;
@@ -63,7 +63,7 @@ public class KeyReadOnlyDictionary<TKey, TValue, TReadOnlyKey>(IDictionary<TKey,
 	///     <inheritdoc cref="ContainsKey" />
 	/// </param>
 	/// <inheritdoc />
-	public TValue this[TReadOnlyKey key] => key is TKey realKey ? dictionary[realKey] : throw new InvariantTypeException(typeof(TKey), key?.GetType());
+	public TValue this[TReadOnlyKey key] => key is TKey realKey ? dictionary[realKey] : throw new InvariantTypeException(typeof(TKey), key?.GetType() ?? typeof(object));
 
 	/// <inheritdoc />
 	public IEnumerator<KeyValuePair<TReadOnlyKey, TValue>> GetEnumerator()
@@ -80,7 +80,7 @@ public class KeyReadOnlyDictionary<TKey, TValue, TReadOnlyKey>(IDictionary<TKey,
 	///     <see cref="InvariantTypeException" /> will be thrown
 	/// </param>
 	/// <inheritdoc />
-	public bool ContainsKey(TReadOnlyKey key) => key is TKey realKey ? dictionary.ContainsKey(realKey) : throw new InvariantTypeException(typeof(TKey), key?.GetType());
+	public bool ContainsKey(TReadOnlyKey key) => key is TKey realKey ? dictionary.ContainsKey(realKey) : throw new InvariantTypeException(typeof(TKey), key?.GetType() ?? typeof(object));
 
 	/// <param name="key">
 	///     <inheritdoc cref="ContainsKey" />
@@ -93,7 +93,7 @@ public class KeyReadOnlyDictionary<TKey, TValue, TReadOnlyKey>(IDictionary<TKey,
 #endif
 		out TValue value
 	)
-		=> key is TKey realKey ? dictionary.TryGetValue(realKey, out value) : throw new InvariantTypeException(typeof(TKey), key?.GetType());
+		=> key is TKey realKey ? dictionary.TryGetValue(realKey, out value) : throw new InvariantTypeException(typeof(TKey), key?.GetType() ?? typeof(object));
 }
 
 public class KeyValueReadOnlyDictionary<TKey, TValue, TReadOnlyKey, TReadOnlyValue>(IDictionary<TKey, TValue> dictionary) : IReadOnlyDictionary<TReadOnlyKey, TReadOnlyValue>
@@ -112,7 +112,7 @@ public class KeyValueReadOnlyDictionary<TKey, TValue, TReadOnlyKey, TReadOnlyVal
 	///     <inheritdoc cref="ContainsKey" />
 	/// </param>
 	/// <inheritdoc />
-	public TReadOnlyValue this[TReadOnlyKey key] => key is TKey realKey ? dictionary[realKey] : throw new InvariantTypeException(typeof(TKey), key?.GetType());
+	public TReadOnlyValue this[TReadOnlyKey key] => key is TKey realKey ? dictionary[realKey] : throw new InvariantTypeException(typeof(TKey), key?.GetType() ?? typeof(object));
 
 	/// <inheritdoc />
 	public IEnumerator<KeyValuePair<TReadOnlyKey, TReadOnlyValue>> GetEnumerator()
@@ -127,7 +127,7 @@ public class KeyValueReadOnlyDictionary<TKey, TValue, TReadOnlyKey, TReadOnlyVal
 	///     <inheritdoc cref="KeyReadOnlyDictionary{TKey,TValue,TReadOnlyKey}.ContainsKey" />
 	/// </param>
 	/// <inheritdoc />
-	public bool ContainsKey(TReadOnlyKey key) => key is TKey realKey ? dictionary.ContainsKey(realKey) : throw new InvariantTypeException(typeof(TKey), key?.GetType());
+	public bool ContainsKey(TReadOnlyKey key) => key is TKey realKey ? dictionary.ContainsKey(realKey) : throw new InvariantTypeException(typeof(TKey), key?.GetType() ?? typeof(object));
 
 	/// <param name="key">
 	///     <inheritdoc cref="ContainsKey" />
@@ -141,7 +141,7 @@ public class KeyValueReadOnlyDictionary<TKey, TValue, TReadOnlyKey, TReadOnlyVal
 		out TReadOnlyValue value
 	) {
 		if (key is not TKey realKey)
-			throw new InvariantTypeException(typeof(TKey), key?.GetType());
+			throw new InvariantTypeException(typeof(TKey), key?.GetType() ?? typeof(object));
 		bool result = dictionary.TryGetValue(realKey, out var v);
 		value = v;
 		return result;
