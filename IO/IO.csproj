@@ -1,7 +1,7 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFrameworks>netstandard2.0;netstandard2.1;net5.0</TargetFrameworks>
+		<TargetFrameworks>netstandard2.0;netstandard2.1;net45;net5.0;net5.0-windows</TargetFrameworks>
 		<RootNamespace>TrueMogician.Extensions.IO</RootNamespace>
 		<Nullable>enable</Nullable>
 		<LangVersion>latest</LangVersion>
@@ -23,6 +23,14 @@
 
 	<PropertyGroup>
 		<DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
+		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(TargetFramework)' == 'net45'">
+		<DefineConstants>WINDOWS;NETFRAMEWORK</DefineConstants>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(TargetFramework)' == 'net5.0-windows'">
+		<DefineConstants>WINDOWS</DefineConstants>
 	</PropertyGroup>
 
 </Project>

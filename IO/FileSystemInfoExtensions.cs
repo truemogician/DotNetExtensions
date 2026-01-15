@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -36,7 +36,7 @@ public static class FileSystemInfoExtensions {
 	}
 
 	extension(FileSystemInfo self) {
-#if !NETSTANDARD2_0
+#if !NETSTANDARD2_0 && !NETFRAMEWORK
 		public string RelativeTo(DirectoryInfo @base)
 			=> Path.GetRelativePath(@base.FullName, self.FullName);
 
@@ -61,7 +61,7 @@ public static class FileSystemInfoExtensions {
 
 	extension(DirectoryInfo self) {
 		public long Size =>
-#if NETSTANDARD2_0
+#if NETSTANDARD2_0 || NETFRAMEWORK
 			self.EnumerateFiles("*", SearchOption.AllDirectories)
 #else
 			self.EnumerateFiles("*", new EnumerationOptions {
