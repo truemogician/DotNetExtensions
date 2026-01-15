@@ -11,6 +11,10 @@ namespace TrueMogician.Extensions.IO;
 using static PInvoke;
 
 #if WINDOWS
+/// <summary>
+///     Provides properties and instance methods for accessing and modifying metadata of a file system entry with minimum
+///     permissions and overhead. This class cannot be inherited.
+/// </summary>
 public sealed class EntryMetadata : IEquatable<EntryMetadata> {
 	private const uint FILE_READ_ATTRIBUTES = 0x0080;
 	private const uint FILE_WRITE_ATTRIBUTES = 0x0100;
@@ -28,10 +32,15 @@ public sealed class EntryMetadata : IEquatable<EntryMetadata> {
 
 	public EntryMetadata(FileSystemInfo info) => FullName = info.FullName;
 
+	/// <inheritdoc cref="FileSystemInfo.FullName" />
 	public string FullName { get; }
 
+	/// <summary>
+	///     Gets the basic metadata information of the file system entry.
+	/// </summary>
 	public EntryBasicInfo BasicInfo => GetFileBasicInfo();
 
+	/// <inheritdoc cref="FileSystemInfo.Attributes" />
 	public FileAttributes Attributes {
 		get {
 			var info = GetFileBasicInfo();
@@ -44,43 +53,65 @@ public sealed class EntryMetadata : IEquatable<EntryMetadata> {
 		}
 	}
 
+	/// <inheritdoc cref="FileSystemInfo.CreationTime" />
 	public DateTime CreationTime {
 		get => CreationTimeUtc.ToLocalTime();
 		set => CreationTimeUtc = value.ToUniversalTime();
 	}
 
+	/// <inheritdoc cref="FileSystemInfo.LastAccessTime" />
 	public DateTime LastAccessTime {
 		get => LastAccessTimeUtc.ToLocalTime();
 		set => LastAccessTimeUtc = value.ToUniversalTime();
 	}
 
+	/// <inheritdoc cref="FileSystemInfo.LastWriteTime" />
 	public DateTime LastWriteTime {
 		get => LastWriteTimeUtc.ToLocalTime();
 		set => LastWriteTimeUtc = value.ToUniversalTime();
 	}
 
+	/// <summary>
+	///     Gets the time when the current file or directory was changed.
+	/// </summary>
 	public DateTime ChangeTime => ChangeTimeUtc.ToLocalTime();
 
+	/// <inheritdoc cref="FileSystemInfo.CreationTimeUtc" />
 	public DateTime CreationTimeUtc {
 		get => GetTimeUtc(EntryTimestamp.Creation);
 		set => SetTimeUtc(EntryTimestamp.Creation, value);
 	}
 
+	/// <inheritdoc cref="FileSystemInfo.LastAccessTimeUtc" />
 	public DateTime LastAccessTimeUtc {
 		get => GetTimeUtc(EntryTimestamp.LastAccess);
 		set => SetTimeUtc(EntryTimestamp.LastAccess, value);
 	}
 
+	/// <inheritdoc cref="FileSystemInfo.LastWriteTimeUtc" />
 	public DateTime LastWriteTimeUtc {
 		get => GetTimeUtc(EntryTimestamp.LastWrite);
 		set => SetTimeUtc(EntryTimestamp.LastWrite, value);
 	}
 
+	/// <summary>
+	///     Gets the time, in coordinated universal time (UTC), when the current file or directory was changed.
+	/// </summary>
 	public DateTime ChangeTimeUtc => GetTimeUtc(EntryTimestamp.Change);
 
+	/// <summary>
+	///     Gets the specified timestamp.
+	/// </summary>
+	/// <inheritdoc cref="GetTimeUtc" />
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public DateTime GetTime(EntryTimestamp t) => GetTimeUtc(t).ToLocalTime();
 
+	/// <summary>
+	///     Gets the specified timestamp in UTC.
+	/// </summary>
+	/// <param name="t">The timestamp to retrieve.</param>
+	/// <exception cref="ArgumentOutOfRangeException" />
+	/// <exception cref="Win32Exception" />
 	public DateTime GetTimeUtc(EntryTimestamp t) {
 		var info = GetFileBasicInfo();
 		return t switch {
@@ -92,9 +123,18 @@ public sealed class EntryMetadata : IEquatable<EntryMetadata> {
 		};
 	}
 
+	/// <summary>
+	///     Sets the specified timestamp.
+	/// </summary>
+	/// <inheritdoc cref="SetTimeUtc" />
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public void SetTime(EntryTimestamp t, DateTime value) => SetTimeUtc(t, value.ToUniversalTime());
 
+	/// <summary>
+	///     Sets the specified timestamp in UTC.
+	/// </summary>
+	/// <param name="utcValue">The new UTC timestamp.</param>
+	/// <inheritdoc cref="GetTimeUtc" />
 	public void SetTimeUtc(EntryTimestamp t, DateTime utcValue) {
 		if (t == EntryTimestamp.Change)
 			throw new NotSupportedException("ChangeTime is read-only.");
@@ -109,13 +149,23 @@ public sealed class EntryMetadata : IEquatable<EntryMetadata> {
 		}
 	}
 
+	/// <summary>
+	///     Set all three timestamps. Use <see langword="null" /> to leave a timestamp unchanged.
+	/// </summary>
+	/// <param name="creation">The new creation time.</param>
+	/// <param name="access">The new last access time.</param>
+	/// <param name="write">The new last write time.</param>
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public void SetTimes(DateTime? creation, DateTime? access, DateTime? write, DateTime? change = null)
-		=> SetTimesUtc(creation?.ToUniversalTime(), access?.ToUniversalTime(), write?.ToUniversalTime(), change?.ToUniversalTime());
+	public void SetTimes(DateTime? creation, DateTime? access, DateTime? write)
+		=> SetTimesUtc(creation?.ToUniversalTime(), access?.ToUniversalTime(), write?.ToUniversalTime());
 
-	public void SetTimesUtc(DateTime? creationUtc, DateTime? accessUtc, DateTime? writeUtc, DateTime? changeUtc = null) {
-		if (changeUtc.HasValue)
-			throw new NotSupportedException("ChangeTime is read-only.");
+	/// <summary>
+	///     Set all three timestamps in UTC. Use <see langword="null" /> to leave a timestamp unchanged.
+	/// </summary>
+	/// <param name="creationUtc">The new creation time in UTC.</param>
+	/// <param name="accessUtc">The new last access time in UTC.</param>
+	/// <param name="writeUtc">The new last write time in UTC.</param>
+	public void SetTimesUtc(DateTime? creationUtc, DateTime? accessUtc, DateTime? writeUtc) {
 		unsafe {
 			long cVal = creationUtc?.ToFileTimeUtc() ?? 0;
 			long aVal = accessUtc?.ToFileTimeUtc() ?? 0;
@@ -183,6 +233,9 @@ public enum EntryTimestamp : byte {
 	Change
 }
 
+/// <summary>
+///     A struct that contains basic metadata information of a file system entry.
+/// </summary>
 public struct EntryBasicInfo {
 	public DateTime CreationTimeUtc;
 	public DateTime LastAccessTimeUtc;
