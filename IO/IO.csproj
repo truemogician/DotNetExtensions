@@ -6,9 +6,9 @@
 		<Nullable>enable</Nullable>
 		<LangVersion>latest</LangVersion>
 		<PackageId>TrueMogician.Extensions.IO</PackageId>
-		<Version>1.1.2</Version>
+		<Version>1.2.0</Version>
 		<Authors>true_mogician</Authors>
-		<Description>Some extension methods for classes in System.IO</Description>
+		<Description>Extension methods and classes for System.IO</Description>
 		<PackageReleaseNotes>Change assembly name</PackageReleaseNotes>
 		<Product>$(PackageId)</Product>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
