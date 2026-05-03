@@ -1,11 +1,12 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 #if NETSTANDARD2_1_OR_GREATER || NET5_0_OR_GREATER
 using System.Runtime.CompilerServices;
 #endif
 
-namespace TrueMogician.Extensions.Collections {
-	public interface IExtendedList<T> : IList<T>, IReadOnlyList<T> {
+namespace TrueMogician.Extensions.Collections;
+
+public interface IExtendedList<T> : IList<T>, IReadOnlyList<T> {
 #if NETSTANDARD2_1_OR_GREATER || NET5_0_OR_GREATER
 		public T this[Index index] {
 			get {
@@ -41,40 +42,40 @@ namespace TrueMogician.Extensions.Collections {
 		int IReadOnlyCollection<T>.Count => Count;
 #endif
 
-		public new int Count { get; }
+	public new int Count { get; }
 
-		public new T this[int index] { get; set; }
+	public new T this[int index] { get; set; }
 
-		public IList<T> GetRange(int index, int count);
+	public IList<T> GetRange(int index, int count);
 
-		public void AddRange(IEnumerable<T> items);
+	public void AddRange(IEnumerable<T> items);
 
-		public void InsertRange(int index, IEnumerable<T> items);
+	public void InsertRange(int index, IEnumerable<T> items);
 
-		public void RemoveRange(int index, int count);
+	public void RemoveRange(int index, int count);
 
-		public int IndexOf(T item, int index, int count);
+	public int IndexOf(T item, int index, int count);
 
-		public int LastIndexOf(T item, int index, int count);
+	public int LastIndexOf(T item, int index, int count);
 
-		public T? Find(Predicate<T> match);
+	public T? Find(Predicate<T> match);
 
-		public T? FindLast(Predicate<T> match);
+	public T? FindLast(Predicate<T> match);
 
-		public List<T> FindAll(Predicate<T> match);
+	public List<T> FindAll(Predicate<T> match);
 
-		public int FindIndex(int index, int count, Predicate<T> match);
+	public int FindIndex(int index, int count, Predicate<T> match);
 
-		public int FindLastIndex(int index, int count, Predicate<T> match);
+	public int FindLastIndex(int index, int count, Predicate<T> match);
 
-		public void Sort(int index, int count, IComparer<T> comparer);
+	public void Sort(int index, int count, IComparer<T> comparer);
 
-		public void Reverse(int index, int count);
+	public void Reverse(int index, int count);
 
-		/// <summary>
-		///     Swap the item at <paramref name="index1" /> with the item at <paramref name="index2" />
-		/// </summary>
-		public void Swap(int index1, int index2);
+	/// <summary>
+	///     Swap the item at <paramref name="index1" /> with the item at <paramref name="index2" />
+	/// </summary>
+	public void Swap(int index1, int index2);
 
 #if NETSTANDARD2_1_OR_GREATER || NET5_0_OR_GREATER
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -127,33 +128,32 @@ namespace TrueMogician.Extensions.Collections {
 #endif
 
 #if NETSTANDARD2_0
-		public void AddRange(params T[] items);
+	public void AddRange(params T[] items);
 
-		public void InsertRange(int index, params T[] items);
+	public void InsertRange(int index, params T[] items);
 
-		public int IndexOf(T item, int index);
+	public int IndexOf(T item, int index);
 
-		public int LastIndexOf(T item, int index);
+	public int LastIndexOf(T item, int index);
 
-		public int LastIndexOf(T item);
+	public int LastIndexOf(T item);
 
-		public int FindIndex(int index, Predicate<T> match);
+	public int FindIndex(int index, Predicate<T> match);
 
-		public int FindIndex(Predicate<T> match);
+	public int FindIndex(Predicate<T> match);
 
-		public int FindLastIndex(int index, Predicate<T> match);
+	public int FindLastIndex(int index, Predicate<T> match);
 
-		public int FindLastIndex(Predicate<T> match);
+	public int FindLastIndex(Predicate<T> match);
 
-		public void Sort(IComparer<T> comparer);
+	public void Sort(IComparer<T> comparer);
 
-		public void Sort();
+	public void Sort();
 
-		public void Sort(int index, int count, Comparison<T> comparison);
+	public void Sort(int index, int count, Comparison<T> comparison);
 
-		public void Sort(Comparison<T> comparison);
+	public void Sort(Comparison<T> comparison);
 
-		public void Reverse();
+	public void Reverse();
 #endif
-	}
 }

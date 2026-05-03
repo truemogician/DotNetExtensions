@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,9 +7,7 @@ using TrueMogician.Extensions.Enumerable;
 
 namespace TrueMogician.Extensions.Collections {
 	public class ListSegment<T> : IList<T>, IReadOnlyList<T> {
-		public ListSegment(IList<T> list) : this(list, 0) { }
-
-		public ListSegment(IList<T> list, int offset) : this(list, offset, list.Count - offset) { }
+		public ListSegment(IList<T> list, int offset = 0) : this(list, offset, list.Count - offset) { }
 
 		public ListSegment(IList<T> list, int offset, int count) {
 			if (offset < 0 || offset >= list.Count - 1)

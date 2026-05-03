@@ -1,4 +1,4 @@
-﻿using System.Linq;
+using System.Linq;
 using NUnit.Framework;
 using TrueMogician.Extensions.Collections.Tree;
 
@@ -42,7 +42,7 @@ namespace Collections.Tree.Test {
 			Assert.IsFalse(Nodes[5].IsChildOf(Nodes[0]));
 			Assert.AreEqual(new[] {Nodes[0], Nodes[5], Nodes[6], Nodes[4], Nodes[7]}, Root.Leaves.ToArray());
 			Assert.AreEqual(new[] {Nodes[3], Nodes[1], Root}, Nodes[6].Ancestors.ToArray());
-			Assert.AreEqual(new[] { Nodes[3], Nodes[5], Nodes[6], Nodes[4] }, Nodes[1].Descendents.ToArray());
+			Assert.AreEqual(new[] { Nodes[3], Nodes[5], Nodes[6], Nodes[4] }, Nodes[1].Descendants.ToArray());
 			Assert.AreSame(Nodes[1], ValuedStatisticalTreeNode<string?>.GetLatestCommonAncestor(Nodes[5], Nodes[4]));
 			ValuedStatisticalTreeNode<string?>.Unlink(Nodes[1]);
 			Assert.AreEqual(4, Root.Children.Count);

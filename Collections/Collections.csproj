@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
 		<TargetFrameworks>netstandard2.0;netstandard2.1;net5.0</TargetFrameworks>
@@ -6,7 +6,7 @@
 		<Nullable>enable</Nullable>
 		<LangVersion>latest</LangVersion>
 		<PackageId>TrueMogician.Extensions.Collections</PackageId>
-		<Version>0.7.1</Version>
+		<Version>0.7.2</Version>
 		<Authors>true_mogician</Authors>
 		<Description>Some extension collections to System.Collections.Generic</Description>
 		<PackageReleaseNotes>Change assembly name</PackageReleaseNotes>
