@@ -6,7 +6,7 @@
 		<Nullable>enable</Nullable>
 		<LangVersion>latest</LangVersion>
 		<PackageId>TrueMogician.Extensions.Enumerable</PackageId>
-		<Version>2.1.1</Version>
+		<Version>2.2.0</Version>
 		<Authors>true_mogician</Authors>
 		<Description>Some extension methods on IEnumerable&lt;T&gt;</Description>
 		<PackageReleaseNotes>Change assembly name</PackageReleaseNotes>

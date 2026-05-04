@@ -268,18 +268,74 @@ public static class EnumerableExtensions {
 			}
 			return count == set.Count;
 		}
-		#endregion
+        #endregion
 
-		#region Each, ForEach
-		/// <summary>
-		///     Applies <paramref name="action" /> to each element of <see cref="IEnumerable{T}" />, and returns itself for
-		///     chaining actions. <br /> Note that if chaining is not intended, use
-		///     <see cref="ForEach{T}(IEnumerable{T},Action{T})" /> instead,
-		///     since unused return value will be optimized out and thus <paramref name="action" /> will not be performed.
-		/// </summary>
-		/// <param name="action">An action to be performed on each element of <see cref="IEnumerable{T}" /></param>
-		/// <returns>The <see cref="IEnumerable{T}" /> itself</returns>
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+        #region Sum Extensions
+		/// <summary>Computes the sum of the sequence of <see cref="T:System.SByte" /> values that are obtained by invoking a transform function on each element of the input sequence.</summary>
+		/// <inheritdoc cref="System.Linq.Enumerable.Sum{T}(IEnumerable{T},Func{T,int})" />
+		public sbyte Sum(Func<T, sbyte> selector) {
+			sbyte sum = 0;
+			foreach (var item in source)
+				sum += selector(item);
+			return sum;
+		}
+
+		/// <summary>Computes the sum of the sequence of <see cref="T:System.Byte" /> values that are obtained by invoking a transform function on each element of the input sequence.</summary>
+		/// <inheritdoc cref="System.Linq.Enumerable.Sum{T}(IEnumerable{T},Func{T,int})" />
+		public byte Sum(Func<T, byte> selector) {
+			byte sum = 0;
+			foreach (var item in source)
+				sum += selector(item);
+			return sum;
+		}
+
+        /// <summary>Computes the sum of the sequence of <see cref="T:System.Int16" /> values that are obtained by invoking a transform function on each element of the input sequence.</summary>
+        /// <inheritdoc cref="System.Linq.Enumerable.Sum{T}(IEnumerable{T},Func{T,int})" />
+        public short Sum(Func<T, short> selector) {
+			short sum = 0;
+			foreach (var item in source)
+				sum += selector(item);
+			return sum;
+		}
+
+		/// <summary>Computes the sum of the sequence of <see cref="T:System.UInt16" /> values that are obtained by invoking a transform function on each element of the input sequence.</summary>
+		/// <inheritdoc cref="System.Linq.Enumerable.Sum{T}(IEnumerable{T},Func{T,int})" />
+		public ushort Sum(Func<T, ushort> selector) {
+			ushort sum = 0;
+			foreach (var item in source)
+				sum += selector(item);
+			return sum;
+		}
+
+        /// <summary>Computes the sum of the sequence of <see cref="T:System.UInt32" /> values that are obtained by invoking a transform function on each element of the input sequence.</summary>
+        /// <inheritdoc cref="System.Linq.Enumerable.Sum{T}(IEnumerable{T},Func{T,int})" />
+        public uint Sum(Func<T, uint> selector) {
+			uint sum = 0u;
+			foreach (var item in source)
+				sum += selector(item);
+			return sum;
+		}
+
+		/// <summary>Computes the sum of the sequence of <see cref="T:System.UInt64" /> values that are obtained by invoking a transform function on each element of the input sequence.</summary>
+		/// <inheritdoc cref="System.Linq.Enumerable.Sum{T}(IEnumerable{T},Func{T,int})" />
+		public ulong Sum(Func<T, ulong> selector) {
+			ulong sum = 0uL;
+			foreach (var item in source)
+				sum += selector(item);
+			return sum;
+		}
+        #endregion
+
+        #region Each, ForEach
+        /// <summary>
+        ///     Applies <paramref name="action" /> to each element of <see cref="IEnumerable{T}" />, and returns itself for
+        ///     chaining actions. <br /> Note that if chaining is not intended, use
+        ///     <see cref="ForEach{T}(IEnumerable{T},Action{T})" /> instead,
+        ///     since unused return value will be optimized out and thus <paramref name="action" /> will not be performed.
+        /// </summary>
+        /// <param name="action">An action to be performed on each element of <see cref="IEnumerable{T}" /></param>
+        /// <returns>The <see cref="IEnumerable{T}" /> itself</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public IEnumerable<T> Each(Action<T> action) {
 			foreach (var item in source) {
 				action(item);
