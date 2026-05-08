@@ -9,7 +9,7 @@ public static class ListExtensions {
 	extension<T>(IList<T> list) {
 		/// <inheritdoc cref="List{T}.RemoveRange" />
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public void RemoveRange(int index) => RemoveRange(list, index, list.Count - index);
+		public void RemoveRange(int index) => list.RemoveRange(index, list.Count - index);
 
 		/// <inheritdoc cref="List{T}.RemoveRange" />
 		public void RemoveRange(int index, int count) {
@@ -36,7 +36,7 @@ public static class ListExtensions {
 			if (index < 0 || index > list.Count)
 				throw new ArgumentOutOfRangeException(nameof(index));
 			var items = collection as IList<T> ?? collection.ToArray();
-			var cache = list.GetRange(index, Math.Min(list.Count - index, items.Count));
+			var cache = ((IReadOnlyList<T>)list).GetRange(index, Math.Min(list.Count - index, items.Count));
 			for (int i = index; i < index + cache.Count; ++i)
 				list[i] = items[i - index];
 			if (list.Count - index <= items.Count) {
@@ -67,19 +67,7 @@ public static class ListExtensions {
 			}
 		}
 
-		/// <inheritdoc cref="List{T}.GetRange" />
-		public List<T> GetRange(int index) => GetRange(list, index, list.Count - index);
-
-		/// <inheritdoc cref="List{T}.GetRange" />
-		public List<T> GetRange(int index, int count) {
-			if (index < 0 || index >= list.Count)
-				throw new ArgumentOutOfRangeException(nameof(index));
-			if (count < 0 || index + count > list.Count)
-				throw new ArgumentOutOfRangeException(nameof(count));
-			return list.Skip(index).Take(count).ToList();
-		}
-
-		public IList<T> Sort() => Sort(list, Comparer<T>.Default);
+		public IList<T> Sort() => list.Sort(Comparer<T>.Default);
 
 		/// <summary>
 		///     Sorts the elements in the entire <see cref="IList{T}" /> using the specific <paramref name="comparer" />
@@ -99,30 +87,6 @@ public static class ListExtensions {
 					break;
 			}
 			return list;
-		}
-
-		/// <inheritdoc cref="List{T}.BinarySearch(T, IComparer{T})" />
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public int BinarySearch(T item, IComparer<T> comparer) =>
-			BinarySearch(list, item, comparer.Compare);
-
-		/// <inheritdoc cref="List{T}.BinarySearch(T)" />
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public int BinarySearch(T item) => item is IComparable<T>
-			? BinarySearch(list, item, (a, b) => (a as IComparable<T>)!.CompareTo(b))
-			: BinarySearch(list, item, Comparer<T>.Default);
-
-		private int BinarySearch(T item, Func<T, T, int> comparer) {
-			int left = 0, right = list.Count - 1;
-			while (left <= right) {
-				int mid = (left + right) >> 1;
-				switch (comparer(item, list[mid])) {
-					case 0:   return mid;
-					case < 0: right = mid - 1; break;
-					case > 0: left = mid + 1; break;
-				}
-			}
-			return ~left;
 		}
 	}
 
@@ -144,5 +108,40 @@ public static class ListExtensions {
 		/// <inheritdoc cref="ListExtensions.Slice{T}(IReadOnlyList{T},int,int)" />
 		public ListSegment<T> Slice(Range range) => new(list, range);
 #endif
+
+		/// <inheritdoc cref="List{T}.GetRange" />
+		public List<T> GetRange(int index) => list.GetRange(index, list.Count - index);
+
+		/// <inheritdoc cref="List{T}.GetRange" />
+		public List<T> GetRange(int index, int count) {
+			if (index < 0 || index >= list.Count)
+				throw new ArgumentOutOfRangeException(nameof(index));
+			if (count < 0 || index + count > list.Count)
+				throw new ArgumentOutOfRangeException(nameof(count));
+			return list.Skip(index).Take(count).ToList();
+		}
+
+		/// <inheritdoc cref="List{T}.BinarySearch(T, IComparer{T})" />
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public int BinarySearch(T item, IComparer<T> comparer) => list.BinarySearch(item, comparer.Compare);
+
+		/// <inheritdoc cref="List{T}.BinarySearch(T)" />
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public int BinarySearch(T item) => item is IComparable<T>
+			? list.BinarySearch(item, (a, b) => (a as IComparable<T>)!.CompareTo(b))
+			: list.BinarySearch(item, Comparer<T>.Default);
+
+		private int BinarySearch(T item, Func<T, T, int> comparer) {
+			int left = 0, right = list.Count - 1;
+			while (left <= right) {
+				int mid = (left + right) >> 1;
+				switch (comparer(item, list[mid])) {
+					case 0:   return mid;
+					case < 0: right = mid - 1; break;
+					case > 0: left = mid + 1; break;
+				}
+			}
+			return ~left;
+		}
 	}
 }
